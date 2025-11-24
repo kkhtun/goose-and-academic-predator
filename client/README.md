@@ -1,1 +1,0 @@
-# goose-and-academic-predator
