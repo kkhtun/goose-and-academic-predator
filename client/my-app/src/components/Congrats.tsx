@@ -7,19 +7,32 @@ interface CongratsProps {
 }
 
 export default function Congrats({ level, onNext, onFinish }: CongratsProps) {
-  return (
-    <div className="congrats-page">
-      <h1>🎉 Level {level} Completed!</h1>
+  const isFinal = level >= 2;
 
-      {level < 2 ? (
-        <button className="btn-primary" onClick={onNext}>
-          Continue to Level {level + 1}
-        </button>
-      ) : (
-        <button className="btn-primary" onClick={onFinish}>
-          Finish Game
-        </button>
-      )}
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex justify-center items-start px-4 py-10">
+      <div className="w-full max-w-5xl bg-slate-900/80 border border-slate-700 rounded-2xl shadow-xl p-6 md:p-8 space-y-6 text-center">
+        <h2 className="text-3xl font-bold text-emerald-400">🎉 Level {level} Complete!</h2>
+        <p className="text-slate-300 text-sm md:text-base">
+          Nice work! You've navigated this part of the publishing maze.
+        </p>
+
+        {isFinal ? (
+          <button
+            onClick={onFinish}
+            className="mt-4 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-md"
+          >
+            Finish Game & See Badge
+          </button>
+        ) : (
+          <button
+            onClick={onNext}
+            className="mt-4 px-6 py-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold shadow-md"
+          >
+            Continue to Level {level + 1}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
