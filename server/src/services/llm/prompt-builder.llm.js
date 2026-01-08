@@ -23,6 +23,7 @@ OUTPUT STRICTLY IN THIS JSON FORMAT:
 `;
 }
 
+// Normalize output
 function normalizeQuiz(raw) {
     try {
         const obj = JSON.parse(raw);

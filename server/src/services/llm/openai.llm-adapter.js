@@ -6,7 +6,7 @@ const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function generateQuiz(params) {
+async function sendQuizPrompt(params) {
     const prompt = buildQuizPrompt(params);
 
     const completion = await client.chat.completions.create({
@@ -27,5 +27,5 @@ async function generateQuiz(params) {
 }
 
 module.exports = {
-    generateQuiz,
+    sendQuizPrompt,
 };
