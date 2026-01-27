@@ -1,13 +1,14 @@
-const mongoose = require("mongoose");
 require("dotenv").config();
-const { retrieveContext } = require("../services/llm/openai.llm-adapter.js");
+const mongoose = require("mongoose");
+const { retrieveContext } = require("../services/game.service");
 
 async function retrieve() {
     await mongoose.connect(process.env.MONGO_URI);
     const results = await retrieveContext({
-        topic: "peer_review",
+        topic: "predatory_publishing",
+        difficulty: "medium",
         query: "How do predatory journals handle peer review?",
-        limit: 3,
+        limit: 100,
     });
 
     console.log(results);

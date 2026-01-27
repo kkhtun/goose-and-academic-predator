@@ -3,6 +3,7 @@ const {
     embedText,
 } = require("./llm/openai.llm-adapter");
 const KbChunkModel = require("../models/kb-chunk.model");
+const QuizModel = require("../models/quiz.model");
 
 // Helper functions (calling other underlying models and api clients)
 
@@ -10,7 +11,7 @@ async function retrieveContext({
     topic,
     query,
     difficulty: difficultyHint,
-    limit = 3,
+    limit,
 }) {
     // Embed the query
     const queryVector = await embedText(query);
@@ -19,7 +20,7 @@ async function retrieveContext({
     const results = await KbChunkModel.aggregate([
         {
             $vectorSearch: {
-                index: "vector_index", // name of your Atlas vector index
+                index: "embedding_vector_indx", // name of your Atlas vector index
                 path: "embedding",
                 queryVector,
                 numCandidates: 100,
@@ -68,12 +69,15 @@ async function getTopics() {
 }
 
 async function generateMcqBatch({ topic, difficulty, count = 3 }) {
-    const chunks = await retrieveContext({
+    const retrievedChunks = await retrieveContext({
         topic,
         query: `${topic} facts`,
         difficulty,
-        limit: 3,
+        limit: 100,
     });
+
+    // Take first count entries
+    const chunks = retrievedChunks.slice(0, count);
 
     const generatedQuizzes = await callGenerateMcqBatchFromContext({
         topic,
@@ -81,7 +85,16 @@ async function generateMcqBatch({ topic, difficulty, count = 3 }) {
         retrievedChunks: chunks,
         count: chunks.length,
     });
-    return generatedQuizzes;
+
+    const insertedQuizzes = await QuizModel.insertMany(generatedQuizzes);
+    return insertedQuizzes;
 }
 
-module.exports = { roll, getQuiz, generateMcqBatch, getTopics };
+module.exports = {
+    retrieveContext,
+    // API funcs
+    roll,
+    getQuiz,
+    generateMcqBatch,
+    getTopics,
+};

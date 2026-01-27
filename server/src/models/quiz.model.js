@@ -14,11 +14,9 @@ const quizSchema = new mongoose.Schema(
         options: { type: [String], required: true },
         correctAnswer: { type: String, required: true },
         explanation: { type: String, required: true },
-
         contextChunks: [
             { type: mongoose.Schema.Types.ObjectId, ref: "KbChunk" },
         ],
-
         status: {
             type: String,
             enum: ["new", "used", "discarded"],
@@ -31,4 +29,4 @@ const quizSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model("Quiz", quizSchema);
+module.exports = mongoose.model("Quiz", quizSchema, "quizzes");

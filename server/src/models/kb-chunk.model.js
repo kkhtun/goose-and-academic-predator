@@ -37,4 +37,4 @@ const kbChunkSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model("KbChunk", kbChunkSchema);
+module.exports = mongoose.model("KbChunk", kbChunkSchema, "kb_chunks");
