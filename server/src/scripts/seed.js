@@ -5,20 +5,20 @@ const { testChunks } = require("./testChunks.js");
 const { embedText } = require("../services/llm/openai.llm-adapter.js");
 
 async function seed() {
-  await mongoose.connect(process.env.MONGO_URI);
-  await KbChunkModel.deleteMany({});
+    await mongoose.connect(process.env.MONGO_URI);
+    await KbChunkModel.deleteMany({});
 
-  for (const chunk of testChunks) {
-    const embedding = await embedText(chunk.text);
-    await KbChunkModel.create({
-      ...chunk,
-      embedding,
-    });
+    for (const chunk of testChunks) {
+        const embedding = await embedText(chunk.text);
+        await KbChunkModel.create({
+            ...chunk,
+            embedding,
+        });
 
-    console.log("Inserted:", chunk.topic);
-  }
+        console.log("Inserted:", chunk.topic);
+    }
 
-  await mongoose.disconnect();
+    await mongoose.disconnect();
 }
 
 seed();

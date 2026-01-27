@@ -1,5 +1,5 @@
 const QUIZ_TYPE = Object.freeze({
-  MULTIPLE_CHOICE: "multiple_choice",
+    MULTIPLE_CHOICE: "multiple_choice",
 });
 
 // function buildMultipleChoiceQuizPrompt({
@@ -37,7 +37,7 @@ const QUIZ_TYPE = Object.freeze({
 
 // Build prompt for generation
 function buildMcqBatchPrompt({ topic, difficulty, context, count = 3 }) {
-  return `
+    return `
 You are a quiz generator. Use ONLY the information in the CONTEXT section.
 Do NOT use outside knowledge. Each question must be fully answerable from the CONTEXT.
 
@@ -70,39 +70,39 @@ Rules:
 }
 
 function isString(value) {
-  return value && typeof value === "string";
+    return value && typeof value === "string";
 }
 
 // Normalize output
 function normalizeQuizObject(obj) {
-  const entry = {};
-  if (obj.type && Object.values(QUIZ_TYPE).includes(obj.type)) {
-    entry.type = obj.type;
-  }
+    const entry = {};
+    if (obj.type && Object.values(QUIZ_TYPE).includes(obj.type)) {
+        entry.type = obj.type;
+    }
 
-  if (isString(obj.questionText)) {
-    entry.questionText = obj.questionText;
-  }
+    if (isString(obj.questionText)) {
+        entry.questionText = obj.questionText;
+    }
 
-  if (obj.options && Array.isArray(obj.options) && obj.options.length >= 4) {
-    entry.options = obj.options;
-  }
+    if (obj.options && Array.isArray(obj.options) && obj.options.length >= 4) {
+        entry.options = obj.options;
+    }
 
-  if (isString(obj.correctAnswer) && obj.correctAnswer.length === 1) {
-    entry.correctAnswer = obj.correctAnswer;
-  }
+    if (isString(obj.correctAnswer) && obj.correctAnswer.length === 1) {
+        entry.correctAnswer = obj.correctAnswer;
+    }
 
-  if (isString(obj.explanation)) {
-    entry.explanation = obj.explanation;
-  }
+    if (isString(obj.explanation)) {
+        entry.explanation = obj.explanation;
+    }
 
-  return {
-    entry,
-    isValid: Object.keys(entry).length === 5,
-  };
+    return {
+        entry,
+        isValid: Object.keys(entry).length === 5,
+    };
 }
 
 module.exports = {
-  buildMcqBatchPrompt,
-  normalizeQuizObject,
+    buildMcqBatchPrompt,
+    normalizeQuizObject,
 };

@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node src/index.js",
         "dev": "nodemon -r dotenv/config src/index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "format": "prettier --write \"src/**/*.{js,json}\""
     },
     "author": "Goose and Academic Predator Team",
     "license": "ISC",
@@ -19,6 +19,7 @@
     },
     "devDependencies": {
         "dotenv": "^17.2.3",
-        "nodemon": "^3.1.11"
+        "nodemon": "^3.1.11",
+        "prettier": "^3.8.1"
     }
 }
