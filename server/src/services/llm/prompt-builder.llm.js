@@ -1,39 +1,108 @@
-function buildQuizPrompt({ domain, difficulty, context }) {
+const QUIZ_TYPE = Object.freeze({
+  MULTIPLE_CHOICE: "multiple_choice",
+});
+
+// function buildMultipleChoiceQuizPrompt({
+//   domain,
+//   difficulty,
+//   context,
+//   count = 10,
+// }) {
+//   return `
+// You are a quiz generator. Use ONLY the information in the CONTEXT section.
+// If the answer is unknown, say so explicitly in the explanation.
+
+// DOMAIN: ${domain}
+// DIFFICULTY: ${difficulty}
+// COUNT: ${count}
+// CONTEXT:
+// ${context}
+
+// OUTPUT STRICTLY AS VALID JSON (no markdown, no extra text).
+// Return a JSON array of exactly ${count} objects in this format:
+
+// {
+//   "type": ${QUIZ_TYPE.MULTIPLE_CHOICE},
+//   "questionText": "string",
+//   "options": ["A","B","C","D"],
+//   "correctAnswer": "string",
+//   "explanation": "string"
+// }
+
+// Rules:
+// - "correctAnswer" must be exactly one of the values in "options".
+// - Options must be plausible and distinct.
+// `;
+// }
+
+// Build prompt for generation
+function buildMcqBatchPrompt({ topic, difficulty, context, count = 3 }) {
   return `
 You are a quiz generator. Use ONLY the information in the CONTEXT section.
-If the answer is unknown, say so explicitly in the explanation.
+Do NOT use outside knowledge. Each question must be fully answerable from the CONTEXT.
 
-DOMAIN: ${domain}
+TOPIC: ${topic}
 DIFFICULTY: ${difficulty}
+COUNT: ${count}
+
 CONTEXT:
 ${context}
 
-OUTPUT STRICTLY IN THIS JSON FORMAT:
-{
-  "type": "multiple_choice",
-  "question_text": "string",
-  "options": ["A","B","C","D"],
-  "correct_answer": "string",
-  "explanation": "string"
-}
+OUTPUT STRICTLY AS VALID JSON (no markdown, no extra text).
+Return a JSON array of exactly ${count} objects in this format:
+
+[
+  {
+    "type": "multiple_choice",
+    "questionText": "string",
+    "options": ["A","B","C","D"],
+    "correctAnswer": "A|B|C|D",
+    "explanation": "string"
+  }
+]
+
+Rules:
+- No duplicates within the batch.
+- Options must be plausible and distinct.
+- correctAnswer must be exactly one of the options ("A","B","C","D").
+- Keep explanations short and clearly tied to the CONTEXT.
 `;
 }
 
-// Normalize output
-function normalizeQuiz(raw) {
-  try {
-    const obj = JSON.parse(raw);
-    return {
-      type: obj.type || "multiple_choice",
-      question_text: obj.question_text,
-      options: obj.options || [],
-      correct_answer: obj.correct_answer,
-      explanation: obj.explanation || "",
-    };
-  } catch (err) {
-    console.error("LLM returned invalid JSON:", raw);
-    throw new Error("InvalidQuizFormat");
-  }
+function isString(value) {
+  return value && typeof value === "string";
 }
 
-module.exports = { buildQuizPrompt, normalizeQuiz };
+// Normalize output
+function normalizeQuizObject(obj) {
+  const entry = {};
+  if (obj.type && Object.values(QUIZ_TYPE).includes(obj.type)) {
+    entry.type = obj.type;
+  }
+
+  if (isString(obj.questionText)) {
+    entry.questionText = obj.questionText;
+  }
+
+  if (obj.options && Array.isArray(obj.options) && obj.options.length >= 4) {
+    entry.options = obj.options;
+  }
+
+  if (isString(obj.correctAnswer) && obj.correctAnswer.length === 1) {
+    entry.correctAnswer = obj.correctAnswer;
+  }
+
+  if (isString(obj.explanation)) {
+    entry.explanation = obj.explanation;
+  }
+
+  return {
+    entry,
+    isValid: Object.keys(entry).length === 5,
+  };
+}
+
+module.exports = {
+  buildMcqBatchPrompt,
+  normalizeQuizObject,
+};

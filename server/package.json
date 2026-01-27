@@ -13,8 +13,9 @@
     "dependencies": {
         "cors": "^2.8.5",
         "express": "^5.2.1",
+        "mongoose": "^9.1.5",
         "openai": "^6.9.1",
-        "uuid-v4": "^0.1.0"
+        "uuid": "^13.0.0"
     },
     "devDependencies": {
         "dotenv": "^17.2.3",
