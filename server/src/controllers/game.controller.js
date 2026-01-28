@@ -12,8 +12,18 @@ module.exports = {
     },
 
     roll: async (req, res, next) => {
+        const schema = Joi.object({
+            id: Joi.string().required(),
+            playerNum: Joi.number().valid(1, 2).required(),
+        });
+        const { error, value } = schema.validate({
+            ...req.params,
+            ...req.body,
+        });
+        if (error) return next(error);
+
         try {
-            const result = await GameService.roll();
+            const result = await GameService.roll(value);
             return res.status(200).send(result);
         } catch (error) {
             return next(error);

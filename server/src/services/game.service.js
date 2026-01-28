@@ -56,14 +56,31 @@ async function startGame({}) {
     return game;
 }
 
-function roll() {
+async function roll({ id, playerNum }) {
+    const game = await GameModel.findById(id).exec();
+    if (!game) throw new CustomError("Game not found");
+
+    // Logic here for "can the player move?"
+
+    // Normally, if its not the player's turn cannot move
+    // The player or other player is in some state?
+
     const die1 = Math.floor(Math.random() * 6) + 1;
     const die2 = Math.floor(Math.random() * 6) + 1;
-    return {
-        die1,
-        die2,
-        total: die1 + die2,
-    };
+    const total = die1 + die2;
+
+    const playerMoves = game.moves.filter((move) => move.player === playerNum);
+    const lastMove = playerMoves[playerMoves.length - 1];
+    const currentPosition = lastMove ? lastMove.position : 0;
+    const newPosition = currentPosition + total;
+
+    const newMove = { player: playerNum, position: newPosition };
+    game.moves.push(newMove);
+
+    // Maybe some logic if player encounter stuff
+
+    await game.save();
+    return { die1, die2, total, newPosition };
 }
 
 async function getQuiz({ topic, difficulty }) {
