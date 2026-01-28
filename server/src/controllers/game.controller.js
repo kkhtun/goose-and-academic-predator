@@ -2,9 +2,18 @@ const GameService = require("../services/game.service");
 const Joi = require("joi");
 
 module.exports = {
+    startGame: async (req, res, next) => {
+        try {
+            const result = await GameService.startGame(req.body || {});
+            return res.status(200).send(result);
+        } catch (error) {
+            return next(error);
+        }
+    },
+
     roll: async (req, res, next) => {
         try {
-            const result = GameService.roll();
+            const result = await GameService.roll();
             return res.status(200).send(result);
         } catch (error) {
             return next(error);

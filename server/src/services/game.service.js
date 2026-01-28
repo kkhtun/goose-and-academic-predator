@@ -1,8 +1,11 @@
+const { v4: uuid } = require("uuid");
+
 const {
     callGenerateMcqBatchFromContext,
     embedText,
 } = require("./llm/openai.llm-adapter");
 const KbChunkModel = require("../models/kb-chunk.model");
+const GameModel = require("../models/game.model");
 const QuizModel = require("../models/quiz.model");
 const { CustomError } = require("../utils/CustomError");
 
@@ -46,6 +49,12 @@ async function retrieveContext({
 }
 
 // API functions (mapping 1 to 1 with api endpoints)
+
+async function startGame({}) {
+    const newGame = new GameModel();
+    const game = await newGame.save();
+    return game;
+}
 
 function roll() {
     const die1 = Math.floor(Math.random() * 6) + 1;
@@ -98,6 +107,7 @@ async function generateMcqBatch({ topic, difficulty, count = 3 }) {
 module.exports = {
     retrieveContext,
     // API funcs
+    startGame,
     roll,
     getQuiz,
     generateMcqBatch,
