@@ -95,7 +95,7 @@ async function roll({ gameId, playerUniqueId, playerNum }) {
         (move) => move.playerNum === playerNum
     );
     const lastMove = playerMoves[playerMoves.length - 1];
-    const currentPosition = lastMove ? lastMove.next : 0;
+    const currentPosition = lastMove ? lastMove.next : 1;
     const newNext = currentPosition + total;
 
     const newMove = {
