@@ -16,6 +16,7 @@
         "joi": "^18.0.2",
         "mongoose": "^9.1.5",
         "openai": "^6.9.1",
+        "ramda": "^0.32.0",
         "uuid": "^13.0.0"
     },
     "devDependencies": {

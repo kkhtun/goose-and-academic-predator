@@ -13,8 +13,9 @@ module.exports = {
 
     roll: async (req, res, next) => {
         const schema = Joi.object({
-            id: Joi.string().required(),
+            gameId: Joi.string().required(),
             playerNum: Joi.number().valid(1, 2).required(),
+            playerUniqueId: Joi.string().required(),
         });
         const { error, value } = schema.validate({
             ...req.params,
