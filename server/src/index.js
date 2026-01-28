@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const { ValidationError } = require("joi");
+
 const { CustomError } = require("./utils/CustomError");
 const { router } = require("./routes");
 const { connectDB } = require("./db");
@@ -18,12 +20,12 @@ app.use("/api", router);
 
 // Error Handling
 app.use((error, req, res, next) => {
-    // if (error instanceof ValidationError) {
-    //     return res.status(422).send({
-    //         code: 422,
-    //         message: error.details[0].message,
-    //     });
-    // }
+    if (error instanceof ValidationError) {
+        return res.status(422).send({
+            code: 422,
+            message: error.details[0].message,
+        });
+    }
 
     // Caught errors
     if (error instanceof CustomError) {

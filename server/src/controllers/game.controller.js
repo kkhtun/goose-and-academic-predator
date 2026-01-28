@@ -1,4 +1,5 @@
 const GameService = require("../services/game.service");
+const Joi = require("joi");
 
 module.exports = {
     roll: async (req, res, next) => {
@@ -20,8 +21,15 @@ module.exports = {
     },
 
     getQuiz: async (req, res, next) => {
+        const quizSchema = Joi.object({
+            topic: Joi.string(),
+            difficulty: Joi.string().valid("easy", "medium", "hard"),
+        });
+        const { error, value } = quizSchema.validate(req.query);
+        if (error) return next(error);
+
         try {
-            const result = await GameService.getQuiz(res.query);
+            const result = await GameService.getQuiz(value);
             return res.status(200).send(result);
         } catch (error) {
             return next(error);

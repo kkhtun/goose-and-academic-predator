@@ -4,6 +4,7 @@ const {
 } = require("./llm/openai.llm-adapter");
 const KbChunkModel = require("../models/kb-chunk.model");
 const QuizModel = require("../models/quiz.model");
+const { CustomError } = require("../utils/CustomError");
 
 // Helper functions (calling other underlying models and api clients)
 
@@ -57,7 +58,10 @@ function roll() {
 }
 
 async function getQuiz({ topic, difficulty }) {
-    return { topic, difficulty };
+    const query = topic || difficulty ? { topic, difficulty } : {};
+    const quiz = await QuizModel.findOne(query).exec();
+    if (!quiz) throw new CustomError("No quiz found");
+    return quiz;
 }
 
 async function getTopics() {
@@ -65,15 +69,16 @@ async function getTopics() {
         { $group: { _id: null, topic: { $addToSet: "$topic" } } },
     ]);
     const topics = topicGroups[0].topic || [];
-    return topics;
+    return { data: topics, count: topics.length };
 }
 
 async function generateMcqBatch({ topic, difficulty, count = 3 }) {
+    // can refine the 'query'
     const retrievedChunks = await retrieveContext({
         topic,
         query: `${topic} facts`,
         difficulty,
-        limit: 100,
+        limit: 20,
     });
 
     // Take first count entries
