@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { PLAYER_STATUS } = require("../utils/game.util");
+const { PLAYER_STATUS, POSITION_TYPE } = require("../utils/game.util");
 
 const gameSchema = new mongoose.Schema(
     {
@@ -17,6 +17,11 @@ const gameSchema = new mongoose.Schema(
                 next: {
                     type: Number,
                     required: true,
+                },
+                nextType: {
+                    type: String,
+                    enum: Object.values(POSITION_TYPE),
+                    default: POSITION_TYPE.STANDARD,
                 },
             },
         ],

@@ -79,7 +79,7 @@ async function roll({ gameId, playerUniqueId, playerNum }) {
     );
     if (!player) throw new CustomError("Player not found in game");
 
-    // Chec if player is ready (is his turn)
+    // Check if player is ready (is his turn)
     if (player.status !== PLAYER_STATUS.READY)
         throw new CustomError("Not your turn");
 
@@ -110,7 +110,15 @@ async function roll({ gameId, playerUniqueId, playerNum }) {
     // Maybe some logic if player encounter stuff
 
     await game.save();
-    return { die1, die2, total, current: currentPosition, next: newNext };
+    return {
+        roll: { die1, die2, total },
+        current: currentPosition,
+        next: newNext,
+        turn: {
+            playerNum,
+            playerUniqueId,
+        },
+    };
 }
 
 async function getQuiz({ topic, difficulty }) {
