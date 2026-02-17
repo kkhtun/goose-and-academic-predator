@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "../../App.css";
 
 import Board from "./Board";
@@ -9,6 +9,8 @@ import { BOARD_SIZE } from "../../constants";
 
 function Game() {
   const { id: gameId } = useParams();
+  const navigate = useNavigate();
+
   const [position, setPosition] = useState(1);
   const [lastRoll, setLastRoll] = useState(null);
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
@@ -38,10 +40,10 @@ function Game() {
   };
 
   const handleQuit = () => {
-    alert("Game ended");
     setPosition(1);
     setLastRoll(null);
     setPopup(null);
+    navigate("/");
   };
 
   const handleClosePopup = () => {
@@ -60,8 +62,8 @@ function Game() {
   };
 
   return (
-    <div style={{ padding: 40 }}>
-      {/* <h2>Game ID: {id}</h2> */}
+    <div style={{ padding: 10 }}>
+      {/* <h2>Game ID:{id}</h2> */}
       <Board playerPosition={position} onPieceArrive={handlePieceArrive} />
 
       <GameControls
