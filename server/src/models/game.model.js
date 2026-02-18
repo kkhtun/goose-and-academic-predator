@@ -5,9 +5,8 @@ const gameSchema = new mongoose.Schema(
     {
         moves: [
             {
-                playerNum: {
-                    type: Number,
-                    enum: [1, 2],
+                playerUniqueId: {
+                    type: String,
                     required: true,
                 },
                 current: {
@@ -21,15 +20,16 @@ const gameSchema = new mongoose.Schema(
                 nextType: {
                     type: String,
                     enum: Object.values(POSITION_TYPE),
-                    default: POSITION_TYPE.STANDARD,
+                },
+                content: {
+                    type: Object,
                 },
             },
         ],
         players: [
             {
-                playerNum: {
-                    type: Number,
-                    enum: [1, 2],
+                playerName: {
+                    type: String,
                     required: true,
                 },
                 playerUniqueId: {
@@ -40,6 +40,10 @@ const gameSchema = new mongoose.Schema(
                     type: String,
                     enum: Object.values(PLAYER_STATUS),
                     required: true,
+                },
+                score: {
+                    type: Number,
+                    default: 0,
                 },
             },
         ],

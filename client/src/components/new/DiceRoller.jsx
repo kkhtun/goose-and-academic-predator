@@ -16,6 +16,8 @@ export default function DiceRoller({ onResult }) {
     // show random tumbling first
     setDice([Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)]);
 
+    // IMPORTANT : Instead of timeouts here, in reality, will call /roll endpoint in backend
+
     setTimeout(() => {
       setDice([d1, d2]);
       onResult(d1 + d2);

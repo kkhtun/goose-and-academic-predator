@@ -3,8 +3,14 @@ const Joi = require("joi");
 
 module.exports = {
     startGame: async (req, res, next) => {
+        const schema = Joi.object({
+            initialPlayerName: Joi.string().required(),
+        });
+        const { error, value } = schema.validate(req.body || {});
+        if (error) return next(error);
+
         try {
-            const result = await GameService.startGame(req.body || {});
+            const result = await GameService.startGame(value);
             return res.status(200).send(result);
         } catch (error) {
             return next(error);
@@ -14,7 +20,6 @@ module.exports = {
     roll: async (req, res, next) => {
         const schema = Joi.object({
             gameId: Joi.string().required(),
-            playerNum: Joi.number().valid(1, 2).required(),
             playerUniqueId: Joi.string().required(),
         });
         const { error, value } = schema.validate({
@@ -31,6 +36,7 @@ module.exports = {
         }
     },
 
+    // Other apis
     getTopics: async (req, res, next) => {
         try {
             const result = await GameService.getTopics();

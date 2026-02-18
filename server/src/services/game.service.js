@@ -12,6 +12,7 @@ const {
     throwDie,
     adjustPosition,
     BOARD_POSITIONS,
+    POSITION_TYPE,
 } = require("../utils/game.util");
 
 // Helper functions (calling other underlying models and api clients)
@@ -53,14 +54,36 @@ async function retrieveContext({
     return results;
 }
 
+const templateQuiz = {
+    _id: "69791d32ad314c7ed7933ec9",
+    topic: "predatory_publishing",
+    difficulty: "medium",
+    type: "multiple_choice",
+    questionText:
+        "What strategy do institutions use to combat predatory publishing?",
+    options: [
+        "Creating more predatory journals",
+        "Maintaining journal whitelists",
+        "Limiting researcher access to journals",
+        "Promoting expensive publication fees",
+    ],
+    correctAnswer: "B",
+    explanation:
+        "Institutions combat predatory publishing by maintaining journal whitelists and educating researchers on responsible practices.",
+    status: "new",
+    createdAt: "2026-01-27T20:16:50.535Z",
+    updatedAt: "2026-01-27T20:16:50.535Z",
+};
+
 // API functions (mapping 1 to 1 with api endpoints)
 
-async function startGame({}) {
+// For frontend
+async function startGame({ initialPlayerName: playerName }) {
     // Maybe more players here?
 
     const playerOneId = uuid();
     const player = {
-        playerNum: 1,
+        playerName,
         playerUniqueId: playerOneId,
         status: PLAYER_STATUS.READY,
     };
@@ -73,13 +96,13 @@ async function startGame({}) {
     return { game, player };
 }
 
-async function roll({ gameId, playerUniqueId, playerNum }) {
+async function roll({ gameId, playerUniqueId }) {
     const game = await GameModel.findById(gameId).exec();
     if (!game) throw new CustomError("Game not found");
 
     // Validity checks
     const player = game.players.find(
-        (p) => p.playerUniqueId === playerUniqueId && p.playerNum === playerNum
+        (p) => p.playerUniqueId === playerUniqueId
     );
     if (!player) throw new CustomError("Player not found in game");
 
@@ -95,38 +118,135 @@ async function roll({ gameId, playerUniqueId, playerNum }) {
 
     // Figure out current player pos
     const playerMoves = game.moves.filter(
-        (move) => move.playerNum === playerNum
+        (move) => move.playerUniqueId === playerUniqueId
     );
     const lastMove = playerMoves[playerMoves.length - 1];
-    const current = lastMove ? lastMove.next : 1;
+    const current = lastMove ? lastMove.next : 0;
 
     // Initial move by die throw
-    const initialMove = {
-        playerNum,
+    let initMove = {
+        playerUniqueId,
         current,
         next: adjustPosition(current + total), // Adjust for > 90
     };
-    initialMove.nextType = BOARD_POSITIONS[initialMove.next];
+    initMove.nextType = BOARD_POSITIONS[initMove.next];
 
     // Based on the type of the box, decide what to do next
-
     // Currently player is READY always since only one player
     // Add logic to change statuses if more than one player
     // Maybe some logic if player encounter stuff
 
-    const moves = [];
-    game.moves.push(initialMove);
+    const moves = [initMove];
+
+    while (true) {
+        let move = moves[moves.length - 1];
+        if (move.nextType === POSITION_TYPE.CHALLENGE) {
+            move.content = { quiz: templateQuiz };
+            break;
+        } else if (move.nextType === POSITION_TYPE.INFO) {
+            move.content = { info: templateQuiz.explanation };
+            break;
+        } else if (move.nextType === POSITION_TYPE.GOOSE) {
+            const newPos = adjustPosition(move.next + total);
+            moves.push({
+                playerUniqueId,
+                current: move.next,
+                next: newPos,
+                nextType: BOARD_POSITIONS[newPos],
+            });
+        } else if (move.nextType === POSITION_TYPE.JUMP_TURN) {
+            break; // Since currently only one player
+        } else if (move.nextType === POSITION_TYPE.DICE_TWICE) {
+            break; // Since currently only one player
+        } else if (move.nextType === POSITION_TYPE.BACK_TO_START) {
+            moves.push({
+                playerUniqueId,
+                current: move.next,
+                next: 0,
+                nextType: BOARD_POSITIONS[0],
+            });
+            break;
+        } else if (move.nextType === POSITION_TYPE.LUCKY) {
+            game.players = game.players.map((p) => {
+                if (p.playerUniqueId === playerUniqueId) {
+                    return { ...p, score: p.score > 0 ? p.score * 2 : 1 }; // Double or if 0, then make 1
+                } else {
+                    return p;
+                }
+            });
+            break;
+        } else if (move.nextType === POSITION_TYPE.PENALTY) {
+            // Pay penalty
+            game.players = game.players.map((p) => {
+                if (p.playerUniqueId === playerUniqueId) {
+                    return { ...p, score: Math.max(0, p.score - 2) }; // Mind the 0, currently only 2 marks reduced
+                } else {
+                    return p;
+                }
+            });
+            // Return to prev position (currently assuming that this is the position the player took off from)
+            moves.push({
+                playerUniqueId,
+                current: move.next,
+                next: moves[0].current,
+                nextType: BOARD_POSITIONS[moves[0].current],
+            });
+            // Currently, we assume we won't do anything at the previous position even if it is special
+            // So we break
+            break;
+        } else {
+            break;
+        }
+    }
+
+    game.moves.push(...moves);
     await game.save();
     return {
         roll: { die1, die2, total },
         moves,
-        turn: {
-            playerNum,
-            playerUniqueId,
-        },
+        players: game.players,
     };
 }
 
+async function answerQuiz({ gameId, playerUniqueId, quizId, answer }) {
+    // Check answer by the user and increment score
+
+    const game = await GameModel.findById(gameId).exec();
+    if (!game) throw new CustomError("Game not found");
+
+    // Validity checks
+    const player = game.players.find(
+        (p) => p.playerUniqueId === playerUniqueId
+    );
+    if (!player) throw new CustomError("Player not found in game");
+
+    // Must be the last move (cannot re-answer old questions!!)
+    const lastMove = game.moves[game.moves.length - 1];
+    if (lastMove.nextType !== POSITION_TYPE.CHALLENGE) {
+        throw new CustomError("Cannot answer question at this time");
+    }
+
+    const quiz = lastMove.content.quiz;
+    if (quiz._id.toString() !== quizId)
+        throw new CustomError("Cannot answer question at this time");
+
+    if (quiz.correctAnswer === answer) {
+        // Increase score
+        game.players = game.players.map((p) => {
+            if (p.playerUniqueId === playerUniqueId) {
+                return { ...p, score: p.score + 1 };
+            } else {
+                return p;
+            }
+        });
+        await game.save();
+        return { isCorrect: true, players: game.players };
+    } else {
+        return { isCorrect: false };
+    }
+}
+
+// Housekeeping
 async function getQuiz({ topic, difficulty }) {
     const query = topic || difficulty ? { topic, difficulty } : {};
     const quiz = await QuizModel.findOne(query).exec();
