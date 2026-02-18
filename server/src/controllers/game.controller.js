@@ -1,5 +1,10 @@
 const GameService = require("../services/game.service");
 const Joi = require("joi");
+const {
+    BOARD_POSITIONS,
+    POSITION_TYPE,
+    POSITION_DESCRIPTIONS,
+} = require("../utils/game.util");
 
 module.exports = {
     startGame: async (req, res, next) => {
@@ -34,6 +39,33 @@ module.exports = {
         } catch (error) {
             return next(error);
         }
+    },
+
+    answerQuiz: async (req, res, next) => {
+        const schema = Joi.object({
+            gameId: Joi.string().required(),
+            playerUniqueId: Joi.string().required(),
+            quizId: Joi.string().required(),
+            answer: Joi.string().max(1).required(),
+        });
+        const { error, value } = schema.validate({
+            ...req.params,
+            ...req.body,
+        });
+        if (error) return next(error);
+
+        try {
+            const result = await GameService.answerQuiz(value);
+            return res.status(200).send(result);
+        } catch (error) {
+            return next(error);
+        }
+    },
+
+    getBoardPositions: async (req, res, next) => {
+        return res
+            .status(200)
+            .send({ POSITION_TYPE, POSITION_DESCRIPTIONS, BOARD_POSITIONS });
     },
 
     // Other apis

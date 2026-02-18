@@ -1,4 +1,5 @@
 const { v4: uuid } = require("uuid");
+const R = require("ramda");
 const {
     callGenerateMcqBatchFromContext,
     embedText,
@@ -93,7 +94,7 @@ async function startGame({ initialPlayerName: playerName }) {
     newGame.players = [player];
 
     const game = await newGame.save();
-    return { game, player };
+    return game;
 }
 
 async function roll({ gameId, playerUniqueId }) {
@@ -132,10 +133,6 @@ async function roll({ gameId, playerUniqueId }) {
     initMove.nextType = BOARD_POSITIONS[initMove.next];
 
     // Based on the type of the box, decide what to do next
-    // Currently player is READY always since only one player
-    // Add logic to change statuses if more than one player
-    // Maybe some logic if player encounter stuff
-
     const moves = [initMove];
 
     while (true) {
@@ -204,7 +201,7 @@ async function roll({ gameId, playerUniqueId }) {
     return {
         roll: { die1, die2, total },
         moves,
-        players: game.players,
+        game: R.omit(["moves"], game.toObject()),
     };
 }
 
@@ -240,7 +237,7 @@ async function answerQuiz({ gameId, playerUniqueId, quizId, answer }) {
             }
         });
         await game.save();
-        return { isCorrect: true, players: game.players };
+        return { isCorrect: true, game: R.omit(["moves"], game.toObject()) };
     } else {
         return { isCorrect: false };
     }
@@ -290,6 +287,8 @@ module.exports = {
     // API funcs
     startGame,
     roll,
+    answerQuiz,
+    // House keeping
     getQuiz,
     generateMcqBatch,
     getTopics,

@@ -19,6 +19,20 @@ const POSITION_TYPE = {
     PENALTY: "PENALTY", // Return to previous position + pay penalty
 };
 
+const POSITION_DESCRIPTIONS = {
+    STANDARD: "Nothing happens when the player lands in this square",
+    GOOSE: "Player makes another move based on the previous roll",
+    CHALLENGE: "Pop-up MCQ quiz where players can answer correctly to score",
+    INFO: "Information to educate the player",
+    JUMP_TURN: "Jump the player's turn",
+    DICE_TWICE: "Pull the dice twice",
+    BACK_TO_START: "Back to start",
+    LUCKY: "Double the player's score",
+    // RETURN_PREV: "RETURN_PREV", // Return to previous position
+    // PURCHASE: "PURCHASE", // Purchase the corresponding product
+    PENALTY: "Return to previous position and pay the penalty",
+};
+
 const BOARD_POSITIONS = {
     0: POSITION_TYPE.STANDARD,
     1: POSITION_TYPE.CHALLENGE,
@@ -150,6 +164,7 @@ module.exports = {
     PLAYER_STATUS,
     POSITION_TYPE,
     BOARD_POSITIONS,
+    POSITION_DESCRIPTIONS,
     adjustPosition,
     throwDie,
 };
