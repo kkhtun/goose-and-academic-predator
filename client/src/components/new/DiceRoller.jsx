@@ -1,7 +1,14 @@
+import { useLocalStorage } from "@uidotdev/usehooks";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { apiPost } from "../../api";
 
 export default function DiceRoller({ onResult }) {
+  const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
+  const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
+    "PLAYER_UNIQUE_ID",
+    null,
+  );
   const [rolling, setRolling] = useState(false);
   const [dice, setDice] = useState([1, 1]);
 
@@ -9,23 +16,33 @@ export default function DiceRoller({ onResult }) {
     if (rolling) return;
 
     setRolling(true);
-
-    const d1 = Math.floor(Math.random() * 6) + 1;
-    const d2 = Math.floor(Math.random() * 6) + 1;
-
     // show random tumbling first
     setDice([Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)]);
 
+    apiPost(`/game/${gameId}/roll`, { playerUniqueId }).then((data) => {
+      const { roll } = data;
+      const { die1, die2 } = roll;
+
+      setTimeout(() => {
+        setDice([die1, die2]);
+        onResult(data);
+      }, 800);
+
+      setTimeout(() => {
+        setRolling(false);
+      }, 1300);
+    });
+
     // IMPORTANT : Instead of timeouts here, in reality, will call /roll endpoint in backend
 
-    setTimeout(() => {
-      setDice([d1, d2]);
-      onResult(d1 + d2);
-    }, 900);
+    // setTimeout(() => {
+    //   setDice([d1, d2]);
+    //   onResult(d1 + d2);
+    // }, 900);
 
-    setTimeout(() => {
-      setRolling(false);
-    }, 1400);
+    // setTimeout(() => {
+    //   setRolling(false);
+    // }, 1400);
   };
 
   return (

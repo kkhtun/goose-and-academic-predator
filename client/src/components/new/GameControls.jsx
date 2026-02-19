@@ -24,7 +24,7 @@ export default function GameControls({
       </div>
 
       <div style={styles.section}>
-        <strong>Points:</strong> {points}
+        <strong>Score:</strong> {points}
       </div>
 
       <div style={styles.section}>

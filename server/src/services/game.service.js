@@ -226,7 +226,7 @@ async function answerQuiz({ gameId, playerUniqueId, quizId, answer }) {
     const quiz = lastMove.content.quiz;
     if (quiz._id.toString() !== quizId)
         throw new CustomError("Cannot answer question at this time");
-
+    console.log(answer, quiz);
     if (quiz.correctAnswer === answer) {
         // Increase score
         game.players = game.players.map((p) => {

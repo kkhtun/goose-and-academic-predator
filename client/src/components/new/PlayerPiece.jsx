@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { FaDog, FaCat } from "react-icons/fa";
 
@@ -12,8 +12,8 @@ export default function PlayerPiece({ position, onArrive }) {
   const prevPosRef = useRef(position);
 
   const posToXY = (pos) => {
-    const col = (pos - 1) % 10;
-    const row = Math.floor((pos - 1) / 10);
+    const col = pos % 10;
+    const row = Math.floor(pos / 10);
     return {
       x: col * squareSize + centerOffset,
       y: row * squareSize + centerOffset,

@@ -3,7 +3,6 @@ import {
   POSITION_TYPE,
   POSITION_DESCRIPTIONS,
 } from "../../constants";
-// import { ReactComponent as GooseIcon } from "../../assets/goose-icon.svg";
 import GooseIcon from "../../assets/goose-icon.svg";
 
 function getIcon(type) {
