@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import "../../index.css";
 
 export default function MainMenu() {
   const navigate = useNavigate();
@@ -9,7 +10,9 @@ export default function MainMenu() {
   };
 
   return (
-    <div style={{ textAlign: "center", paddingTop: "50px" }}>
+    <div className="menu-wrapper">
+      <div className="menu-card">
+        <div className="goose-avatar"></div>
       <h1 style={{ paddingBottom: "20px" }}>
         Welcome to Goose and Academic Predator
       </h1>
@@ -27,6 +30,7 @@ export default function MainMenu() {
       >
         Start Game
       </button>
+      </div>
     </div>
   );
 }

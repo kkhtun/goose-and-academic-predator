@@ -63,7 +63,8 @@ function Game() {
   };
 
   return (
-    <div style={{ padding: 10 }}>
+      <div className="game-wrapper" style={{ padding: 10 }}>
+      <div className="game-board">
       {/* <h2>Game ID:{id}</h2> */}
       <Board playerPosition={position} onPieceArrive={handlePieceArrive} />
 
@@ -82,6 +83,7 @@ function Game() {
         onClose={handleClosePopup}
         onAnswer={handleAnswer}
       />
+      </div>
     </div>
   );
 }
