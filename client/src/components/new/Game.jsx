@@ -14,6 +14,7 @@ import { useLocalStorage } from "@uidotdev/usehooks";
 import QuizPopup from "../popups/QuizPopup";
 import InfoPopup from "../popups/InfoPopup";
 import { toTitle } from "../../utils";
+import Celebration from "../popups/Celebration";
 
 function Game() {
   // const { id: gameId } = useParams();
@@ -34,6 +35,7 @@ function Game() {
   // const [isPlayerTurn, setIsPlayerTurn] = useState(true);
 
   const [popup, setPopup] = useState(null);
+  const [won, setWon] = useState(false);
 
   const handleScore = (game, playerId) => {
     const { players } = game;
@@ -69,6 +71,7 @@ function Game() {
         title: "Congratulations",
         text: "You have graduated the game!!! 🎓🎓🎓",
       };
+      setWon(true);
       setPopup({ type: POSITION_TYPE.INFO, content: endgame });
     } else if (pos == 0 || isActive === false) {
       // We know no moves come after getting to 0 or isActive === false
@@ -112,6 +115,8 @@ function Game() {
   const handleClosePopup = () => {
     setPopup(null);
     currentMoves[0] && takeStep(currentMoves[0]);
+    // If game won
+    setWon(false);
     if (position === 90) handleQuit();
   };
 
@@ -145,6 +150,8 @@ function Game() {
           payload={popup?.content}
           onClose={handleClosePopup}
         />
+
+        <Celebration show={won} />
       </div>
     </div>
   );

@@ -33,8 +33,10 @@ export default function InfoPopup({ open, onClose, payload = {} }) {
         }}
       >
         <div>
-          <div style={{ fontWeight: 700 }}>{payload.title || "Info"}</div>
-          <div style={{ marginTop: 8 }}>{payload.text}</div>
+          <div style={{ fontWeight: 700, marginBottom: 20, fontSize: 18 }}>
+            {payload.title || "Info"}
+          </div>
+          <div style={{ fontSize: 16 }}>{payload.text}</div>
         </div>
         <div
           style={{

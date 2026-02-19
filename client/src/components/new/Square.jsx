@@ -1,12 +1,11 @@
-import {
-  BOARD_POSITIONS,
-  POSITION_TYPE,
-  POSITION_DESCRIPTIONS,
-} from "../../constants";
+import { BOARD_POSITIONS, POSITION_TYPE } from "../../constants";
 import GooseIcon from "../../assets/goose-icon.svg";
 
-function getIcon(type) {
-  const iconStyle = { fontSize: 16, position: "absolute", bottom: 4, right: 6 };
+function getIcon(number, type) {
+  const iconStyle = { fontSize: 18, position: "absolute", bottom: 4, right: 6 };
+
+  if (number === 0) return <span style={iconStyle}>🚩</span>;
+  if (number === 90) return <span style={iconStyle}>🎓</span>;
 
   switch (type) {
     case POSITION_TYPE.GOOSE:
@@ -46,7 +45,7 @@ export default function Square({ number }) {
   return (
     <div style={styles.square}>
       <span>{number}</span>
-      {getIcon(BOARD_POSITIONS[number])}
+      {getIcon(number, BOARD_POSITIONS[number])}
     </div>
   );
 }

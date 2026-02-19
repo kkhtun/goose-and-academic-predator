@@ -52,8 +52,10 @@ export default function ShortAnswerPopup({
         }}
       >
         <div>
-          <div style={{ fontWeight: 700 }}>{payload.title || "Info"}</div>
-          <div style={{ marginTop: 8 }}>{payload.text}</div>
+          <div style={{ fontWeight: 700, marginBottom: 20 }}>
+            {payload.title || "Info"}
+          </div>
+          <div>{payload.text}</div>
           <input
             type="text"
             placeholder="Enter your answer"

@@ -1,4 +1,3 @@
-
 /* MainMenu.css */
 .menu-wrapper {
   min-height: 100vh;
@@ -7,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-family: "Segoe UI", Roboto, sans-serif;
   padding: 20px;
 }
 
@@ -17,7 +16,7 @@
   width: 100%;
   padding: 40px 30px;
   border-radius: 30px;
-  box-shadow: 
+  box-shadow:
     0 10px 0 #8b4513,
     0 15px 25px rgba(0, 0, 0, 0.3);
   text-align: center;
@@ -96,12 +95,13 @@
 .game-wrapper {
   min-height: 100vh;
   background: #1a3b2e;
+  border-radius: 8px;
   padding: 20px;
   display: flex;
   gap: 20px;
   align-items: flex-start;
   justify-content: center;
-  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-family: "Segoe UI", Roboto, sans-serif;
 }
 
 .game-board-section {
@@ -204,7 +204,7 @@
     flex-direction: column;
     align-items: center;
   }
-  
+
   .game-board-section,
   .game-control-section {
     width: 100%;
@@ -216,7 +216,7 @@
   width: 180px;
   height: 180px;
   margin: 0 auto 15px auto;
-  background-image: url('./assets/goose-grad.png'); /* Ensure the path matches where you saved the file */
+  background-image: url("./assets/goose-grad.png"); /* Ensure the path matches where you saved the file */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -225,9 +225,15 @@
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .menu-card button:active {
@@ -258,12 +264,13 @@
 .game-wrapper {
   min-height: 100vh;
   background: #1a3b2e;
+  border-radius: 8px;
   padding: 20px;
   display: flex;
   gap: 20px;
   align-items: flex-start;
   justify-content: center;
-  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-family: "Segoe UI", Roboto, sans-serif;
 }
 
 .game-board-section {
@@ -366,7 +373,7 @@
     flex-direction: column;
     align-items: center;
   }
-  
+
   .game-board-section,
   .game-control-section {
     width: 100%;
@@ -378,7 +385,7 @@
   width: 180px;
   height: 180px;
   margin: 0 auto 15px auto;
-  background-image: url('./assets/goose-grad.png'); /* Ensure the path matches where you saved the file */
+  background-image: url("./assets/goose-grad.png"); /* Ensure the path matches where you saved the file */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -387,7 +394,13 @@
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }

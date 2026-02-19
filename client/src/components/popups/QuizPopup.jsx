@@ -76,7 +76,7 @@ export default function QuizPopup({
         }}
       >
         <div style={{ display: "grid", gap: 12 }}>
-          <div style={{ fontWeight: 700, marginBottom: 20 }}>
+          <div style={{ fontWeight: 700, marginBottom: 20, fontSize: 18 }}>
             {questionText}
           </div>
           <div style={{ display: "grid", gap: 8 }}>
@@ -91,9 +91,14 @@ export default function QuizPopup({
                   border: "1px solid #ddd",
                   background: "#fff",
                   cursor: "pointer",
+                  fontSize: 16,
+                  textAlign: "left",
                 }}
               >
-                {String.fromCharCode(65 + i)}. {opt}
+                <span style={{ fontWeight: 700 }}>
+                  {String.fromCharCode(65 + i)}.
+                </span>
+                {opt}
               </button>
             ))}
           </div>
