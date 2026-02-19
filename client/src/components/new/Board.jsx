@@ -3,7 +3,7 @@ import PlayerPiece from "./PlayerPiece";
 import { BOARD_SIZE } from "../../constants";
 
 export default function Board({ playerPosition, onPieceArrive }) {
-  const squares = Array.from({ length: BOARD_SIZE }, (_, i) => i + 1);
+  const squares = Array.from({ length: BOARD_SIZE }, (_, i) => i);
 
   return (
     <div style={styles.wrapper}>

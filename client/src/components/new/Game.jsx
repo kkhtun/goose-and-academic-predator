@@ -19,6 +19,7 @@ function Game() {
   const [popup, setPopup] = useState(null);
 
   const handleRoll = (total) => {
+    console.log(total);
     if (!isPlayerTurn) return;
 
     setLastRoll(total);
@@ -40,7 +41,7 @@ function Game() {
   };
 
   const handleQuit = () => {
-    setPosition(1);
+    setPosition(0);
     setLastRoll(null);
     setPopup(null);
     navigate("/");

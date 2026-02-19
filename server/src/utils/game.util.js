@@ -5,20 +5,6 @@ const PLAYER_STATUS = {
     WAIT: "WAIT",
 };
 
-const POSITION_TYPE = {
-    STANDARD: "STANDARD", // standard box (do nothing)
-    GOOSE: "GOOSE", // continue with previous number
-    CHALLENGE: "CHALLENGE", // pop-up quiz
-    INFO: "INFO", // pop-up information
-    JUMP_TURN: "JUMP_TURN", // Skip turn
-    DICE_TWICE: "DICE_TWICE", // Pull the dice again
-    BACK_TO_START: "BACK_TO_START",
-    LUCKY: "LUCKY", // Double score
-    // RETURN_PREV: "RETURN_PREV", // Return to previous position
-    // PURCHASE: "PURCHASE", // Purchase the corresponding product
-    PENALTY: "PENALTY", // Return to previous position + pay penalty
-};
-
 const POSITION_DESCRIPTIONS = {
     STANDARD: "Nothing happens when the player lands in this square",
     GOOSE: "Player makes another move based on the previous roll",
@@ -31,6 +17,20 @@ const POSITION_DESCRIPTIONS = {
     // RETURN_PREV: "RETURN_PREV", // Return to previous position
     // PURCHASE: "PURCHASE", // Purchase the corresponding product
     PENALTY: "Return to previous position and pay the penalty",
+};
+
+const POSITION_TYPE = {
+    STANDARD: "STANDARD", // standard box (do nothing)
+    GOOSE: "GOOSE", // continue with previous number
+    CHALLENGE: "CHALLENGE", // pop-up quiz
+    INFO: "INFO", // pop-up information
+    JUMP_TURN: "JUMP_TURN", // Skip turn
+    DICE_TWICE: "DICE_TWICE", // Pull the dice again
+    BACK_TO_START: "BACK_TO_START",
+    LUCKY: "LUCKY", // Double score
+    // RETURN_PREV: "RETURN_PREV", // Return to previous position
+    // PURCHASE: "PURCHASE", // Purchase the corresponding product
+    PENALTY: "PENALTY", // Return to previous position + pay penalty
 };
 
 const BOARD_POSITIONS = {
@@ -124,7 +124,7 @@ const BOARD_POSITIONS = {
     87: POSITION_TYPE.CHALLENGE,
     88: POSITION_TYPE.CHALLENGE,
     89: POSITION_TYPE.CHALLENGE,
-    90: POSITION_TYPE.CHALLENGE,
+    90: POSITION_TYPE.STANDARD,
 };
 
 // Check < 1 and also reverses if position > 90

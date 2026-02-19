@@ -40,3 +40,9 @@
 .read-the-docs {
   color: #888;
 }
+
+/* For game */
+
+.square:hover {
+  transform: scale(1.05);
+}
