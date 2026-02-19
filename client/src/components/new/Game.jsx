@@ -68,6 +68,7 @@ function Game() {
       {/* <h2>Game ID:{id}</h2> */}
       <Board playerPosition={position} onPieceArrive={handlePieceArrive} />
 
+      <div className="game-controls-section"></div>
       <GameControls
         playerName="Player 1"
         isCurrentTurn={isPlayerTurn}
