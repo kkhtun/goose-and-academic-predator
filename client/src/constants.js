@@ -14,16 +14,18 @@ export const POSITION_TYPE = {
 
 export const POSITION_DESCRIPTIONS = {
   STANDARD: "Nothing happens when the player lands in this square",
-  GOOSE: "Player makes another move based on the previous roll",
-  CHALLENGE: "Pop-up MCQ quiz where players can answer correctly to score",
-  INFO: "Information to educate the player",
-  JUMP_TURN: "Jump the player's turn",
-  DICE_TWICE: "Pull the dice twice",
-  BACK_TO_START: "Back to start",
-  LUCKY: "Double the player's score",
+  GOOSE:
+    "You stepped on the Goose! Make another move based on the previous roll",
+  CHALLENGE: "Please answer a pop-up MCQ quiz to get a score",
+  INFO: "Here is some information to educate yourself",
+  JUMP_TURN: "Your turn has been skipped",
+  DICE_TWICE: "You get another chance to pull the dice",
+  BACK_TO_START: "You go back to start again!",
+  LUCKY: "You stepped on a lucky box. Your score has been doubled!",
   // RETURN_PREV: "RETURN_PREV", // Return to previous position
   // PURCHASE: "PURCHASE", // Purchase the corresponding product
-  PENALTY: "Return to previous position and pay the penalty",
+  PENALTY:
+    "You stepped on a penalty box. You will return to the previous position and pay a penalty fine of 2 points.",
 };
 
 export const BOARD_POSITIONS = {
@@ -39,7 +41,7 @@ export const BOARD_POSITIONS = {
   9: POSITION_TYPE.DICE_TWICE,
   10: POSITION_TYPE.CHALLENGE,
   11: POSITION_TYPE.CHALLENGE,
-  12: POSITION_TYPE.CHALLENGE,
+  12: POSITION_TYPE.INFO, // Arbitrary
   13: POSITION_TYPE.CHALLENGE,
   14: POSITION_TYPE.DICE_TWICE,
   15: POSITION_TYPE.CHALLENGE,
@@ -54,12 +56,12 @@ export const BOARD_POSITIONS = {
   24: POSITION_TYPE.JUMP_TURN,
   25: POSITION_TYPE.GOOSE,
   26: POSITION_TYPE.CHALLENGE,
-  27: POSITION_TYPE.CHALLENGE,
+  27: POSITION_TYPE.INFO, // Arbitrary
   28: POSITION_TYPE.CHALLENGE,
   29: POSITION_TYPE.CHALLENGE,
   30: POSITION_TYPE.JUMP_TURN,
   31: POSITION_TYPE.CHALLENGE,
-  32: POSITION_TYPE.CHALLENGE,
+  32: POSITION_TYPE.INFO, // Arbitrary
   33: POSITION_TYPE.CHALLENGE,
   34: POSITION_TYPE.DICE_TWICE,
   35: POSITION_TYPE.CHALLENGE,
@@ -84,7 +86,7 @@ export const BOARD_POSITIONS = {
   54: POSITION_TYPE.CHALLENGE,
   55: POSITION_TYPE.CHALLENGE,
   56: POSITION_TYPE.CHALLENGE,
-  57: POSITION_TYPE.CHALLENGE,
+  57: POSITION_TYPE.INFO, // Arbitrary
   58: POSITION_TYPE.CHALLENGE,
   59: POSITION_TYPE.CHALLENGE,
   60: POSITION_TYPE.PENALTY,
@@ -94,7 +96,7 @@ export const BOARD_POSITIONS = {
   64: POSITION_TYPE.CHALLENGE,
   65: POSITION_TYPE.DICE_TWICE,
   66: POSITION_TYPE.CHALLENGE,
-  67: POSITION_TYPE.CHALLENGE,
+  67: POSITION_TYPE.INFO, // Arbitrary
   68: POSITION_TYPE.CHALLENGE,
   69: POSITION_TYPE.CHALLENGE,
   70: POSITION_TYPE.CHALLENGE,
@@ -102,7 +104,7 @@ export const BOARD_POSITIONS = {
   72: POSITION_TYPE.CHALLENGE,
   73: POSITION_TYPE.CHALLENGE,
   74: POSITION_TYPE.CHALLENGE,
-  75: POSITION_TYPE.CHALLENGE,
+  75: POSITION_TYPE.INFO, // Arbitrary
   76: POSITION_TYPE.CHALLENGE,
   77: POSITION_TYPE.JUMP_TURN,
   78: POSITION_TYPE.CHALLENGE,

@@ -13,6 +13,7 @@ import {
 import { useLocalStorage } from "@uidotdev/usehooks";
 import QuizPopup from "../popups/QuizPopup";
 import InfoPopup from "../popups/InfoPopup";
+import { toTitle } from "../../utils";
 
 function Game() {
   // const { id: gameId } = useParams();
@@ -58,7 +59,8 @@ function Game() {
   };
 
   const handlePieceArrive = (pos) => {
-    const { playerUniqueId, next, nextType, content } = currentMoves[0];
+    const { playerUniqueId, next, nextType, content, isActive } =
+      currentMoves[0];
     setCurrentMoves(R.tail(currentMoves));
 
     if (pos == 90) {
@@ -68,17 +70,26 @@ function Game() {
         text: "You have graduated the game!!! 🎓🎓🎓",
       };
       setPopup({ type: POSITION_TYPE.INFO, content: endgame });
-    } else if (pos == 0) {
+    } else if (pos == 0 || isActive === false) {
+      // We know no moves come after getting to 0 or isActive === false
       return;
     } else if (pos === next) {
       // This is the move, check for type
       if (nextType === POSITION_TYPE.CHALLENGE) {
         const { quiz } = content;
         setPopup({ type: POSITION_TYPE.CHALLENGE, content: quiz });
+      } else if (nextType === POSITION_TYPE.INFO) {
+        setPopup({
+          type: POSITION_TYPE.INFO,
+          content: {
+            title: `Special Box - ${toTitle(nextType)}`,
+            text: content.info,
+          },
+        });
       } else {
         // for now
         const content = {
-          title: "Special Box",
+          title: `Special Box - ${toTitle(nextType)}`,
           text: POSITION_DESCRIPTIONS[nextType],
         };
         setPopup({ type: POSITION_TYPE.INFO, content });
@@ -110,30 +121,31 @@ function Game() {
   };
 
   return (
-    <div style={{ padding: 10 }}>
-      <Board playerPosition={position} onPieceArrive={handlePieceArrive} />
+    <div className="game-wrapper" style={{ padding: 10 }}>
+      <div className="game-board">
+        <Board playerPosition={position} onPieceArrive={handlePieceArrive} />
 
-      <GameControls
-        playerName="Player 1"
-        isCurrentTurn={true}
-        lastRoll={lastRoll}
-        points={score}
-        onRoll={(total) => handleRoll(total)}
-        onQuit={handleQuit}
-      />
+        <GameControls
+          isCurrentTurn={true}
+          lastRoll={lastRoll}
+          points={score}
+          onRoll={(total) => handleRoll(total)}
+          onQuit={handleQuit}
+        />
 
-      <QuizPopup
-        open={popup?.type === POSITION_TYPE.CHALLENGE}
-        payload={popup?.content}
-        onClose={handleClosePopup}
-        onSubmit={handleSubmit}
-        handleScore={handleScore}
-      />
-      <InfoPopup
-        open={popup?.type === POSITION_TYPE.INFO}
-        payload={popup?.content}
-        onClose={handleClosePopup}
-      />
+        <QuizPopup
+          open={popup?.type === POSITION_TYPE.CHALLENGE}
+          payload={popup?.content}
+          onClose={handleClosePopup}
+          onSubmit={handleSubmit}
+          handleScore={handleScore}
+        />
+        <InfoPopup
+          open={popup?.type === POSITION_TYPE.INFO}
+          payload={popup?.content}
+          onClose={handleClosePopup}
+        />
+      </div>
     </div>
   );
 }

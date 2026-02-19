@@ -1,13 +1,15 @@
+import { useLocalStorage } from "@uidotdev/usehooks";
 import DiceRoller from "./DiceRoller";
 
 export default function GameControls({
-  playerName,
   isCurrentTurn,
   points = 0,
   lastRoll,
   onRoll,
   onQuit,
 }) {
+  const [playerName, setPlayerName] = useLocalStorage("PLAYER_NAME", null);
+
   return (
     <div style={styles.panel}>
       <h2 style={styles.title}>Game Status</h2>
@@ -45,7 +47,7 @@ const styles = {
     position: "fixed",
     right: 20,
     top: 20,
-    width: 240,
+    width: 120,
     padding: 20,
     background: "#1f2933",
     color: "white",

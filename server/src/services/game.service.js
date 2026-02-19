@@ -22,7 +22,7 @@ async function retrieveContext({
     topic,
     query,
     difficulty: difficultyHint,
-    limit,
+    limit = 10,
 }) {
     // Embed the query
     const queryVector = await embedText(query);
@@ -129,6 +129,7 @@ async function roll({ gameId, playerUniqueId }) {
         playerUniqueId,
         current,
         next: adjustPosition(current + total), // Adjust for > 90
+        isActive: true,
     };
     initMove.nextType = BOARD_POSITIONS[initMove.next];
 
@@ -138,10 +139,20 @@ async function roll({ gameId, playerUniqueId }) {
     while (true) {
         let move = moves[moves.length - 1];
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
-            move.content = { quiz: templateQuiz };
+            const randomQuiz = await QuizModel.aggregate([
+                { $sample: { size: 1 } },
+            ]);
+            move.content = {
+                quiz: randomQuiz.length > 0 ? randomQuiz[0] : templateQuiz,
+            };
             break;
         } else if (move.nextType === POSITION_TYPE.INFO) {
-            move.content = { info: templateQuiz.explanation };
+            const randomChunk = await KbChunkModel.aggregate([
+                { $sample: { size: 1 } },
+            ]);
+            move.content = {
+                info: randomChunk.length > 0 ? randomChunk[0].text : "",
+            };
             break;
         } else if (move.nextType === POSITION_TYPE.GOOSE) {
             const newPos = adjustPosition(move.next + total);
@@ -150,6 +161,7 @@ async function roll({ gameId, playerUniqueId }) {
                 current: move.next,
                 next: newPos,
                 nextType: BOARD_POSITIONS[newPos],
+                isActive: true,
             });
         } else if (move.nextType === POSITION_TYPE.JUMP_TURN) {
             break; // Since currently only one player
@@ -161,6 +173,7 @@ async function roll({ gameId, playerUniqueId }) {
                 current: move.next,
                 next: 0,
                 nextType: BOARD_POSITIONS[0],
+                isActive: true,
             });
             break;
         } else if (move.nextType === POSITION_TYPE.LUCKY) {
@@ -187,6 +200,7 @@ async function roll({ gameId, playerUniqueId }) {
                 current: move.next,
                 next: moves[0].current,
                 nextType: BOARD_POSITIONS[moves[0].current],
+                isActive: false,
             });
             // Currently, we assume we won't do anything at the previous position even if it is special
             // So we break
@@ -258,23 +272,50 @@ async function getTopics() {
     return { data: topics, count: topics.length };
 }
 
-async function generateMcqBatch({ topic, difficulty, count = 3 }) {
+async function generateRandomMcq() {
+    // const randomChunks = await Model.aggregate([
+    //     { $sample: { size: 5 } },
+    //     {
+    //         $project: {
+    //             text: 1,
+    //             topic: 1,
+    //             difficultyHint: 1,
+    //             score: { $meta: "vectorSearchScore" },
+    //         },
+    //     },
+    // ]);
+    // const generatedQuizzes = await callGenerateMcqBatchFromContext({
+    //     topic,
+    //     difficulty,
+    //     retrievedChunks: chunks,
+    //     count: chunks.length,
+    // });
+    // const insertedQuizzes = await QuizModel.insertMany(generatedQuizzes);
+    // return insertedQuizzes;
+}
+
+async function generateMcqBatch({
+    topic,
+    difficulty,
+    kbCount = 10,
+    outputCount = 5,
+}) {
     // can refine the 'query'
     const retrievedChunks = await retrieveContext({
         topic,
         query: `${topic} facts`,
         difficulty,
-        limit: 20,
+        limit: 100,
     });
 
     // Take first count entries
-    const chunks = retrievedChunks.slice(0, count);
+    const chunks = retrievedChunks.slice(0, kbCount);
 
     const generatedQuizzes = await callGenerateMcqBatchFromContext({
         topic,
         difficulty,
         retrievedChunks: chunks,
-        count: chunks.length,
+        count: outputCount,
     });
 
     const insertedQuizzes = await QuizModel.insertMany(generatedQuizzes);

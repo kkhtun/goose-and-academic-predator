@@ -26,7 +26,7 @@ export default function DiceRoller({ onResult }) {
       setTimeout(() => {
         setDice([die1, die2]);
         onResult(data);
-      }, 800);
+      }, 700);
 
       setTimeout(() => {
         setRolling(false);

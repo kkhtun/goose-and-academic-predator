@@ -76,7 +76,9 @@ export default function QuizPopup({
         }}
       >
         <div style={{ display: "grid", gap: 12 }}>
-          <div style={{ fontWeight: 700 }}>{questionText}</div>
+          <div style={{ fontWeight: 700, marginBottom: 20 }}>
+            {questionText}
+          </div>
           <div style={{ display: "grid", gap: 8 }}>
             {options.map((opt, i) => (
               <button

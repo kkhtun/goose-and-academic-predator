@@ -6,10 +6,11 @@ const PLAYER_STATUS = {
 };
 
 const POSITION_DESCRIPTIONS = {
+    // Default boxes
     STANDARD: "Nothing happens when the player lands in this square",
     GOOSE: "Player makes another move based on the previous roll",
     CHALLENGE: "Pop-up MCQ quiz where players can answer correctly to score",
-    INFO: "Information to educate the player",
+    INFO: "A bit of knowledge about predatory academic practices to educate the player",
     JUMP_TURN: "Jump the player's turn",
     DICE_TWICE: "Pull the dice twice",
     BACK_TO_START: "Back to start",
@@ -46,7 +47,7 @@ const BOARD_POSITIONS = {
     9: POSITION_TYPE.DICE_TWICE,
     10: POSITION_TYPE.CHALLENGE,
     11: POSITION_TYPE.CHALLENGE,
-    12: POSITION_TYPE.CHALLENGE,
+    12: POSITION_TYPE.INFO, // Arbitrary
     13: POSITION_TYPE.CHALLENGE,
     14: POSITION_TYPE.DICE_TWICE,
     15: POSITION_TYPE.CHALLENGE,
@@ -61,12 +62,12 @@ const BOARD_POSITIONS = {
     24: POSITION_TYPE.JUMP_TURN,
     25: POSITION_TYPE.GOOSE,
     26: POSITION_TYPE.CHALLENGE,
-    27: POSITION_TYPE.CHALLENGE,
+    27: POSITION_TYPE.INFO, // Arbitrary
     28: POSITION_TYPE.CHALLENGE,
     29: POSITION_TYPE.CHALLENGE,
     30: POSITION_TYPE.JUMP_TURN,
     31: POSITION_TYPE.CHALLENGE,
-    32: POSITION_TYPE.CHALLENGE,
+    32: POSITION_TYPE.INFO, // Arbitrary
     33: POSITION_TYPE.CHALLENGE,
     34: POSITION_TYPE.DICE_TWICE,
     35: POSITION_TYPE.CHALLENGE,
@@ -91,7 +92,7 @@ const BOARD_POSITIONS = {
     54: POSITION_TYPE.CHALLENGE,
     55: POSITION_TYPE.CHALLENGE,
     56: POSITION_TYPE.CHALLENGE,
-    57: POSITION_TYPE.CHALLENGE,
+    57: POSITION_TYPE.INFO, // Arbitrary
     58: POSITION_TYPE.CHALLENGE,
     59: POSITION_TYPE.CHALLENGE,
     60: POSITION_TYPE.PENALTY,
@@ -101,7 +102,7 @@ const BOARD_POSITIONS = {
     64: POSITION_TYPE.CHALLENGE,
     65: POSITION_TYPE.DICE_TWICE,
     66: POSITION_TYPE.CHALLENGE,
-    67: POSITION_TYPE.CHALLENGE,
+    67: POSITION_TYPE.INFO, // Arbitrary
     68: POSITION_TYPE.CHALLENGE,
     69: POSITION_TYPE.CHALLENGE,
     70: POSITION_TYPE.CHALLENGE,
@@ -109,7 +110,7 @@ const BOARD_POSITIONS = {
     72: POSITION_TYPE.CHALLENGE,
     73: POSITION_TYPE.CHALLENGE,
     74: POSITION_TYPE.CHALLENGE,
-    75: POSITION_TYPE.CHALLENGE,
+    75: POSITION_TYPE.INFO, // Arbitrary
     76: POSITION_TYPE.CHALLENGE,
     77: POSITION_TYPE.JUMP_TURN,
     78: POSITION_TYPE.CHALLENGE,
@@ -138,27 +139,9 @@ function throwDie() {
     const die1 = Math.floor(Math.random() * 6) + 1;
     const die2 = Math.floor(Math.random() * 6) + 1;
     const total = die1 + die2;
+    // return { die1: 6, die2: 6, total: 12 };
     return { die1, die2, total };
 }
-
-// function determineMove({ moves = [], playerThrowTotal }) {
-
-//     if (playerThrowTotal > 0) {
-
-//     }
-
-//     if (initialMove.nextType === POSITION_TYPE.CHALLENGE) {
-//         moves[moves.length - 1].content = { quiz: templateQuiz };
-//     } else if (initialMove.nextType === POSITION_TYPE.INFO) {
-//         moves[moves.length - 1].content = { info: templateQuiz.explanation };
-//     } else if (initialMove.nextType === POSITION_TYPE.GOOSE) {
-//         moves.push({
-//             playerUniqueId,
-//             current: initialMove.next,
-//             next: adjustPosition(initialMove.next + total),
-//         });
-//     }
-// }
 
 module.exports = {
     PLAYER_STATUS,

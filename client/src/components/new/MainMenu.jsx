@@ -3,6 +3,7 @@ import { apiPost } from "../../api";
 import { useState } from "react";
 import ShortAnswerPopup from "../popups/ShortAnswerPopup";
 import { useLocalStorage } from "@uidotdev/usehooks";
+import "../../index.css";
 
 export default function MainMenu() {
   const navigate = useNavigate();
@@ -37,31 +38,34 @@ export default function MainMenu() {
   };
 
   return (
-    <div style={{ textAlign: "center", paddingTop: "50px" }}>
-      <h1 style={{ paddingBottom: "20px" }}>
-        Welcome to Goose and Academic Predator
-      </h1>
-      <button
-        onClick={handleStartGame}
-        style={{
-          padding: "12px 30px",
-          fontSize: "18px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        Start Game
-      </button>
+    <div className="menu-wrapper">
+      <div className="menu-card">
+        <div className="goose-avatar"></div>
+        <h1 style={{ paddingBottom: "20px" }}>
+          Welcome to Goose and Academic Predator
+        </h1>
+        <button
+          onClick={handleStartGame}
+          style={{
+            padding: "12px 30px",
+            fontSize: "18px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Start Game
+        </button>
 
-      <ShortAnswerPopup
-        open={!!popup}
-        payload={popup}
-        onClose={handleClosePopup}
-        onSubmit={handleSubmitPopup}
-      />
+        <ShortAnswerPopup
+          open={!!popup}
+          payload={popup}
+          onClose={handleClosePopup}
+          onSubmit={handleSubmitPopup}
+        />
+      </div>
     </div>
   );
 }

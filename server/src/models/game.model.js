@@ -24,6 +24,13 @@ const gameSchema = new mongoose.Schema(
                 content: {
                     type: Object,
                 },
+                isActive: {
+                    // If isActive is true, then the action at nextType is processed
+                    // if false, then we do nothing at the nextType
+                    // Mainly for when returning to previous positions
+                    type: Boolean,
+                    default: true,
+                },
             },
         ],
         players: [
