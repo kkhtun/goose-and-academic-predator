@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
-import { FaDog, FaCat } from "react-icons/fa";
+import { FaDog, FaCat, FaCrow, FaFish } from "react-icons/fa";
+import { GiCamel } from "react-icons/gi";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 export default function PlayerPiece({ position, onArrive }) {
-  const animal = "dog";
+  const [playerAvatar] = useLocalStorage("PLAYER_AVATAR", "dog");
   const squareSize = 86; // 80px square + 6px gap (matches Board grid)
   const pieceSize = 48;
   const centerOffset = (squareSize - pieceSize) / 2;
@@ -62,8 +64,32 @@ export default function PlayerPiece({ position, onArrive }) {
 
   // initial placement
   const initial = posToXY(position);
-  const Icon = animal === "cat" ? FaCat : FaDog;
-  const tint = "#6c5ce7";
+
+  let Icon;
+  let tint;
+  switch (playerAvatar) {
+    case "cat":
+      Icon = FaCat;
+      tint = "#e84393";
+      break;
+    case "bird":
+      Icon = FaCrow;
+      tint = "#00b894";
+      break;
+    case "fish":
+      Icon = FaFish;
+      tint = "#0984e3";
+      break;
+    case "camel":
+      Icon = GiCamel;
+      tint = "#e17055";
+      break;
+    case "dog":
+    default:
+      Icon = FaDog;
+      tint = "#6c5ce7";
+      break;
+  }
 
   return (
     <motion.div
@@ -91,7 +117,7 @@ export default function PlayerPiece({ position, onArrive }) {
       >
         <Icon
           style={{ width: "100%", height: "100%", color: tint }}
-          aria-label={animal}
+          aria-label={playerAvatar}
         />
       </motion.div>
     </motion.div>
