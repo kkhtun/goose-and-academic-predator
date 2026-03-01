@@ -115,14 +115,16 @@ async function roll({ gameId, playerUniqueId }) {
     // Normally, if its not the player's turn cannot move
     // The player or other player is in some state?
 
-    const { die1, die2, total } = throwDie();
-
     // Figure out current player pos
     const playerMoves = game.moves.filter(
         (move) => move.playerUniqueId === playerUniqueId
     );
     const lastMove = playerMoves[playerMoves.length - 1];
     const current = lastMove ? lastMove.next : 0;
+
+    const dieCount = current >= 85 ? 1 : 2;
+    const throwResult = throwDie(dieCount);
+    const { total } = throwResult;
 
     // Initial move by die throw
     let initMove = {
@@ -213,7 +215,7 @@ async function roll({ gameId, playerUniqueId }) {
     game.moves.push(...moves);
     await game.save();
     return {
-        roll: { die1, die2, total },
+        roll: throwResult,
         moves,
         game: R.omit(["moves"], game.toObject()),
     };

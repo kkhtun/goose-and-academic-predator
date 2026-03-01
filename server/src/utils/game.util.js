@@ -135,11 +135,13 @@ function adjustPosition(pos) {
     return pos;
 }
 
-function throwDie() {
+function throwDie(count = 2) {
     const die1 = Math.floor(Math.random() * 6) + 1;
+    if (count === 1) {
+        return { die1, total: die1 };
+    }
     const die2 = Math.floor(Math.random() * 6) + 1;
     const total = die1 + die2;
-    // return { die1: 6, die2: 6, total: 12 };
     return { die1, die2, total };
 }
 

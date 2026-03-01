@@ -5,6 +5,7 @@ import * as R from "ramda";
 
 import Board from "./Board";
 import GameControls from "./GameControls";
+import TransitionOverlay from "./TransitionOverlay";
 import {
   BOARD_SIZE,
   POSITION_DESCRIPTIONS,
@@ -17,7 +18,6 @@ import { toTitle } from "../../utils";
 import Celebration from "../popups/Celebration";
 
 function Game() {
-  // const { id: gameId } = useParams();
   const navigate = useNavigate();
 
   const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
@@ -32,10 +32,10 @@ function Game() {
 
   const [lastRoll, setLastRoll] = useState(null);
   const [score, setScore] = useState(0);
-  // const [isPlayerTurn, setIsPlayerTurn] = useState(true);
 
   const [popup, setPopup] = useState(null);
   const [won, setWon] = useState(false);
+  const [transition, setTransition] = useState(null);
 
   const handleScore = (game, playerId) => {
     const { players } = game;
@@ -45,7 +45,24 @@ function Game() {
 
   const takeStep = (move) => {
     const { next } = move;
-    setPosition(next);
+
+    const prevLevel = position >= 60 ? 2 : position >= 30 ? 1 : 0;
+    const nextLevel = next >= 60 ? 2 : next >= 30 ? 1 : 0;
+
+    if (nextLevel > prevLevel) {
+      let transitionType = "ELEVATOR";
+      if (nextLevel === 2) {
+        transitionType = score >= 60 ? "HEAVEN" : "HELL";
+      }
+      setTransition(transitionType);
+
+      setTimeout(() => {
+        setTransition(null);
+        setPosition(next);
+      }, 3000);
+    } else {
+      setPosition(next);
+    }
   };
 
   const handleRoll = ({ roll, moves, game }) => {
@@ -55,9 +72,6 @@ function Game() {
     handleScore(game, playerUniqueId);
     setCurrentMoves(moves);
     takeStep(moves[0]);
-
-    // setIsPlayerTurn(false);
-    // setTimeout(() => setIsPlayerTurn(true), 1200);
   };
 
   const handlePieceArrive = (pos) => {
@@ -65,8 +79,7 @@ function Game() {
       currentMoves[0];
     setCurrentMoves(R.tail(currentMoves));
 
-    if (pos == 90) {
-      // for now
+    if (pos >= 90) {
       const endgame = {
         title: "Congratulations",
         text: "You have graduated the game!!! 🎓🎓🎓",
@@ -74,10 +87,8 @@ function Game() {
       setWon(true);
       setPopup({ type: POSITION_TYPE.INFO, content: endgame });
     } else if (pos == 0 || isActive === false) {
-      // We know no moves come after getting to 0 or isActive === false
       return;
     } else if (pos === next) {
-      // This is the move, check for type
       if (nextType === POSITION_TYPE.CHALLENGE) {
         const { quiz } = content;
         setPopup({ type: POSITION_TYPE.CHALLENGE, content: quiz });
@@ -90,7 +101,6 @@ function Game() {
           },
         });
       } else {
-        // for now
         const content = {
           title: `Special Box - ${toTitle(nextType)}`,
           text: POSITION_DESCRIPTIONS[nextType],
@@ -98,7 +108,6 @@ function Game() {
         setPopup({ type: POSITION_TYPE.INFO, content });
       }
     }
-    // Something wrong here!
   };
 
   const handleQuit = () => {
@@ -115,9 +124,8 @@ function Game() {
   const handleClosePopup = () => {
     setPopup(null);
     currentMoves[0] && takeStep(currentMoves[0]);
-    // If game won
+    if (position >= 90) handleQuit();
     setWon(false);
-    if (position === 90) handleQuit();
   };
 
   const handleSubmit = (option) => {
@@ -125,15 +133,34 @@ function Game() {
     currentMoves[0] && takeStep(currentMoves[0]);
   };
 
+  const level = position >= 60 ? 2 : position >= 30 ? 1 : 0;
+  let realm = "NORMAL";
+  if (level === 1) realm = "PUBLISHING_HOUSE";
+  if (level === 2) realm = score >= 60 ? "HEAVEN" : "HELL";
+
   return (
-    <div className="game-wrapper" style={{ padding: 10 }}>
-      <div className="game-board">
-        <Board playerPosition={position} onPieceArrive={handlePieceArrive} />
+    <div className="game-wrapper" style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "stretch",
+      minHeight: "100vh",
+      padding: "16px",
+      boxSizing: "border-box",
+      width: "100%"
+    }}>
+      <TransitionOverlay type={transition} />
+      <div className="game-board" style={{
+        flex: 1,
+        width: "100%",
+        display: "flex"
+      }}>
+        <Board playerPosition={position} level={level} realm={realm} onPieceArrive={handlePieceArrive} />
 
         <GameControls
           isCurrentTurn={true}
           lastRoll={lastRoll}
           points={score}
+          position={position}
           onRoll={(total) => handleRoll(total)}
           onQuit={handleQuit}
         />

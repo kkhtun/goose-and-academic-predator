@@ -4,21 +4,40 @@ import { FaDog, FaCat, FaCrow, FaFish } from "react-icons/fa";
 import { GiCamel } from "react-icons/gi";
 import { useLocalStorage } from "@uidotdev/usehooks";
 
-export default function PlayerPiece({ position, onArrive }) {
+export default function PlayerPiece({ position, level = 0, boardMetrics, onArrive }) {
   const [playerAvatar] = useLocalStorage("PLAYER_AVATAR", "dog");
-  const squareSize = 86; // 80px square + 6px gap (matches Board grid)
+
   const pieceSize = 48;
-  const centerOffset = (squareSize - pieceSize) / 2;
+  const boardPadding = 24;
+  const gap = 6;
+  const cols = 10;
+  const rows = level === 2 ? 4 : 3;
+
+  const isReady = boardMetrics && boardMetrics.width > 0;
+  // If ResizeObserver hasn't fired yet, fallback to a standard layout
+  const availableWidth = isReady ? boardMetrics.width : 854; // 10*80 + 9*6
+  const availableHeight = isReady ? boardMetrics.height : 338; // 4*80 + 3*6
+
+  const squareWidth = (availableWidth - (cols - 1) * gap) / cols;
+  const squareHeight = (availableHeight - (rows - 1) * gap) / rows;
+
+  const offsetX = boardPadding + (squareWidth - pieceSize) / 2;
+  const offsetY = boardPadding + (squareHeight - pieceSize) / 2;
+
+  const stepX = squareWidth + gap;
+  const stepY = squareHeight + gap;
 
   const controls = useAnimation();
   const prevPosRef = useRef(position);
 
   const posToXY = (pos) => {
-    const col = pos % 10;
-    const row = Math.floor(pos / 10);
+    const levelStart = level * 30;
+    const relativePos = Math.max(0, pos - levelStart);
+    const col = relativePos % 10;
+    const row = Math.floor(relativePos / 10);
     return {
-      x: col * squareSize + centerOffset,
-      y: row * squareSize + centerOffset,
+      x: col * stepX + offsetX,
+      y: row * stepY + offsetY,
     };
   };
 

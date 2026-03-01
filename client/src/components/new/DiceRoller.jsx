@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { apiPost } from "../../api";
 
-export default function DiceRoller({ onResult }) {
+export default function DiceRoller({ singleDie = false, onResult }) {
   const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
   const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
     "PLAYER_UNIQUE_ID",
@@ -17,14 +17,22 @@ export default function DiceRoller({ onResult }) {
 
     setRolling(true);
     // show random tumbling first
-    setDice([Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)]);
+    if (singleDie) {
+      setDice([Math.ceil(Math.random() * 6)]);
+    } else {
+      setDice([Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)]);
+    }
 
     apiPost(`/game/${gameId}/roll`, { playerUniqueId }).then((data) => {
       const { roll } = data;
       const { die1, die2 } = roll;
 
       setTimeout(() => {
-        setDice([die1, die2]);
+        if (singleDie) {
+          setDice([die1]);
+        } else {
+          setDice([die1, die2]);
+        }
         onResult(data);
       }, 700);
 
@@ -32,17 +40,6 @@ export default function DiceRoller({ onResult }) {
         setRolling(false);
       }, 1300);
     });
-
-    // IMPORTANT : Instead of timeouts here, in reality, will call /roll endpoint in backend
-
-    // setTimeout(() => {
-    //   setDice([d1, d2]);
-    //   onResult(d1 + d2);
-    // }, 900);
-
-    // setTimeout(() => {
-    //   setRolling(false);
-    // }, 1400);
   };
 
   return (
@@ -61,7 +58,7 @@ export default function DiceRoller({ onResult }) {
           >
             <motion.div
               animate={{
-                x: [-200, 200, -150, 150, 0],
+                x: singleDie ? [0, 0] : [-200, 200, -150, 150, 0],
                 rotate: [0, 360, 720],
               }}
               transition={{ duration: 1 }}
@@ -70,16 +67,18 @@ export default function DiceRoller({ onResult }) {
               {dice[0]}
             </motion.div>
 
-            <motion.div
-              animate={{
-                x: [200, -200, 150, -150, 0],
-                rotate: [0, -360, -720],
-              }}
-              transition={{ duration: 1 }}
-              style={styles.die}
-            >
-              {dice[1]}
-            </motion.div>
+            {!singleDie && (
+              <motion.div
+                animate={{
+                  x: [200, -200, 150, -150, 0],
+                  rotate: [0, -360, -720],
+                }}
+                transition={{ duration: 1 }}
+                style={styles.die}
+              >
+                {dice[1]}
+              </motion.div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
