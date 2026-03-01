@@ -52,7 +52,7 @@ export default function ShortAnswerPopup({
         }}
       >
         <div>
-          <div style={{ fontWeight: 700, marginBottom: 20 }}>
+          <div style={{ fontWeight: 700, marginBottom: 20, fontSize: 20 }}>
             {payload.title || "Info"}
           </div>
           <div>{payload.text}</div>
@@ -64,7 +64,7 @@ export default function ShortAnswerPopup({
             autoFocus={true}
             style={{
               width: "100%",
-              padding: "8px 12px",
+              padding: "12px",
               marginTop: 12,
               border: "1px solid #ddd",
               borderRadius: 6,
@@ -79,7 +79,7 @@ export default function ShortAnswerPopup({
             display: "flex",
             justifyContent: "flex-end",
             gap: 8,
-            marginTop: 14,
+            marginTop: 20,
           }}
         >
           <button

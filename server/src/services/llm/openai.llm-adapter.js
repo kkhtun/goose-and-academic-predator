@@ -9,8 +9,6 @@ const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-console.log(client)
-
 async function embedText(text) {
     const response = await client.embeddings.create({
         model: "text-embedding-3-small",

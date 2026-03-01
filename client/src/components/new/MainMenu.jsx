@@ -41,7 +41,6 @@ export default function MainMenu() {
 
   const handleAvatarSelect = (id) => {
     setPlayerAvatar(id);
-    setShowAvatars(false);
     setPopup({ title: "Your Player Name" });
   };
 
