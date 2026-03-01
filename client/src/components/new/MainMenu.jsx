@@ -16,7 +16,10 @@ export default function MainMenu() {
     null,
   );
   const [playerName, setPlayerName] = useLocalStorage("PLAYER_NAME", null);
-  const [playerAvatar, setPlayerAvatar] = useLocalStorage("PLAYER_AVATAR", "dog");
+  const [playerAvatar, setPlayerAvatar] = useLocalStorage(
+    "PLAYER_AVATAR",
+    "dog",
+  );
   const [showAvatars, setShowAvatars] = useState(false);
 
   const avatars = [
@@ -24,7 +27,12 @@ export default function MainMenu() {
     { id: "cat", icon: <FaCat size={64} />, name: "Cat", color: "#e84393" },
     { id: "bird", icon: <FaCrow size={64} />, name: "Bird", color: "#00b894" },
     { id: "fish", icon: <FaFish size={64} />, name: "Fish", color: "#0984e3" },
-    { id: "camel", icon: <GiCamel size={64} />, name: "Camel", color: "#e17055" },
+    {
+      id: "camel",
+      icon: <GiCamel size={64} />,
+      name: "Camel",
+      color: "#e17055",
+    },
   ];
 
   const handleStartGame = () => {
@@ -56,12 +64,28 @@ export default function MainMenu() {
   };
 
   return (
-    <div className="menu-wrapper">
-      <div className="menu-card">
+    <div
+      className="menu-wrapper"
+      style={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div className="menu-card" style={{ width: "90%", maxWidth: "600px" }}>
         {showAvatars ? (
           <>
             <h2 style={{ paddingBottom: "20px" }}>Choose Your Avatar</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "20px", marginBottom: "30px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: "20px",
+                marginBottom: "30px",
+              }}
+            >
               {avatars.map((av) => (
                 <div
                   key={av.id}
@@ -80,15 +104,25 @@ export default function MainMenu() {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "scale(1.05)";
-                    e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.15)";
+                    e.currentTarget.style.boxShadow =
+                      "0 6px 12px rgba(0,0,0,0.15)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 6px rgba(0,0,0,0.1)";
                   }}
                 >
                   <div style={{ color: av.color }}>{av.icon}</div>
-                  <span style={{ marginTop: "10px", fontWeight: "bold", fontSize: "18px" }}>{av.name}</span>
+                  <span
+                    style={{
+                      marginTop: "10px",
+                      fontWeight: "bold",
+                      fontSize: "18px",
+                    }}
+                  >
+                    {av.name}
+                  </span>
                 </div>
               ))}
             </div>
