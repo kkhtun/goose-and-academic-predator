@@ -4,6 +4,7 @@ import DiceRoller from "./DiceRoller";
 export default function GameControls({
   isCurrentTurn,
   points = 0,
+  position = 0,
   lastRoll,
   onRoll,
   onQuit,
@@ -33,7 +34,7 @@ export default function GameControls({
         <strong>Last Roll:</strong> {lastRoll ?? "-"}
       </div>
 
-      <DiceRoller onResult={onRoll} />
+      <DiceRoller singleDie={position >= 85} onResult={onRoll} />
 
       <button style={styles.quitButton} onClick={onQuit}>
         Quit Game
