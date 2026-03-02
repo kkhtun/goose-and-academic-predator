@@ -11,7 +11,7 @@ export default function GameControls({
   const [playerName, setPlayerName] = useLocalStorage("PLAYER_NAME", null);
 
   return (
-    <div style={styles.panel}>
+    <div style={styles.panel} className="game-panel">
       <h2 style={styles.title}>Game Status</h2>
 
       <div style={styles.section}>
@@ -44,10 +44,10 @@ export default function GameControls({
 
 const styles = {
   panel: {
-    position: "fixed",
-    right: 20,
-    top: 20,
-    width: 120,
+    // position: "fixed",
+    // right: 20,
+    // top: 20,
+    // width: 120,
     padding: 20,
     background: "#1f2933",
     color: "white",
@@ -55,7 +55,7 @@ const styles = {
     boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
     display: "flex",
     flexDirection: "column",
-    gap: 12,
+    gap: 10,
   },
   title: {
     margin: 0,

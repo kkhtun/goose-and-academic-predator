@@ -126,33 +126,33 @@ function Game() {
   };
 
   return (
-    <div className="game-wrapper" style={{ padding: 10 }}>
+    <div className="game-wrapper">
       <div className="game-board">
         <Board playerPosition={position} onPieceArrive={handlePieceArrive} />
-
-        <GameControls
-          isCurrentTurn={true}
-          lastRoll={lastRoll}
-          points={score}
-          onRoll={(total) => handleRoll(total)}
-          onQuit={handleQuit}
-        />
-
-        <QuizPopup
-          open={popup?.type === POSITION_TYPE.CHALLENGE}
-          payload={popup?.content}
-          onClose={handleClosePopup}
-          onSubmit={handleSubmit}
-          handleScore={handleScore}
-        />
-        <InfoPopup
-          open={popup?.type === POSITION_TYPE.INFO}
-          payload={popup?.content}
-          onClose={handleClosePopup}
-        />
-
-        <Celebration show={won} />
       </div>
+
+      <GameControls
+        isCurrentTurn={true}
+        lastRoll={lastRoll}
+        points={score}
+        onRoll={(total) => handleRoll(total)}
+        onQuit={handleQuit}
+      />
+
+      <QuizPopup
+        open={popup?.type === POSITION_TYPE.CHALLENGE}
+        payload={popup?.content}
+        onClose={handleClosePopup}
+        onSubmit={handleSubmit}
+        handleScore={handleScore}
+      />
+      <InfoPopup
+        open={popup?.type === POSITION_TYPE.INFO}
+        payload={popup?.content}
+        onClose={handleClosePopup}
+      />
+
+      <Celebration show={won} />
     </div>
   );
 }

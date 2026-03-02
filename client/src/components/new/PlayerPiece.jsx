@@ -6,7 +6,7 @@ import { useLocalStorage } from "@uidotdev/usehooks";
 
 export default function PlayerPiece({ position, onArrive }) {
   const [playerAvatar] = useLocalStorage("PLAYER_AVATAR", "dog");
-  const squareSize = 86; // 80px square + 6px gap (matches Board grid)
+  const squareSize = 81; // 80px square + 6px gap (matches Board grid)
   const pieceSize = 48;
   const centerOffset = (squareSize - pieceSize) / 2;
 
@@ -14,8 +14,8 @@ export default function PlayerPiece({ position, onArrive }) {
   const prevPosRef = useRef(position);
 
   const posToXY = (pos) => {
-    const col = pos % 10;
-    const row = Math.floor(pos / 10);
+    const col = pos % 13;
+    const row = Math.floor(pos / 13);
     return {
       x: col * squareSize + centerOffset,
       y: row * squareSize + centerOffset,

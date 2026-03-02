@@ -92,82 +92,31 @@
 /* Board styling */
 
 .game-wrapper {
+  /* border-radius: 8px; */
+  /* padding: 20px; */
+  /* display: flex; */
+  /* gap: 20px; */
+  /* align-items: flex-start; */
+  /* justify-content: center; */
+}
+
+.game-wrapper {
   min-height: 100vh;
   background: #1a3b2e;
-  border-radius: 8px;
-  padding: 20px;
   display: flex;
-  gap: 20px;
+  gap: 10px;
+  padding: 10px;
   align-items: flex-start;
   justify-content: center;
-  font-family: "Segoe UI", Roboto, sans-serif;
 }
 
-.game-board-section {
-  background: #f5e6d3;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 6px 0 #8b4513;
-  border: 2px solid #c49a6c;
-  flex: 2;
-  max-width: 700px;
+.game-panel {
+  width: 10%;
+  min-width: 150px;
 }
 
-.game-control-section {
-  background: #f5e6d3;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 6px 0 #8b4513;
-  border: 2px solid #c49a6c;
-  width: 280px;
-}
-
-/* GameControls inner elements */
-.game-control-section h3 {
-  color: #2c1810;
-  margin: 0 0 12px 0;
-  font-size: 20px;
-  border-bottom: 2px solid #c49a6c;
-  padding-bottom: 8px;
-}
-
-.game-control-section button {
-  background: #d4a373;
-  color: #2c1810;
-  border: none;
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 4px 0 #8b5a2b;
-  margin: 8px 0;
-  border: 1px solid #f5e6d3;
-}
-
-.game-control-section button:active {
-  transform: translateY(4px);
-  box-shadow: none;
-}
-
-.game-control-section .status-box {
-  background: #d4b48c;
-  padding: 12px;
-  border-radius: 8px;
-  margin: 15px 0;
-  border: 1px solid #8b4513;
-}
-
-.game-control-section .roll-box {
-  background: #8b5a2b;
-  color: #f5e6d3;
-  padding: 10px;
-  border-radius: 8px;
-  text-align: center;
-  font-size: 28px;
-  font-weight: bold;
-  margin: 10px 0;
+.game-board {
+  width: 90%;
 }
 
 /* Popup styling */
@@ -202,12 +151,6 @@
   .game-wrapper {
     flex-direction: column;
     align-items: center;
-  }
-
-  .game-board-section,
-  .game-control-section {
-    width: 100%;
-    max-width: 100%;
   }
 }
 

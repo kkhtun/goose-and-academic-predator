@@ -24,22 +24,10 @@ const styles = {
   },
   board: {
     display: "grid",
-    gridTemplateColumns: "repeat(10, 80px)",
+    gridTemplateColumns: "repeat(13, 75px)",
     gap: "6px",
     padding: "12px",
     background: "#2c3e50",
     borderRadius: "12px",
   },
 };
-
-// const styles = {
-//   board: {
-//     display: "grid",
-//     gridTemplateColumns: "repeat(auto-fit, minmax(80px, 1fr))",
-//     gap: "6px",
-//     padding: "12px",
-//     background: "#2c3e50",
-//     borderRadius: "12px",
-//     width: "100%",
-//   },
-// };

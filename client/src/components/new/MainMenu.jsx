@@ -144,7 +144,7 @@ export default function MainMenu() {
           <>
             <div className="goose-avatar"></div>
             <h1 style={{ paddingBottom: "20px" }}>
-              Welcome to Goose and Academic Predator
+              Goose and Academic Predator
             </h1>
             <button
               onClick={handleStartGame}

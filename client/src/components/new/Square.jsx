@@ -52,8 +52,10 @@ export default function Square({ number }) {
 
 const styles = {
   square: {
-    width: 80,
-    height: 80,
+    // width: 80,
+    // height: 80,
+    width: 75,
+    height: 75,
     borderRadius: 8,
     display: "flex",
     alignItems: "center",
