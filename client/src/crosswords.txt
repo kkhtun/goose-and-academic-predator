@@ -1,0 +1,47 @@
+Add True/False, Word Search, and Crossword Interactive Boxes
+The goal is to expand the current "Challenge" boxes (which only support Multiple Choice) to also support True/False, Word Search, and Crossword puzzles. The LLM will generate the question content based on the knowledge base, and the frontend will present an interactive UI for the user to solve it.
+
+User Review Required
+CAUTION
+
+Dependencies: Generating Crossword layouts and Word Search grids robustly can be complex without dedicated libraries. My plan is to keep things simple:
+
+Word Search: We can write a simple grid generator in the backend that hides a few words in a 10x10 grid. The frontend will render this grid, and users click the first and last letters of the words they find.
+Crossword: Generating good intersecting crossword grids is computationally hard. We can either install a library like crossword-layout-generator for the backend to handle placement, or have the LLM return a simplified 5x5 grid. I recommend we install a library for layout generation if we want professional-looking crosswords.
+Questions for you:
+
+Are you okay with installing lightweight libraries for Word Search / Crossword generation (both frontend/backend)?
+Do you want these new types to be mixed randomly with MCQs when a player lands on a Challenge box?
+Proposed Changes
+Backend (Node.js/Express)
+[MODIFY] 
+server/src/models/quiz.model.js
+Expand the type enum to include "true_false", "word_search", and "crossword".
+Make the options, correctAnswer, and explanation fields more flexible or add new fields (e.g., grid, words, clues) to support the varying data structures needed for these games.
+[MODIFY] 
+server/src/services/llm/prompt-builder.llm.js
+ & 
+openai.llm-adapter.js
+Create new prompt builders for true_false, word_search (requesting list of topic words), and crossword (requesting clues and words).
+Update the normalization function to parse the specific JSON shapes required by each game type.
+[NEW] server/src/utils/puzzle-generator.util.js
+Add logic to generate a 2D letter grid for Word Search given a list of words.
+Add logic to lay out a Crossword grid given a list of words and clues (potentially using a library).
+[MODIFY] 
+server/src/controllers/game.controller.js
+ & 
+server/src/services/game.service.js
+Update the Joi validation for /game/:gameId/check-answer to accept complex answers instead of Joi.string().max(1). For example, word searches will send an array of found words, and crosswords will send a filled grid.
+Update GameService.answerQuiz to validate the answers specifically based on quiz.type rather than simple equality.
+Frontend (React/Vite)
+[MODIFY] 
+client/src/components/popups/QuizPopup.jsx
+Replace the current hardcoded MCQ options UI with a switch statement that renders different components based on payload.type.
+[NEW] client/src/components/quizzes/TrueFalseQuiz.jsx
+Similar to MCQ, but presents only "True" and "False" buttons.
+[NEW] client/src/components/quizzes/WordSearchQuiz.jsx
+Renders the interactive 2D grid of letters.
+Allows users to click letters to highlight found words and verifies against the target words list.
+[NEW] client/src/components/quizzes/CrosswordQuiz.jsx
+Renders a crossword board.
+Allows users to type into the grid blocks to solve the clues.
