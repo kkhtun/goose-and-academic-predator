@@ -11,13 +11,18 @@ Crossword: Generating good intersecting crossword grids is computationally hard.
 Questions for you:
 
 Are you okay with installing lightweight libraries for Word Search / Crossword generation (both frontend/backend)?
+Answer: Yes, we can do that
+
 Do you want these new types to be mixed randomly with MCQs when a player lands on a Challenge box?
+Answer: For now, I think we can go with random approach (player won't know in advance whether he gets the crossword or MCQ etc.)
+
 Proposed Changes
 Backend (Node.js/Express)
 [MODIFY] 
 server/src/models/quiz.model.js
 Expand the type enum to include "true_false", "word_search", and "crossword".
 Make the options, correctAnswer, and explanation fields more flexible or add new fields (e.g., grid, words, clues) to support the varying data structures needed for these games.
+
 [MODIFY] 
 server/src/services/llm/prompt-builder.llm.js
  & 
@@ -45,3 +50,5 @@ Allows users to click letters to highlight found words and verifies against the 
 [NEW] client/src/components/quizzes/CrosswordQuiz.jsx
 Renders a crossword board.
 Allows users to type into the grid blocks to solve the clues.
+
+Answer: Well noted on the modifications

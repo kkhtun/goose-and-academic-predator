@@ -35,7 +35,7 @@ const QUIZ_TYPE = Object.freeze({
 // `;
 // }
 
-// Build prompt for generation
+// Build MCQ prompt for generation
 function buildMcqBatchPrompt({ topic, difficulty, context, count = 3 }) {
     return `
 You are a quiz generator. Use ONLY the information in the CONTEXT section.
@@ -66,6 +66,47 @@ Rules:
 - Options must be plausible and distinct.
 - correctAnswer must be exactly one of the options ("A","B","C","D").
 - Keep explanations short and clearly tied to the CONTEXT.
+`;
+}
+
+// Build Crossword prompt for generation
+function buildCrosswordBatchPrompt({ topic, difficulty, context, count = 8 }) {
+    return `
+You are a crossword puzzle generator.
+
+Use ONLY the information in the CONTEXT section.
+Do NOT use outside knowledge.
+
+TOPIC: ${topic}
+DIFFICULTY: ${difficulty}
+COUNT: ${count}
+
+CONTEXT:
+${context}
+
+Your task:
+Generate ${count} crossword entries based strictly on the context.
+
+OUTPUT STRICTLY AS VALID JSON (no markdown, no extra text).
+Return a JSON array of exactly ${count} objects in this format:
+
+[
+  {
+    "answer": "WORD",
+    "clue": "crossword clue"
+  }
+]
+
+Rules:
+- "answer" must be a SINGLE WORD in uppercase.
+- Only letters A–Z (no spaces, no hyphens).
+- Word length must be between 4 and 10 letters.
+- Clues must be concise (5–15 words).
+- Each clue must be clearly answerable using the CONTEXT.
+- Avoid duplicates.
+- Avoid very obscure terms.
+- Prefer important concepts or entities from the CONTEXT.
+- Do NOT include the answer word inside the clue.
 `;
 }
 
