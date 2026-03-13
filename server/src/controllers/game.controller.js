@@ -1,4 +1,5 @@
 const GameService = require("../services/game.service");
+const QuizService = require("../services/quiz.service");
 const Joi = require("joi");
 const {
     BOARD_POSITIONS,
@@ -46,7 +47,7 @@ module.exports = {
             gameId: Joi.string().required(),
             playerUniqueId: Joi.string().required(),
             quizId: Joi.string().required(),
-            answer: Joi.string().max(1).required(),
+            answer: Joi.any().required(),
         });
         const { error, value } = schema.validate({
             ...req.params,
@@ -97,6 +98,27 @@ module.exports = {
     generateMcqBatch: async (req, res, next) => {
         try {
             const result = await GameService.generateMcqBatch(req.body || {});
+            return res.status(200).send(result);
+        } catch (error) {
+            return next(error);
+        }
+    },
+
+    // Single quiz generators
+    generateCrossword: async (req, res, next) => {
+        try {
+            // Now only crossword
+            const result = await QuizService.generateCrossword(req.body || {});
+            return res.status(200).send(result);
+        } catch (error) {
+            return next(error);
+        }
+    },
+
+    generateMcq: async (req, res, next) => {
+        try {
+            // Now only crossword
+            const result = await QuizService.generateMcq(req.body || {});
             return res.status(200).send(result);
         } catch (error) {
             return next(error);

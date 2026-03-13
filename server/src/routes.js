@@ -2,6 +2,10 @@ const router = require("express").Router();
 const GameController = require("./controllers/game.controller");
 
 // router.get("/game/random-quiz", GameController.getQuiz);
+
+router.post("/game/generate-crosswords", GameController.generateCrossword);
+router.post("/game/generate-mcq", GameController.generateMcq);
+
 router.post("/game/generate-mcq-batch", GameController.generateMcqBatch);
 router.get("/game/mcq-topics", GameController.getTopics);
 

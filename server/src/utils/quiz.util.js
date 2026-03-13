@@ -5,9 +5,17 @@ const QUIZ_TYPE = {
     CROSS_WORDS: "CROSS_WORDS",
 };
 
+const DIFFICULTY = {
+    EASY: "EASY",
+    MEDIUM: "MEDIUM",
+    HARD: "HARD",
+};
+
 const CONCEPT_TYPE = {
     DEFINITION: "DEFINITION",
     TERMINOLOGY: "TERMINOLOGY",
     CONCEPT: "CONCEPT",
     LIST: "LIST",
 };
+
+module.exports = { QUIZ_TYPE, DIFFICULTY, CONCEPT_TYPE };

@@ -1,25 +1,32 @@
 const mongoose = require("mongoose");
+const { QUIZ_TYPE, DIFFICULTY } = require("../utils/quiz.util");
 
 const quizSchema = new mongoose.Schema(
     {
-        topic: { type: String, required: true, index: true },
-        difficulty: {
-            type: String,
-            enum: ["easy", "medium", "hard"],
-            required: true,
-            index: true,
+        // topic: { type: String, required: true, index: true },
+        // difficulty: {
+        //     type: String,
+        //     enum: Object.values(DIFFICULTY),
+        //     required: true,
+        //     index: true,
+        // },
+        type: { type: String, enum: Object.values(QUIZ_TYPE), required: true },
+
+        // Content (flexible for now, handed over to service codes to make sure schema is correct)
+        mcqContent: {
+            questionText: { type: String, required: true },
+            options: { type: [String], required: true },
+            correctAnswer: { type: String, required: true },
+            explanation: { type: String, required: true },
         },
-        type: { type: String, enum: ["multiple_choice"], required: true },
-        questionText: { type: String, required: true },
-        options: { type: [String], required: true },
-        correctAnswer: { type: String, required: true },
-        explanation: { type: String, required: true },
+        crosswordsContent: Object,
+        // Misc
         contextChunks: [
             { type: mongoose.Schema.Types.ObjectId, ref: "KbChunk" },
         ],
         status: {
             type: String,
-            enum: ["new", "used", "discarded"],
+            enum: ["NEW", "USED"],
             default: "new",
             index: true,
         },
