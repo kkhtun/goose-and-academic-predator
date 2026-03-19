@@ -5,6 +5,8 @@ const GameController = require("./controllers/game.controller");
 
 router.post("/game/generate-crosswords", GameController.generateCrossword);
 router.post("/game/generate-mcq", GameController.generateMcq);
+router.post("/game/generate-true-false", GameController.generateTrueFalse);
+router.post("/game/generate-random-quiz", GameController.generateRandomQuiz);
 
 router.post("/game/generate-mcq-batch", GameController.generateMcqBatch);
 router.get("/game/mcq-topics", GameController.getTopics);

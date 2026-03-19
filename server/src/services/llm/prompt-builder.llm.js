@@ -143,6 +143,38 @@ Rules:
 `;
 }
 
+function buildTrueFalsePrompt({ topic, difficulty, context }) {
+    return `
+You are a quiz generator. Use ONLY the information in the CONTEXT section.
+Do NOT use outside knowledge. The statement must be fully verifiable from the CONTEXT.
+
+DIFFICULTY: ${difficulty}
+
+CONTEXT:
+${context}
+
+Generate ONE true/false statement.
+
+OUTPUT STRICTLY AS VALID JSON (no markdown, no extra text).
+Return exactly ONE object in this format:
+
+{
+  "statement": "string",
+  "answer": true,
+  "explanation": "string"
+}
+
+Rules:
+- The statement must be clearly verifiable as TRUE or FALSE from the CONTEXT.
+- Ensure a balanced mix of TRUE and FALSE across multiple generations (do not always return TRUE).
+- Avoid ambiguous, subjective, or opinion-based statements.
+- The statement should be concise and unambiguous.
+- "answer" must be a boolean: true or false.
+- Do NOT reveal the answer within the statement wording.
+- Keep the explanation short and directly tied to the CONTEXT.
+`;
+}
+
 // Normalize output
 function normalizeQuizObject(obj) {
     const entry = {};
@@ -197,9 +229,30 @@ function normalizeMcqResponse(obj) {
     };
 }
 
+function normalizeTrueFalseResponse(obj) {
+    const entry = {};
+
+    if (isString(obj.statement)) {
+        entry.statement = obj.statement;
+    }
+
+    if (typeof obj.answer === "boolean") {
+        entry.answer = obj.answer;
+    }
+
+    if (isString(obj.explanation)) {
+        entry.explanation = obj.explanation;
+    }
+
+    return {
+        entry,
+        isValid: Object.keys(entry).length === 3,
+    };
+}
+
 function normalizeCrosswordResponse(arr) {
     // Maybe check if 6-8 words?
-    return arr.filter((item) => {
+    const filteredWords = arr.filter((item) => {
         if (typeof item !== "object" || item === null) return false;
         const { answer, clue } = item;
 
@@ -209,14 +262,19 @@ function normalizeCrosswordResponse(arr) {
         if (clue.trim().length === 0) return false;
         return true;
     });
+
+    return { isValid: filteredWords.length >= 6, entry: filteredWords };
 }
 
 module.exports = {
     buildMcqBatchPrompt,
     normalizeQuizObject,
+    // Single normalize
     normalizeCrosswordResponse,
     normalizeMcqResponse,
+    normalizeTrueFalseResponse,
     // Single quiz builder prompts
+    buildTrueFalsePrompt,
     buildCrosswordPrompt,
     buildMcqPrompt,
 };

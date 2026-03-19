@@ -107,7 +107,6 @@ module.exports = {
     // Single quiz generators
     generateCrossword: async (req, res, next) => {
         try {
-            // Now only crossword
             const result = await QuizService.generateCrossword(req.body || {});
             return res.status(200).send(result);
         } catch (error) {
@@ -117,8 +116,26 @@ module.exports = {
 
     generateMcq: async (req, res, next) => {
         try {
-            // Now only crossword
             const result = await QuizService.generateMcq(req.body || {});
+            return res.status(200).send(result);
+        } catch (error) {
+            return next(error);
+        }
+    },
+
+    generateTrueFalse: async (req, res, next) => {
+        try {
+            const result = await QuizService.generateTrueFalse(req.body || {});
+            return res.status(200).send(result);
+        } catch (error) {
+            return next(error);
+        }
+    },
+
+    generateRandomQuiz: async (req, res, next) => {
+        try {
+            // Now only crossword
+            const result = await QuizService.getRandomQuiz(req.body || {});
             return res.status(200).send(result);
         } catch (error) {
             return next(error);

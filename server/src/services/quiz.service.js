@@ -5,6 +5,26 @@ const KbChunkModel = require("../models/kb-chunk.model");
 const { QUIZ_TYPE, DIFFICULTY } = require("../utils/quiz.util");
 const { generateQuiz } = require("./llm/openai.llm-adapter");
 
+function getRandomQuizType() {
+    const weights = {
+        [QUIZ_TYPE.CROSS_WORDS]: 0.4,
+        [QUIZ_TYPE.MCQ]: 0.4,
+        [QUIZ_TYPE.TRUE_FALSE]: 0.2,
+    };
+
+    const totalWeight = Object.values(weights).reduce((sum, w) => sum + w, 0);
+    const rand = Math.random() * totalWeight;
+
+    let cumulative = 0;
+
+    for (const [type, weight] of Object.entries(weights)) {
+        cumulative += weight;
+        if (rand < cumulative) {
+            return type;
+        }
+    }
+}
+
 async function retrieveRandomContext({ count = 10 }) {
     // For now, retrieve random stuff (not using quizType or difficulty)
     const results = await KbChunkModel.aggregate([
@@ -24,7 +44,7 @@ async function generateCrossword({ difficulty = DIFFICULTY.MEDIUM }) {
 }
 
 async function generateMcq({ difficulty = DIFFICULTY.MEDIUM }) {
-    const chunks = await retrieveRa.ndomContext({ count: 10 });
+    const chunks = await retrieveRandomContext({ count: 10 });
     const quiz = await generateQuiz({
         type: QUIZ_TYPE.MCQ,
         chunks,
@@ -32,16 +52,35 @@ async function generateMcq({ difficulty = DIFFICULTY.MEDIUM }) {
     return quiz;
 }
 
+async function generateTrueFalse({ difficulty = DIFFICULTY.MEDIUM }) {
+    const chunks = await retrieveRandomContext({ count: 4 });
+    const quiz = await generateQuiz({
+        type: QUIZ_TYPE.TRUE_FALSE,
+        chunks,
+    });
+    return quiz;
+}
+
+const QUIZ_GENERATORS = {
+    [QUIZ_TYPE.CROSS_WORDS]: generateCrossword,
+    [QUIZ_TYPE.MCQ]: generateMcq,
+    [QUIZ_TYPE.TRUE_FALSE]: generateTrueFalse,
+};
+
 async function getRandomQuiz({}) {
-    const quizType =
-        Math.random() > 0.5 ? QUIZ_TYPE.CROSS_WORDS : QUIZ_TYPE.MCQ;
+    const quizType = getRandomQuizType();
+    const generator = QUIZ_GENERATORS[quizType] || generateMcq;
+    const params = {}; // passed here from args
+
     return {
-        quiz:
-            quizType === QUIZ_TYPE.CROSS_WORDS
-                ? await generateCrossword({})
-                : await generateMcq({}),
+        quiz: await generator(params),
         quizType,
     };
 }
 
-module.exports = { generateCrossword, generateMcq, getRandomQuiz };
+module.exports = {
+    generateCrossword,
+    generateMcq,
+    generateTrueFalse,
+    getRandomQuiz,
+};

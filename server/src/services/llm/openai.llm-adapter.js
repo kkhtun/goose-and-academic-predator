@@ -7,8 +7,11 @@ const {
     normalizeCrosswordResponse,
     normalizeMcqResponse,
     buildCrosswordPrompt,
+    normalizeTrueFalseResponse,
+    buildTrueFalsePrompt,
 } = require("./prompt-builder.llm");
 const { DIFFICULTY, QUIZ_TYPE } = require("../../utils/quiz.util");
+const { CustomError } = require("../../utils/CustomError");
 
 const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -96,6 +99,11 @@ async function generateQuiz({ type, chunks, difficulty = DIFFICULTY.MEDIUM }) {
             context,
             wordCount: 8,
         });
+    } else if (type === QUIZ_TYPE.TRUE_FALSE) {
+        prompt = buildTrueFalsePrompt({
+            difficulty,
+            context,
+        });
     } else {
         // By default MCQ
         prompt = buildMcqPrompt({
@@ -107,13 +115,21 @@ async function generateQuiz({ type, chunks, difficulty = DIFFICULTY.MEDIUM }) {
     const response = await callLLM({ prompt });
 
     // Validate response
+    let func;
     if (type === QUIZ_TYPE.CROSS_WORDS) {
-        return normalizeCrosswordResponse(response);
+        func = normalizeCrosswordResponse(response);
+    } else if (type === QUIZ_TYPE.TRUE_FALSE) {
+        func = normalizeTrueFalseResponse(response);
     } else {
-        const { entry, isValid } = normalizeMcqResponse(response);
-        // Assume valid for now
-        return entry;
+        func = normalizeMcqResponse(response);
     }
+    const { isValid, entry } = func;
+
+    if (isValid) return entry;
+    console.log(entry);
+    throw new CustomError(
+        "Unable to normalize LLM Response. Skipping quiz generation..."
+    );
 }
 
 module.exports = {
