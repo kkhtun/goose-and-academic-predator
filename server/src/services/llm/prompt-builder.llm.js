@@ -1,9 +1,5 @@
 const { isString } = require("../../utils/common.util");
 
-const QUIZ_TYPE = Object.freeze({
-    MULTIPLE_CHOICE: "multiple_choice",
-});
-
 // function buildMultipleChoiceQuizPrompt({
 //   domain,
 //   difficulty,
@@ -102,7 +98,7 @@ Rules:
 - "answer" must be a SINGLE WORD in uppercase.
 - Only letters A-Z (no spaces, no hyphens).
 - Word length must be between 4 and 10 letters.
-- Clues must be concise (10-20 words).
+- Clues must be concise (10-30 words).
 - Each clue must be clearly answerable using the CONTEXT.
 - Avoid duplicates.
 - Avoid very obscure terms.
@@ -138,8 +134,7 @@ Rules:
 - Options must be plausible and distinct.
 - Only ONE option can be correct.
 - "correctAnswer" must match exactly one of the options ("A","B","C","D").
-- Do NOT include the correct answer wording inside the question.
-- Keep the explanation short and directly tied to the CONTEXT.
+- Write explanations in natural, human-readable language as if explaining the answer to a person (Do NOT reference CONTEXT, CHUNK numbers or internal sources).
 `;
 }
 
@@ -167,41 +162,10 @@ Return exactly ONE object in this format:
 Rules:
 - The statement must be clearly verifiable as TRUE or FALSE from the CONTEXT.
 - Ensure a balanced mix of TRUE and FALSE across multiple generations (do not always return TRUE).
-- Avoid ambiguous, subjective, or opinion-based statements.
 - The statement should be concise and unambiguous.
 - "answer" must be a boolean: true or false.
-- Do NOT reveal the answer within the statement wording.
-- Keep the explanation short and directly tied to the CONTEXT.
+- Write explanations in natural, human-readable language as if explaining the answer to a person (Do NOT reference CONTEXT, CHUNK numbers or internal sources).
 `;
-}
-
-// Normalize output
-function normalizeQuizObject(obj) {
-    const entry = {};
-    if (obj.type && Object.values(QUIZ_TYPE).includes(obj.type)) {
-        entry.type = obj.type;
-    }
-
-    if (isString(obj.questionText)) {
-        entry.questionText = obj.questionText;
-    }
-
-    if (obj.options && Array.isArray(obj.options) && obj.options.length >= 4) {
-        entry.options = obj.options;
-    }
-
-    if (isString(obj.correctAnswer) && obj.correctAnswer.length === 1) {
-        entry.correctAnswer = obj.correctAnswer;
-    }
-
-    if (isString(obj.explanation)) {
-        entry.explanation = obj.explanation;
-    }
-
-    return {
-        entry,
-        isValid: Object.keys(entry).length === 5,
-    };
 }
 
 function normalizeMcqResponse(obj) {
@@ -252,12 +216,13 @@ function normalizeTrueFalseResponse(obj) {
 
 function normalizeCrosswordResponse(arr) {
     // Maybe check if 6-8 words?
+    console.log("LLM Response for CROSS_WORDS", arr);
     const filteredWords = arr.filter((item) => {
         if (typeof item !== "object" || item === null) return false;
         const { answer, clue } = item;
 
         if (typeof answer !== "string") return false;
-        if (!/^[A-Z]{4,10}$/.test(answer)) return false;
+        if (!/^[A-Z]{4,}$/.test(answer)) return false;
         if (typeof clue !== "string") return false;
         if (clue.trim().length === 0) return false;
         return true;
@@ -268,7 +233,7 @@ function normalizeCrosswordResponse(arr) {
 
 module.exports = {
     buildMcqBatchPrompt,
-    normalizeQuizObject,
+    // normalizeQuizObject,
     // Single normalize
     normalizeCrosswordResponse,
     normalizeMcqResponse,

@@ -19,4 +19,10 @@ function haveSameEntries(arr1, arr2) {
     return true;
 }
 
-module.exports = { isString, haveSameEntries };
+function isArrayOfArrays(obj) {
+    if (!Array.isArray(obj)) return false;
+    const nonArrays = obj.filter((entry) => !Array.isArray(entry));
+    return nonArrays.length === 0;
+}
+
+module.exports = { isString, haveSameEntries, isArrayOfArrays };

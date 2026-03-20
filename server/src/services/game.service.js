@@ -2,7 +2,7 @@ const { v4: uuid } = require("uuid");
 const R = require("ramda");
 
 const {
-    callGenerateMcqBatchFromContext,
+    // callGenerateMcqBatchFromContext,
     embedText,
 } = require("./llm/openai.llm-adapter");
 const KbChunkModel = require("../models/kb-chunk.model");
@@ -16,9 +16,17 @@ const {
     BOARD_POSITIONS,
     POSITION_TYPE,
 } = require("../utils/game.util");
-const { DIFFICULTY, QUIZ_TYPE } = require("../utils/quiz.util");
+const {
+    DIFFICULTY,
+    QUIZ_TYPE,
+    checkCrosswordGrid,
+} = require("../utils/quiz.util");
 const { getRandomQuiz } = require("./quiz.service");
-const { isString, haveSameEntries } = require("../utils/common.util");
+const {
+    isString,
+    haveSameEntries,
+    isArrayOfArrays,
+} = require("../utils/common.util");
 
 // Helper functions (calling other underlying models and api clients)
 
@@ -59,27 +67,6 @@ async function retrieveContextFromTopic({
     return results;
 }
 
-const templateQuiz = {
-    _id: "69791d32ad314c7ed7933ec9",
-    topic: "predatory_publishing",
-    difficulty: "medium",
-    type: "multiple_choice",
-    questionText:
-        "What strategy do institutions use to combat predatory publishing?",
-    options: [
-        "Creating more predatory journals",
-        "Maintaining journal whitelists",
-        "Limiting researcher access to journals",
-        "Promoting expensive publication fees",
-    ],
-    correctAnswer: "B",
-    explanation:
-        "Institutions combat predatory publishing by maintaining journal whitelists and educating researchers on responsible practices.",
-    status: "new",
-    createdAt: "2026-01-27T20:16:50.535Z",
-    updatedAt: "2026-01-27T20:16:50.535Z",
-};
-
 // API functions (mapping 1 to 1 with api endpoints)
 
 // For frontend
@@ -100,187 +87,6 @@ async function startGame({ initialPlayerName: playerName }) {
     const game = await newGame.save();
     return game;
 }
-
-async function getChallengeContent({}) {
-    const { quiz, quizType } = await getRandomQuiz({});
-    return { quiz, quizType };
-}
-
-// async function roll({ gameId, playerUniqueId }) {
-//     const game = await GameModel.findById(gameId).exec();
-//     if (!game) throw new CustomError("Game not found");
-
-//     // Validity checks
-//     const player = game.players.find(
-//         (p) => p.playerUniqueId === playerUniqueId
-//     );
-//     if (!player) throw new CustomError("Player not found in game");
-
-//     // Check if player is ready (is his turn)
-//     if (player.status !== PLAYER_STATUS.READY)
-//         throw new CustomError("Not your turn");
-
-//     // Logic here for "can the player move?"
-//     // Normally, if its not the player's turn cannot move
-//     // The player or other player is in some state?
-
-//     // Figure out current player pos
-//     const playerMoves = game.moves.filter(
-//         (move) => move.playerUniqueId === playerUniqueId
-//     );
-//     const lastMove = playerMoves[playerMoves.length - 1];
-//     const current = lastMove ? lastMove.next : 0;
-
-//     const dieCount = current >= 85 ? 1 : 2;
-//     const throwResult = throwDie(dieCount);
-//     const { total } = throwResult;
-
-//     // Initial move by die throw
-//     let initMove = {
-//         playerUniqueId,
-//         current,
-//         next: adjustPosition(current + total), // Adjust for > 90
-//         isActive: true,
-//     };
-//     initMove.nextType = BOARD_POSITIONS[initMove.next];
-
-//     // Based on the type of the box, decide what to do next
-//     const moves = [initMove];
-
-//     while (true) {
-//         let move = moves[moves.length - 1];
-//         if (move.nextType === POSITION_TYPE.CHALLENGE) {
-//             move.content = await getChallengeContent({});
-//             break;
-//         } else if (move.nextType === POSITION_TYPE.INFO) {
-//             move.content = await getChallengeContent({});
-//             break;
-//         } else if (move.nextType === POSITION_TYPE.GOOSE) {
-//             const newPos = adjustPosition(move.next + total);
-//             moves.push({
-//                 playerUniqueId,
-//                 current: move.next,
-//                 next: newPos,
-//                 nextType: BOARD_POSITIONS[newPos],
-//                 isActive: true,
-//             });
-//         } else if (move.nextType === POSITION_TYPE.JUMP_TURN) {
-//             break; // Since currently only one player
-//         } else if (move.nextType === POSITION_TYPE.DICE_TWICE) {
-//             break; // Since currently only one player
-//         } else if (move.nextType === POSITION_TYPE.BACK_TO_START) {
-//             moves.push({
-//                 playerUniqueId,
-//                 current: move.next,
-//                 next: 0,
-//                 nextType: BOARD_POSITIONS[0],
-//                 isActive: true,
-//             });
-//             break;
-//         } else if (move.nextType === POSITION_TYPE.LUCKY) {
-//             game.players = game.players.map((p) => {
-//                 if (p.playerUniqueId === playerUniqueId) {
-//                     return { ...p, score: p.score > 0 ? p.score * 2 : 1 }; // Double or if 0, then make 1
-//                 } else {
-//                     return p;
-//                 }
-//             });
-//             break;
-//         } else if (move.nextType === POSITION_TYPE.PENALTY) {
-//             // Pay penalty
-//             game.players = game.players.map((p) => {
-//                 if (p.playerUniqueId === playerUniqueId) {
-//                     return { ...p, score: Math.max(0, p.score - 2) }; // Mind the 0, currently only 2 marks reduced
-//                 } else {
-//                     return p;
-//                 }
-//             });
-//             // Return to prev position (currently assuming that this is the position the player took off from)
-//             moves.push({
-//                 playerUniqueId,
-//                 current: move.next,
-//                 next: moves[0].current,
-//                 nextType: BOARD_POSITIONS[moves[0].current],
-//                 isActive: false,
-//             });
-//             // Currently, we assume we won't do anything at the previous position even if it is special
-//             // So we break
-//             break;
-//         } else {
-//             break;
-//         }
-//     }
-
-//     game.moves.push(...moves);
-//     await game.save();
-//     return {
-//         roll: throwResult,
-//         moves,
-//         game: R.omit(["moves"], game.toObject()),
-//     };
-// }
-
-// async function incrementPlayerScore({ game, playerUniqueId }) {
-//     // Increase score
-//     game.players = game.players.map((p) => {
-//         if (p.playerUniqueId === playerUniqueId) {
-//             return { ...p, score: p.score + 1 };
-//         } else {
-//             return p;
-//         }
-//     });
-//     return await game.save();
-// }
-
-// async function answerQuiz({ gameId, playerUniqueId, quizId, answer }) {
-//     // Check answer by the user and increment score
-
-//     const game = await GameModel.findById(gameId).exec();
-//     if (!game) throw new CustomError("Game not found");
-
-//     // Validity checks
-//     const player = game.players.find(
-//         (p) => p.playerUniqueId === playerUniqueId
-//     );
-//     if (!player) throw new CustomError("Player not found in game");
-
-//     // Must be the last move (cannot re-answer old questions!!)
-//     const lastMove = game.moves[game.moves.length - 1];
-//     if (lastMove.nextType !== POSITION_TYPE.CHALLENGE) {
-//         throw new CustomError("Cannot answer question at this time");
-//     }
-
-//     const { quiz, quizType } = lastMove.content;
-//     if (quizType === QUIZ_TYPE.CROSS_WORDS) {
-//         if (!answer || !Array.isArray(answer))
-//             throw new CustomError("Invalid answer format");
-
-//         const correctAnswers = quiz.result.map(R.prop("answer"));
-//         if (haveSameEntries(answer, correctAnswers)) {
-//             game.players = await incrementPlayerScore({ game, playerUniqueId });
-//             return {
-//                 isCorrect: true,
-//                 game: R.omit(["moves"], game.toObject()),
-//             };
-//         } else {
-//             return { isCorrect: false };
-//         }
-//     } else {
-//         // Default : MCQ
-//         if (!isString(answer)) throw new CustomError("Invalid answer format");
-
-//         if (quiz.correctAnswer === answer) {
-//             // Increase score
-//             game.players = await incrementPlayerScore({ game, playerUniqueId });
-//             return {
-//                 isCorrect: true,
-//                 game: R.omit(["moves"], game.toObject()),
-//             };
-//         } else {
-//             return { isCorrect: false };
-//         }
-//     }
-// }
 
 async function roll({ gameId, playerUniqueId }) {
     const game = await GameModel.findById(gameId).exec();
@@ -308,7 +114,7 @@ async function roll({ gameId, playerUniqueId }) {
     const current = lastMove ? lastMove.next : 0;
 
     const dieCount = current >= 85 ? 1 : 2;
-    const throwResult = throwDie(dieCount);
+    const throwResult = throwDie(dieCount); // ADJUST here if you want particular die throw for testing
     const { total } = throwResult;
 
     // Initial move by die throw
@@ -327,6 +133,7 @@ async function roll({ gameId, playerUniqueId }) {
         let move = moves[moves.length - 1];
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
             const randomQuiz = await QuizModel.aggregate([
+                // { $match: { type: QUIZ_TYPE.CROSS_WORDS } }, // ADJUST here if you want only 1 quiz type for testing
                 { $sample: { size: 1 } },
             ]);
             move.content = {
@@ -427,7 +234,20 @@ async function answerQuiz({ gameId, playerUniqueId, quizId, answer }) {
     const quiz = lastMove.content.quiz;
     if (quiz._id.toString() !== quizId)
         throw new CustomError("Cannot answer question at this time");
-    if (quiz.correctAnswer === answer) {
+
+    let isCorrect = false;
+    const quizContent = quiz.content;
+    if (quiz.type === QUIZ_TYPE.CROSS_WORDS) {
+        const actualGrid = quizContent.table;
+        isCorrect =
+            isArrayOfArrays(answer) && checkCrosswordGrid(answer, actualGrid);
+    } else if (quiz.type === QUIZ_TYPE.TRUE_FALSE) {
+        isCorrect = quizContent.answer === answer;
+    } else {
+        isCorrect = quizContent.correctAnswer === answer;
+    }
+
+    if (isCorrect) {
         // Increase score
         game.players = game.players.map((p) => {
             if (p.playerUniqueId === playerUniqueId) {
@@ -437,10 +257,9 @@ async function answerQuiz({ gameId, playerUniqueId, quizId, answer }) {
             }
         });
         await game.save();
-        return { isCorrect: true, game: R.omit(["moves"], game.toObject()) };
-    } else {
-        return { isCorrect: false };
+        return { isCorrect, game: R.omit(["moves"], game.toObject()) };
     }
+    return { isCorrect };
 }
 
 // Housekeeping
@@ -460,33 +279,33 @@ async function getTopics() {
 }
 
 // Quizzes
-async function generateMcqBatch({
-    topic,
-    difficulty,
-    kbCount = 10,
-    outputCount = 5,
-}) {
-    // can refine the 'query'
-    const retrievedChunks = await retrieveContextFromTopic({
-        topic,
-        query: `${topic} facts`,
-        difficulty,
-        limit: 100,
-    });
+// async function generateMcqBatch({
+//     topic,
+//     difficulty,
+//     kbCount = 10,
+//     outputCount = 5,
+// }) {
+//     // can refine the 'query'
+//     const retrievedChunks = await retrieveContextFromTopic({
+//         topic,
+//         query: `${topic} facts`,
+//         difficulty,
+//         limit: 100,
+//     });
 
-    // Take first count entries
-    const chunks = retrievedChunks.slice(0, kbCount);
+//     // Take first count entries
+//     const chunks = retrievedChunks.slice(0, kbCount);
 
-    const generatedQuizzes = await callGenerateMcqBatchFromContext({
-        topic,
-        difficulty,
-        retrievedChunks: chunks,
-        count: outputCount,
-    });
+//     const generatedQuizzes = await callGenerateMcqBatchFromContext({
+//         topic,
+//         difficulty,
+//         retrievedChunks: chunks,
+//         count: outputCount,
+//     });
 
-    const insertedQuizzes = await QuizModel.insertMany(generatedQuizzes);
-    return insertedQuizzes;
-}
+//     const insertedQuizzes = await QuizModel.insertMany(generatedQuizzes);
+//     return insertedQuizzes;
+// }
 
 module.exports = {
     retrieveContextFromTopic,
@@ -496,6 +315,6 @@ module.exports = {
     answerQuiz,
     // House keeping
     getQuiz,
-    generateMcqBatch,
+    // generateMcqBatch,
     getTopics,
 };

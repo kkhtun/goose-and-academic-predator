@@ -47,7 +47,7 @@ module.exports = {
             gameId: Joi.string().required(),
             playerUniqueId: Joi.string().required(),
             quizId: Joi.string().required(),
-            answer: Joi.any().required(),
+            answer: Joi.any().required(), // could be string, boolean or an array of words
         });
         const { error, value } = schema.validate({
             ...req.params,
@@ -95,14 +95,14 @@ module.exports = {
         }
     },
 
-    generateMcqBatch: async (req, res, next) => {
-        try {
-            const result = await GameService.generateMcqBatch(req.body || {});
-            return res.status(200).send(result);
-        } catch (error) {
-            return next(error);
-        }
-    },
+    // generateMcqBatch: async (req, res, next) => {
+    //     try {
+    //         const result = await GameService.generateMcqBatch(req.body || {});
+    //         return res.status(200).send(result);
+    //     } catch (error) {
+    //         return next(error);
+    //     }
+    // },
 
     // Single quiz generators
     generateCrossword: async (req, res, next) => {

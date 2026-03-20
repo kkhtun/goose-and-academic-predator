@@ -18,4 +18,14 @@ const CONCEPT_TYPE = {
     LIST: "LIST",
 };
 
-module.exports = { QUIZ_TYPE, DIFFICULTY, CONCEPT_TYPE };
+function checkCrosswordGrid(answerGrid, actualGrid) {
+    for (let r = 0; r < actualGrid.length; r++) {
+        for (let c = 0; c < actualGrid[r].length; c++) {
+            if (actualGrid[r][c] === "-") continue;
+            if (actualGrid[r][c] !== answerGrid[r][c]) return false;
+        }
+    }
+    return true;
+}
+
+module.exports = { QUIZ_TYPE, DIFFICULTY, CONCEPT_TYPE, checkCrosswordGrid };

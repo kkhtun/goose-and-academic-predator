@@ -142,6 +142,8 @@ function throwDie(count = 2) {
     }
     const die2 = Math.floor(Math.random() * 6) + 1;
     const total = die1 + die2;
+
+    // return { die1: 1, die2: 2, total: 3 };
     return { die1, die2, total };
 }
 

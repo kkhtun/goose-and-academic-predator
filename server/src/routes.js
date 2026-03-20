@@ -8,7 +8,7 @@ router.post("/game/generate-mcq", GameController.generateMcq);
 router.post("/game/generate-true-false", GameController.generateTrueFalse);
 router.post("/game/generate-random-quiz", GameController.generateRandomQuiz);
 
-router.post("/game/generate-mcq-batch", GameController.generateMcqBatch);
+// router.post("/game/generate-mcq-batch", GameController.generateMcqBatch);
 router.get("/game/mcq-topics", GameController.getTopics);
 
 router.post("/game/start", GameController.startGame);
