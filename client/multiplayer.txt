@@ -1,0 +1,9 @@
+[TODO]
+Setup Websockets on both NodeJS and Client (React) using SocketIO library
+Setup rooms (each game will be its own room)
+A new player will be able to create a game (when they create a game, a new room for socketio will be created)
+Other players will have a way to join the created room (for now, we won't have accept/decline logic for someone entering the room)
+Add checks for turn-based roll
+Add listeners for each player action (move action, complete quiz answering action, game over action)
+Update UI (add create/join buttons)
+Update UI (to handle if different players are in different level)
