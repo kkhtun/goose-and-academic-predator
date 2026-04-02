@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "../../index.css";
+import "../index.css";
 
 export default function MainMenu() {
     const navigate = useNavigate();

@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { apiPost } from "../../api";
+import { toast } from "react-toastify";
+import { apiPost } from "../api";
 import { useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import "../../index.css";
-import { avatars } from "../PlayerAvatars";
+import "../index.css";
+import { avatars } from "./PlayerAvatars";
 
 export default function StartGame() {
     const navigate = useNavigate();
@@ -23,7 +24,8 @@ export default function StartGame() {
     const [avatar, setAvatar] = useState("");
 
     const handleStartGame = () => {
-        if (!name || !avatar) return;
+        if (!name) return toast.error("Please enter a valid player name.");
+        if (!avatar) return toast.error("Please select a player avatar.");
 
         apiPost("/game/start", { initialPlayerName: name }).then((data) => {
             const { _id, players } = data;

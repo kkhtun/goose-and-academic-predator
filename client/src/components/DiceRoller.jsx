@@ -1,7 +1,7 @@
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { apiPost } from "../../api";
+import { apiPost } from "../api";
 
 export default function DiceRoller({ singleDie = false, onResult }) {
     const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
@@ -48,7 +48,7 @@ export default function DiceRoller({ singleDie = false, onResult }) {
             setTimeout(() => {
                 setShowDice(false);
                 onResult(data);
-            }, 1500);
+            }, 1000);
         });
     };
 

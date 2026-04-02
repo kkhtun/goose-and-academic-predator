@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { apiPost } from "../../api";
+import { apiPost } from "../api";
+import { toast } from "react-toastify";
 import { useState } from "react";
-import ShortAnswerPopup from "../popups/ShortAnswerPopup";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import "../../index.css";
-import { avatars } from "../PlayerAvatars";
+import "../index.css";
+import { avatars } from "./PlayerAvatars";
 
 export default function JoinGame() {
     const navigate = useNavigate();
@@ -20,6 +20,7 @@ export default function JoinGame() {
         "dog",
     );
 
+    // Component states
     const [name, setName] = useState("");
     const [avatar, setAvatar] = useState("");
     const [url, setURL] = useState("");
@@ -39,8 +40,11 @@ export default function JoinGame() {
     };
 
     const handleJoinGame = () => {
+        if (!name) return toast.error("Please enter a valid player name.");
+        if (!avatar) return toast.error("Please select a player avatar.");
+
         const gameId = extractGameId(url);
-        if (!gameId) return;
+        if (!gameId) return toast.error("Please provide a valid game URL.");
     };
 
     return (

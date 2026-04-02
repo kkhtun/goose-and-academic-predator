@@ -1,20 +1,25 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Game from "./components/new/Game";
-import MainMenu from "./components/new/MainMenu";
-import JoinGame from "./components/new/JoinGame";
-import StartGame from "./components/new/StartGame";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Game from "./components/Game";
+import MainMenu from "./components/MainMenu";
+import JoinGame from "./components/JoinGame";
+import StartGame from "./components/StartGame";
 
 function App() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<MainMenu />} />
-                <Route path="/join" element={<JoinGame />} />
-                <Route path="/start" element={<StartGame />} />
-                <Route path="/game/:id" element={<Game />} />
-            </Routes>
-        </BrowserRouter>
+        <>
+            <ToastContainer />
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<MainMenu />} />
+                    <Route path="/join" element={<JoinGame />} />
+                    <Route path="/start" element={<StartGame />} />
+                    <Route path="/game/:id" element={<Game />} />
+                </Routes>
+            </BrowserRouter>
+        </>
     );
     // return (
     //   <>

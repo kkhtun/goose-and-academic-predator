@@ -1,22 +1,18 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import "../../App.css";
+import { useNavigate } from "react-router-dom";
+import "../App.css";
 import * as R from "ramda";
 
 import Board from "./Board";
 import GameControls from "./GameControls";
 import TransitionOverlay from "./TransitionOverlay";
-import {
-    BOARD_SIZE,
-    POSITION_DESCRIPTIONS,
-    POSITION_TYPE,
-} from "../../constants";
+import { POSITION_DESCRIPTIONS, POSITION_TYPE } from "../constants";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import QuizPopup from "../popups/QuizPopup";
-import InfoPopup from "../popups/InfoPopup";
-import { toTitle } from "../../utils";
-import Celebration from "../popups/Celebration";
-import { socket } from "../../socket";
+import QuizPopup from "./popups/QuizPopup";
+import InfoPopup from "./popups/InfoPopup";
+import { toTitle } from "../utils";
+import Celebration from "./popups/Celebration";
+import { socket } from "../socket";
 
 function Game() {
     const navigate = useNavigate();
