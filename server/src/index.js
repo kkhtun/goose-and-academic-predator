@@ -6,8 +6,26 @@ const { ValidationError } = require("joi");
 const { CustomError } = require("./utils/CustomError");
 const { router } = require("./routes");
 const { connectDB } = require("./db");
+const { Server } = require("socket.io");
+const http = require("http");
 
 const app = express();
+
+// Creating http server from express for socket.io
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*", // adjust later for security
+    },
+});
+
+io.on("connection", (socket) => {
+    console.log("[Socket Event] User connected:", socket.id);
+
+    socket.on("disconnect", () => {
+        console.log("[Socket Event] User disconnected:", socket.id);
+    });
+});
 
 // Middlewares
 
@@ -58,7 +76,10 @@ app.use((req, res, next) =>
 const PORT = process.env.PORT || 3000;
 (async function main() {
     await connectDB();
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+    server.listen(PORT, () => {
+        console.log(`[Express] Server running on port ${PORT}`);
     });
+    // app.listen(PORT, () => {
+    //     console.log(`Server running on port ${PORT}`);
+    // });
 })();

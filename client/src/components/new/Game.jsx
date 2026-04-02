@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../App.css";
 import * as R from "ramda";
@@ -16,6 +16,7 @@ import QuizPopup from "../popups/QuizPopup";
 import InfoPopup from "../popups/InfoPopup";
 import { toTitle } from "../../utils";
 import Celebration from "../popups/Celebration";
+import { socket } from "../../socket";
 
 function Game() {
     const navigate = useNavigate();
@@ -36,6 +37,22 @@ function Game() {
     const [popup, setPopup] = useState(null);
     const [won, setWon] = useState(false);
     const [transition, setTransition] = useState(null);
+
+    // SocketIO
+
+    useEffect(() => {
+        socket.connect();
+
+        socket.on("connect", () => {
+            console.log("Connected:", socket.id);
+            // join game after connecting?
+            // socket.emit("joinGame", { gameId, player });
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [gameId]);
 
     const handleScore = (game, playerId) => {
         const { players } = game;
@@ -201,7 +218,7 @@ function Game() {
         onQuit={handleQuit}
       /> */}
 
-            <QuizPopup
+            {/* <QuizPopup
                 open={popup?.type === POSITION_TYPE.CHALLENGE}
                 payload={popup?.content}
                 onClose={handleClosePopup}
@@ -212,9 +229,9 @@ function Game() {
                 open={popup?.type === POSITION_TYPE.INFO}
                 payload={popup?.content}
                 onClose={handleClosePopup}
-            />
+            /> */}
 
-            <Celebration show={won} />
+            {/* <Celebration show={won} /> */}
         </div>
     );
 }
