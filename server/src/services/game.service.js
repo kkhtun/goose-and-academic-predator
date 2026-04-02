@@ -204,8 +204,6 @@ async function roll({ gameId, playerUniqueId }) {
         }
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     game.moves.push(...moves);
     await game.save();
     return {
