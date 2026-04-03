@@ -25,4 +25,8 @@ function isArrayOfArrays(obj) {
     return nonArrays.length === 0;
 }
 
-module.exports = { isString, haveSameEntries, isArrayOfArrays };
+module.exports = {
+    isString,
+    haveSameEntries,
+    isArrayOfArrays,
+};

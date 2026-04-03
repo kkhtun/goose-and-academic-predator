@@ -2,22 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { apiPost } from "../api";
 import { useState } from "react";
-import { useLocalStorage } from "@uidotdev/usehooks";
+// import { useLocalStorage } from "@uidotdev/usehooks";
 import "../index.css";
 import { avatars } from "./PlayerAvatars";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function StartGame() {
     const navigate = useNavigate();
-    const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
-    const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
-        "PLAYER_UNIQUE_ID",
-        null,
-    );
-    const [playerName, setPlayerName] = useLocalStorage("PLAYER_NAME", null);
-    const [playerAvatar, setPlayerAvatar] = useLocalStorage(
-        "PLAYER_AVATAR",
-        "dog",
-    );
+    const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
 
     // Component state
     const [name, setName] = useState("");
@@ -28,13 +20,16 @@ export default function StartGame() {
         if (!avatar) return toast.error("Please select a player avatar.");
 
         apiPost("/game/start", { initialPlayerName: name }).then((data) => {
-            const { _id, players } = data;
-            const { playerUniqueId, playerName } = players[0]; // Your are the first player who create the game
-            setGameId(_id);
-            setPlayerName(playerName);
-            setPlayerUniqueId(playerUniqueId);
-            setPlayerAvatar(avatar);
-            navigate(`/game/${_id}`);
+            const { playerUniqueId, gameInfo } = data;
+            const { gameId } = gameInfo;
+            setGameState({ playerUniqueId, gameInfo });
+
+            // setGameId(_id);
+            // setPlayerName(playerName);
+            // setPlayerUniqueId(playerUniqueId);
+            // setPlayerAvatar(avatar);
+
+            navigate(`/game/${gameId}`);
         });
     };
 

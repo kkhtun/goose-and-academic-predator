@@ -2,23 +2,26 @@ import { useNavigate } from "react-router-dom";
 import { apiPost } from "../api";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { useLocalStorage } from "@uidotdev/usehooks";
+// import { useLocalStorage } from "@uidotdev/usehooks";
 import "../index.css";
 import { avatars } from "./PlayerAvatars";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function JoinGame() {
     const navigate = useNavigate();
-    const [popup, setPopup] = useState(null);
-    const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
-    const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
-        "PLAYER_UNIQUE_ID",
-        null,
-    );
-    const [playerName, setPlayerName] = useLocalStorage("PLAYER_NAME", null);
-    const [playerAvatar, setPlayerAvatar] = useLocalStorage(
-        "PLAYER_AVATAR",
-        "dog",
-    );
+    const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
+
+    // const [popup, setPopup] = useState(null);
+    // const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
+    // const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
+    //     "PLAYER_UNIQUE_ID",
+    //     null,
+    // );
+    // const [playerName, setPlayerName] = useLocalStorage("PLAYER_NAME", null);
+    // const [playerAvatar, setPlayerAvatar] = useLocalStorage(
+    //     "PLAYER_AVATAR",
+    //     "dog",
+    // );
 
     // Component states
     const [name, setName] = useState("");
@@ -45,6 +48,16 @@ export default function JoinGame() {
 
         const gameId = extractGameId(url);
         if (!gameId) return toast.error("Please provide a valid game URL.");
+
+        apiPost("/game/add-player", { gameId, playerName: name, avatar }).then(
+            (data) => {
+                const { playerUniqueId, gameInfo } = data;
+                setGameState({ playerUniqueId, gameInfo });
+
+                const { gameId } = gameInfo;
+                navigate(`/game/${gameId}`);
+            },
+        );
     };
 
     return (

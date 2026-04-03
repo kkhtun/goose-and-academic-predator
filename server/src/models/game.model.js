@@ -43,6 +43,9 @@ const gameSchema = new mongoose.Schema(
                     type: String,
                     required: true,
                 },
+                avatar: {
+                    type: String,
+                },
                 status: {
                     type: String,
                     enum: Object.values(PLAYER_STATUS),

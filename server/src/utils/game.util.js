@@ -147,6 +147,35 @@ function throwDie(count = 2) {
     return { die1, die2, total };
 }
 
+function getPlayerPos({ playerUniqueId, moves }) {
+    for (let i = moves.length - 1; i >= 0; i--) {
+        if (moves[i].playerUniqueId === playerUniqueId) {
+            return moves[i].next;
+        }
+    }
+    return 0; // Default to start if no moves found
+}
+
+function formatGameInfoForClientStore(game) {
+    const { _id: gameId, players, moves } = game;
+    return {
+        gameId,
+        players: players.map((player) => {
+            return {
+                playerUniqueId: player.playerUniqueId,
+                playerName: player.playerName,
+                avatar: player.avatar,
+                playerPos: getPlayerPos({
+                    playerUniqueId: player.playerUniqueId,
+                    moves,
+                }),
+                status: player.status,
+                score: player.score,
+            };
+        }),
+    };
+}
+
 module.exports = {
     PLAYER_STATUS,
     POSITION_TYPE,
@@ -154,4 +183,6 @@ module.exports = {
     POSITION_DESCRIPTIONS,
     adjustPosition,
     throwDie,
+    formatGameInfoForClientStore,
+    getPlayerPos,
 };

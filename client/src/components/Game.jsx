@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 import * as R from "ramda";
@@ -7,22 +7,26 @@ import Board from "./Board";
 import GameControls from "./GameControls";
 import TransitionOverlay from "./TransitionOverlay";
 import { POSITION_DESCRIPTIONS, POSITION_TYPE } from "../constants";
-import { useLocalStorage } from "@uidotdev/usehooks";
+// import { useLocalStorage } from "@uidotdev/usehooks";
 import QuizPopup from "./popups/QuizPopup";
 import InfoPopup from "./popups/InfoPopup";
 import { toTitle } from "../utils";
 import Celebration from "./popups/Celebration";
 import { socket } from "../socket";
+import { toast } from "react-toastify";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 function Game() {
     const navigate = useNavigate();
 
-    const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
-    const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
-        "PLAYER_UNIQUE_ID",
-        null,
-    );
-    const [playerName, setPlayerName] = useLocalStorage("PLAYER_NAME", null);
+    const [gameState, setGameState] = useLocalStorage("GAME_STATE", null);
+
+    // const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
+    // const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
+    //     "PLAYER_UNIQUE_ID",
+    //     null,
+    // );
+    // const [playerName, setPlayerName] = useLocalStorage("PLAYER_NAME", null);
 
     const [position, setPosition] = useState(0);
     const [currentMoves, setCurrentMoves] = useState([]);
@@ -34,21 +38,74 @@ function Game() {
     const [won, setWon] = useState(false);
     const [transition, setTransition] = useState(null);
 
-    // SocketIO
-
+    const gameStateRef = useRef(gameState);
     useEffect(() => {
+        gameStateRef.current = gameState; // always keep latest state in ref
+    }, [gameState]);
+
+    const { gameInfo, playerUniqueId } = gameState || {};
+    const { gameId } = gameInfo || {};
+
+    // useEffect(() => {
+    //     if (!gameId || !playerUniqueId) {
+    //         toast.error("Invalid Game Access");
+    //         navigate("/");
+    //     }
+    // }, [gameId, playerUniqueId]);
+
+    // SocketIO
+    useEffect(() => {
+        const { gameInfo, playerUniqueId } = gameStateRef.current;
+        const { gameId } = gameInfo;
+
         socket.connect();
 
-        socket.on("connect", () => {
+        const handleConnect = () => {
             console.log("Connected:", socket.id);
-            // join game after connecting?
-            // socket.emit("joinGame", { gameId, player });
-        });
+            socket.emit("joinGame", { gameId, playerUniqueId });
+        };
+
+        const handlePlayerJoined = (data) => {
+            const {
+                playerUniqueId: joinedPlayerId,
+                gameInfo: updatedGameInfo,
+            } = data;
+
+            setGameState({
+                gameInfo: updatedGameInfo,
+                playerUniqueId,
+            });
+            toast.info(`Player ${joinedPlayerId} joined the game.`);
+        };
+
+        const handleError = (err) => {
+            console.error("[Socket error]:", err);
+            const errMessage = err?.message || "Something went wrong";
+            toast.error(errMessage, { toastId: errMessage });
+        };
+
+        socket.on("connect", handleConnect);
+        socket.on("playerJoined", handlePlayerJoined);
+        socket.on("error", handleError);
 
         return () => {
+            socket.off("connect", handleConnect);
+            socket.off("playerJoined", handlePlayerJoined);
+            socket.off("error", handleError);
             socket.disconnect();
+            gameStateRef.current = null;
         };
-    }, [gameId]);
+    }, []);
+
+    const handleRoll = ({ roll, moves, game, gameInfo }) => {
+        const { total } = roll;
+        setLastRoll(total);
+
+        // which player moves which?
+        handleScore(game, playerUniqueId);
+        setCurrentMoves(moves);
+        takeStep(moves[0]);
+    };
 
     const handleScore = (game, playerId) => {
         const { players } = game;
@@ -76,15 +133,6 @@ function Game() {
         } else {
             setPosition(next);
         }
-    };
-
-    const handleRoll = ({ roll, moves, game }) => {
-        const { total } = roll;
-        setLastRoll(total);
-
-        handleScore(game, playerUniqueId);
-        setCurrentMoves(moves);
-        takeStep(moves[0]);
     };
 
     const handlePieceArrive = (pos) => {
@@ -125,12 +173,16 @@ function Game() {
 
     const handleQuit = () => {
         setPosition(0);
+        setCurrentMoves([]);
+        setScore(0);
         setLastRoll(null);
         setPopup(null);
+        setWon(false);
+        setTransition(null);
+        gameStateRef.current = null;
 
-        setGameId("");
-        setPlayerName("");
-        setPlayerUniqueId("");
+        setGameState(null);
+        socket.disconnect();
         navigate("/");
     };
 

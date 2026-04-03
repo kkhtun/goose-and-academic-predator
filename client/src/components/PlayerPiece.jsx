@@ -2,17 +2,15 @@ import { useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { FaDog, FaCat, FaCrow, FaFish } from "react-icons/fa";
 import { GiCamel } from "react-icons/gi";
-import { useLocalStorage } from "@uidotdev/usehooks";
 
 export default function PlayerPiece({
     position,
     level = 0,
     boardMetrics,
     onArrive,
+    avatar,
+    playerName,
 }) {
-    const [playerAvatar] = useLocalStorage("PLAYER_AVATAR", "dog");
-    const [playerName, _] = useLocalStorage("PLAYER_NAME", null);
-
     const pieceSize = 48;
     const boardPadding = 24;
     const gap = 6;
@@ -48,6 +46,8 @@ export default function PlayerPiece({
     };
 
     useEffect(() => {
+        // console.log("Ref", prevPosRef.current);
+        // console.log("Pos", position);
         const from = prevPosRef.current;
         const to = position;
         if (from === to) {
@@ -94,7 +94,7 @@ export default function PlayerPiece({
 
     let Icon;
     let tint;
-    switch (playerAvatar) {
+    switch (avatar) {
         case "cat":
             Icon = FaCat;
             tint = "#e84393";
@@ -148,7 +148,7 @@ export default function PlayerPiece({
             >
                 <Icon
                     style={{ width: "100%", height: "100%", color: tint }}
-                    aria-label={playerAvatar}
+                    aria-label={avatar}
                 />
             </motion.div>
             <div

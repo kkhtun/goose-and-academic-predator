@@ -12,6 +12,7 @@ router.post("/game/generate-random-quiz", GameController.generateRandomQuiz);
 router.get("/game/mcq-topics", GameController.getTopics);
 
 router.post("/game/start", GameController.startGame);
+router.post("/game/add-player", GameController.addPlayer);
 router.get("/game/board-positions", GameController.getBoardPositions);
 
 router.post("/game/:gameId/roll", GameController.roll);

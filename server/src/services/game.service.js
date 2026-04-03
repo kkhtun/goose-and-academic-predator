@@ -15,6 +15,7 @@ const {
     adjustPosition,
     BOARD_POSITIONS,
     POSITION_TYPE,
+    formatGameInfoForClientStore,
 } = require("../utils/game.util");
 const {
     DIFFICULTY,
@@ -85,6 +86,41 @@ async function startGame({ initialPlayerName: playerName }) {
     newGame.players = [player];
 
     const game = await newGame.save();
+    return {
+        playerUniqueId: playerOneId,
+        gameInfo: formatGameInfoForClientStore(game),
+    };
+}
+
+async function addPlayer({ gameId, playerName, avatar }) {
+    // Maybe more players here?
+
+    const playerUniqueId = uuid();
+    const player = {
+        playerName,
+        playerUniqueId,
+        avatar,
+        status: PLAYER_STATUS.READY,
+    };
+
+    const game = await GameModel.findById(gameId);
+    if (!game) throw new CustomError("Game not found");
+
+    // Check cannot join already started games
+    if (game.moves.length !== 0)
+        throw new CustomError("Cannot join already started games.");
+
+    game.players.push(player);
+    const updatedGame = await game.save();
+
+    return {
+        playerUniqueId,
+        gameInfo: formatGameInfoForClientStore(updatedGame),
+    };
+}
+
+async function getGame({ gameId }) {
+    const game = await GameModel.findById(gameId);
     return game;
 }
 
@@ -213,6 +249,7 @@ async function roll({ gameId, playerUniqueId }) {
         roll: throwResult,
         moves,
         game: R.omit(["moves"], game.toObject()),
+        gameInfo: formatGameInfoForClientStore(game),
     };
 }
 
@@ -320,4 +357,6 @@ module.exports = {
     getQuiz,
     // generateMcqBatch,
     getTopics,
+    getGame,
+    addPlayer,
 };

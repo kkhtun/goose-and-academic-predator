@@ -23,6 +23,23 @@ module.exports = {
         }
     },
 
+    addPlayer: async (req, res, next) => {
+        const schema = Joi.object({
+            gameId: Joi.string().required(),
+            playerName: Joi.string().required(),
+            avatar: Joi.string().required(),
+        });
+        const { error, value } = schema.validate(req.body || {});
+        if (error) return next(error);
+
+        try {
+            const result = await GameService.addPlayer(value);
+            return res.status(200).send(result);
+        } catch (error) {
+            return next(error);
+        }
+    },
+
     roll: async (req, res, next) => {
         const schema = Joi.object({
             gameId: Joi.string().required(),

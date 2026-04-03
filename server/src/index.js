@@ -8,6 +8,9 @@ const { router } = require("./routes");
 const { connectDB } = require("./db");
 const { Server } = require("socket.io");
 const http = require("http");
+const {
+    registerSocketControllers,
+} = require("./controllers/socket.controller");
 
 const app = express();
 
@@ -21,6 +24,8 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
     console.log("[Socket Event] User connected:", socket.id);
+
+    registerSocketControllers(io, socket);
 
     socket.on("disconnect", () => {
         console.log("[Socket Event] User disconnected:", socket.id);

@@ -1,6 +1,8 @@
 import { useRef, useEffect, useState } from "react";
 import Square from "./Square";
 import PlayerPiece from "./PlayerPiece";
+import useLocalStorage from "../hooks/useLocalStorage";
+// import { useLocalStorage } from "@uidotdev/usehooks";
 
 export default function Board({
     playerPosition,
@@ -8,6 +10,10 @@ export default function Board({
     realm = "NORMAL",
     onPieceArrive,
 }) {
+    const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
+    const { gameInfo } = gameState;
+    const { players } = gameInfo;
+
     const startIdx = level * 30;
     const length = level === 2 ? 31 : 30;
     const squares = Array.from({ length }, (_, i) => startIdx + i);
@@ -46,12 +52,19 @@ export default function Board({
                 {squares.map((num) => (
                     <Square key={num} number={num} />
                 ))}{" "}
-                <PlayerPiece
-                    position={playerPosition}
-                    level={level}
-                    boardMetrics={boardMetrics}
-                    onArrive={onPieceArrive}
-                />
+                {players.map(
+                    ({ playerUniqueId, playerPos, avatar, playerName }) => (
+                        <PlayerPiece
+                            key={playerUniqueId}
+                            avatar={avatar}
+                            position={playerPos}
+                            playerName={playerName}
+                            level={level}
+                            boardMetrics={boardMetrics}
+                            onArrive={onPieceArrive}
+                        />
+                    ),
+                )}
             </div>
         </div>
     );
