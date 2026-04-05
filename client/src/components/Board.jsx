@@ -1,54 +1,27 @@
 import { useRef, useEffect, useState } from "react";
 import Square from "./Square";
 import PlayerPiece from "./PlayerPiece";
-import useLocalStorage from "../hooks/useLocalStorage";
+// import useLocalStorage from "../hooks/useLocalStorage";
+import { BOARD_SIZE } from "../constants";
 // import { useLocalStorage } from "@uidotdev/usehooks";
 
 export default function Board({
-    playerPosition,
-    level = 0,
-    realm = "NORMAL",
+    // playerPosition,
+    // level = 0,
+    // realm = "NORMAL",
     onPieceArrive,
+    gameState,
+    setGameState,
 }) {
-    const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
+    // const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
     const { gameInfo } = gameState;
     const { players } = gameInfo;
 
-    const startIdx = level * 30;
-    const length = level === 2 ? 31 : 30;
-    const squares = Array.from({ length }, (_, i) => startIdx + i);
-
-    let bg = "#2c3e50";
-    if (realm === "PUBLISHING_HOUSE") bg = "#8e44ad";
-    else if (realm === "HEAVEN") bg = "#00a8ff";
-    else if (realm === "HELL") bg = "#c23616";
-
-    const boardStyle = {
-        ...styles.board,
-        background: bg,
-        gridTemplateRows: `repeat(${level === 2 ? 4 : 3}, 1fr)`,
-    };
-
-    const boardRef = useRef(null);
-    const [boardMetrics, setBoardMetrics] = useState({ width: 0, height: 0 });
-
-    useEffect(() => {
-        if (!boardRef.current) return;
-        const observer = new ResizeObserver((entries) => {
-            const entry = entries[0];
-            // contentRect is the space inside the padding
-            setBoardMetrics({
-                width: entry.contentRect.width,
-                height: entry.contentRect.height,
-            });
-        });
-        observer.observe(boardRef.current);
-        return () => observer.disconnect();
-    }, []);
+    const squares = Array.from({ length: BOARD_SIZE }, (_, i) => i);
 
     return (
         <div style={styles.wrapper}>
-            <div ref={boardRef} style={boardStyle}>
+            <div style={styles.board}>
                 {squares.map((num) => (
                     <Square key={num} number={num} />
                 ))}{" "}
@@ -59,8 +32,6 @@ export default function Board({
                             avatar={avatar}
                             position={playerPos}
                             playerName={playerName}
-                            level={level}
-                            boardMetrics={boardMetrics}
                             onArrive={onPieceArrive}
                         />
                     ),
@@ -72,23 +43,15 @@ export default function Board({
 
 const styles = {
     wrapper: {
-        display: "flex",
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "stretch",
-        width: "100%",
+        position: "relative",
+        width: "max-content",
     },
     board: {
-        position: "relative",
         display: "grid",
-        gridTemplateColumns: "repeat(10, 1fr)",
+        gridTemplateColumns: "repeat(10, 80px)",
         gap: "6px",
-        padding: "24px",
+        padding: "12px",
         background: "#2c3e50",
-        borderRadius: "16px",
-        boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
-        width: "100%",
-        height: "100%",
-        boxSizing: "border-box",
+        borderRadius: "12px",
     },
 };

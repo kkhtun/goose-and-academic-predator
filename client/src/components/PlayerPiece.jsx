@@ -5,49 +5,27 @@ import { GiCamel } from "react-icons/gi";
 
 export default function PlayerPiece({
     position,
-    level = 0,
-    boardMetrics,
     onArrive,
     avatar,
     playerName,
 }) {
+    const squareSize = 86; // 80px square + 6px gap (matches Board grid)
     const pieceSize = 48;
-    const boardPadding = 24;
-    const gap = 6;
-    const cols = 10;
-    const rows = level === 2 ? 4 : 3;
-
-    const isReady = boardMetrics && boardMetrics.width > 0;
-    // If ResizeObserver hasn't fired yet, fallback to a standard layout
-    const availableWidth = isReady ? boardMetrics.width : 854; // 10*80 + 9*6
-    const availableHeight = isReady ? boardMetrics.height : 338; // 4*80 + 3*6
-
-    const squareWidth = (availableWidth - (cols - 1) * gap) / cols;
-    const squareHeight = (availableHeight - (rows - 1) * gap) / rows;
-
-    const offsetX = boardPadding + (squareWidth - pieceSize) / 2;
-    const offsetY = boardPadding + (squareHeight - pieceSize) / 2;
-
-    const stepX = squareWidth + gap;
-    const stepY = squareHeight + gap;
+    const centerOffset = (squareSize - pieceSize) / 2;
 
     const controls = useAnimation();
     const prevPosRef = useRef(position);
 
     const posToXY = (pos) => {
-        const levelStart = level * 30;
-        const relativePos = Math.max(0, pos - levelStart);
-        const col = relativePos % 10;
-        const row = Math.floor(relativePos / 10);
+        const col = pos % 10;
+        const row = Math.floor(pos / 10);
         return {
-            x: col * stepX + offsetX,
-            y: row * stepY + offsetY,
+            x: col * squareSize + centerOffset,
+            y: row * squareSize + centerOffset,
         };
     };
 
     useEffect(() => {
-        // console.log("Ref", prevPosRef.current);
-        // console.log("Pos", position);
         const from = prevPosRef.current;
         const to = position;
         if (from === to) {
@@ -135,6 +113,7 @@ export default function PlayerPiece({
                     width: "100%",
                     height: "100%",
                     display: "flex",
+                    flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
                     filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.88))",
@@ -150,24 +129,22 @@ export default function PlayerPiece({
                     style={{ width: "100%", height: "100%", color: tint }}
                     aria-label={avatar}
                 />
+                <div
+                    style={{
+                        marginTop: 4,
+                        fontSize: 11,
+                        color: "#ffffff",
+                        textShadow: "0 2px 4px rgba(0,0,0,0.95)",
+                        fontWeight: 600,
+                        textAlign: "center",
+                        maxWidth: pieceSize + 10,
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                    }}
+                >
+                    {playerName}
+                </div>
             </motion.div>
-            <div
-                style={{
-                    position: "absolute",
-                    top: "100%", // directly below icon
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    marginTop: 4,
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "white",
-                    textShadow: "0 2px 4px rgba(0,0,0,0.9)",
-                    whiteSpace: "nowrap",
-                    pointerEvents: "none",
-                }}
-            >
-                {playerName}
-            </div>
         </motion.div>
     );
 }

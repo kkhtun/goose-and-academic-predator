@@ -1,113 +1,80 @@
-// import { useLocalStorage } from "@uidotdev/usehooks";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiPost } from "../api";
 import { socket } from "../socket";
-import useLocalStorage from "../hooks/useLocalStorage";
+// import useLocalStorage from "../hooks/useLocalStorage";
 
-export default function DiceRoller({ singleDie = false, onResult }) {
-    const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
+export default function DiceRoller({
+    singleDie = false,
+    onResult,
+    isYourTurn,
+    gameState,
+    setGameState,
+}) {
+    // const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
     const { playerUniqueId, gameInfo } = gameState;
     const { gameId } = gameInfo;
 
-    // const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
-    // const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
-    //     "PLAYER_UNIQUE_ID",
-    //     null,
-    // );
     const [rolling, setRolling] = useState(false);
     const [dice, setDice] = useState([1, 1]);
     const [showDice, setShowDice] = useState(false);
 
-    socket.on("roll", ({ playerUniqueId }) => {
-        console.log("Roll event received");
-        setRolling(true);
-        setShowDice(true);
-        setDice([Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)]);
+    useEffect(() => {
+        if (!socket) return;
 
-        // show random tumbling first
-        // if (singleDie) {
-        //     setDice([Math.ceil(Math.random() * 6)]);
-        // } else {
-        //     setDice([
-        //         Math.ceil(Math.random() * 6),
-        //         Math.ceil(Math.random() * 6),
-        //     ]);
-        // }
-    });
+        const handleRollStart = ({ playerUniqueId: rollingPlayerId }) => {
+            console.log(
+                "Roll start event received for player:",
+                rollingPlayerId,
+            );
+            setRolling(true);
+            setShowDice(true);
+            setDice([
+                Math.ceil(Math.random() * 6),
+                Math.ceil(Math.random() * 6),
+            ]);
+        };
 
-    socket.on("roll-complete", (data) => {
-        console.log("Roll complete event received");
+        const handleRollResult = (data) => {
+            console.log("Roll result event received");
+            const { roll } = data;
+            const { die1, die2 } = roll;
+            setDice([die1, die2]);
 
-        const { roll } = data;
-        const { die1, die2 } = roll;
-        setDice([die1, die2]);
-        // stop tumbling, show final value
-        // if (singleDie) {
-        //     setDice([die1]);
-        // } else {
-        //     setDice([die1, die2]);
-        // }
+            setTimeout(() => setRolling(false), 500);
+            setTimeout(() => {
+                setShowDice(false);
+                onResult(data);
+            }, 1500);
+        };
 
-        // setRolling(false); // stops animation
+        socket.on("roll-start", handleRollStart);
+        socket.on("roll-result", handleRollResult);
 
-        // These timeouts set a slight delay for nicer dice settling effect
-        // small delay just for nicer "settle" effect (optional)
-        // keep dice visible for 1 second
-        setTimeout(() => {
-            setRolling(false);
-        }, 500);
-
-        setTimeout(() => {
-            setShowDice(false);
-            onResult(data);
-        }, 1500);
-    });
+        return () => {
+            socket.off("roll-start", handleRollStart);
+            socket.off("roll-result", handleRollResult);
+        };
+    }, [onResult]); // dependency only on onResult function
 
     const rollDice = () => {
-        if (rolling) return;
+        if (rolling || !playerUniqueId) return;
+        socket.emit("roll-start", { playerUniqueId });
+    };
 
-        // setRolling(true);
-        // setShowDice(true);
-
-        // // show random tumbling first
-        // if (singleDie) {
-        //     setDice([Math.ceil(Math.random() * 6)]);
-        // } else {
-        //     setDice([
-        //         Math.ceil(Math.random() * 6),
-        //         Math.ceil(Math.random() * 6),
-        //     ]);
-        // }
-
-        socket.emit("roll", { playerUniqueId });
-
-        // apiPost(`/game/${gameId}/roll`, { playerUniqueId }).then((data) => {
-        //     const { roll } = data;
-        //     const { die1, die2 } = roll;
-
-        //     // stop tumbling, show final value
-        //     if (singleDie) {
-        //         setDice([die1]);
-        //     } else {
-        //         setDice([die1, die2]);
-        //     }
-
-        //     setRolling(false); // stops animation
-
-        //     // These timeouts set a slight delay for nicer dice settling effect
-        //     // small delay just for nicer "settle" effect (optional)
-        //     // keep dice visible for 1 second
-        //     setTimeout(() => {
-        //         setShowDice(false);
-        //         onResult(data);
-        //     }, 1000);
-        // });
+    const dynamicStyle = {
+        background: !isYourTurn
+            ? "#bdc3c7" // disabled grey
+            : "#3498db",
     };
 
     return (
         <>
-            <button onClick={rollDice} style={styles.button}>
+            <button
+                onClick={rollDice}
+                style={{ ...styles.button, ...dynamicStyle }}
+                disabled={!isYourTurn}
+            >
                 🎲 Roll Dice
             </button>
 

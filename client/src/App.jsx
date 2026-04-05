@@ -16,7 +16,7 @@ function App() {
                     <Route path="/" element={<MainMenu />} />
                     <Route path="/join" element={<JoinGame />} />
                     <Route path="/start" element={<StartGame />} />
-                    <Route path="/game/:id" element={<Game />} />
+                    <Route path="/game/:gameId" element={<Game />} />
                 </Routes>
             </BrowserRouter>
         </>

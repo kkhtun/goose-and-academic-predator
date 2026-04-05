@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "../App.css";
 import * as R from "ramda";
 
 import Board from "./Board";
 import GameControls from "./GameControls";
-import TransitionOverlay from "./TransitionOverlay";
+// import TransitionOverlay from "./TransitionOverlay";
 import { POSITION_DESCRIPTIONS, POSITION_TYPE } from "../constants";
 // import { useLocalStorage } from "@uidotdev/usehooks";
 import QuizPopup from "./popups/QuizPopup";
@@ -14,19 +14,17 @@ import { toTitle } from "../utils";
 import Celebration from "./popups/Celebration";
 import { socket } from "../socket";
 import { toast } from "react-toastify";
-import useLocalStorage from "../hooks/useLocalStorage";
+// import useLocalStorage from "../hooks/useLocalStorage";
+import { findPlayer, updatePlayerPos } from "../utils/common.utils";
 
 function Game() {
     const navigate = useNavigate();
+    const { gameId } = useParams();
+    const [searchParams] = useSearchParams();
+    const playerUniqueId = searchParams.get("playerUniqueId");
 
-    const [gameState, setGameState] = useLocalStorage("GAME_STATE", null);
-
-    // const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
-    // const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
-    //     "PLAYER_UNIQUE_ID",
-    //     null,
-    // );
-    // const [playerName, setPlayerName] = useLocalStorage("PLAYER_NAME", null);
+    // const [gameState, setGameState] = useLocalStorage("GAME_STATE", null);
+    const [gameState, setGameState] = useState(null);
 
     const [position, setPosition] = useState(0);
     const [currentMoves, setCurrentMoves] = useState([]);
@@ -36,28 +34,9 @@ function Game() {
 
     const [popup, setPopup] = useState(null);
     const [won, setWon] = useState(false);
-    const [transition, setTransition] = useState(null);
-
-    const gameStateRef = useRef(gameState);
-    useEffect(() => {
-        gameStateRef.current = gameState; // always keep latest state in ref
-    }, [gameState]);
-
-    const { gameInfo, playerUniqueId } = gameState || {};
-    const { gameId } = gameInfo || {};
-
-    // useEffect(() => {
-    //     if (!gameId || !playerUniqueId) {
-    //         toast.error("Invalid Game Access");
-    //         navigate("/");
-    //     }
-    // }, [gameId, playerUniqueId]);
 
     // SocketIO
     useEffect(() => {
-        const { gameInfo, playerUniqueId } = gameStateRef.current;
-        const { gameId } = gameInfo;
-
         socket.connect();
 
         const handleConnect = () => {
@@ -75,7 +54,9 @@ function Game() {
                 gameInfo: updatedGameInfo,
                 playerUniqueId,
             });
-            toast.info(`Player ${joinedPlayerId} joined the game.`);
+            toast.info(
+                `${findPlayer(updatedGameInfo, joinedPlayerId).playerName} has joined the game.`,
+            );
         };
 
         const handleError = (err) => {
@@ -84,61 +65,58 @@ function Game() {
             toast.error(errMessage, { toastId: errMessage });
         };
 
+        const handleRollComplete = ({ gameInfo }) => {
+            setGameState((prev) => ({ ...prev, gameInfo }));
+        };
+
         socket.on("connect", handleConnect);
         socket.on("playerJoined", handlePlayerJoined);
+        socket.on("roll-complete", handleRollComplete);
         socket.on("error", handleError);
 
         return () => {
             socket.off("connect", handleConnect);
             socket.off("playerJoined", handlePlayerJoined);
+            socket.off("roll-complete", handleRollComplete);
             socket.off("error", handleError);
             socket.disconnect();
-            gameStateRef.current = null;
         };
-    }, []);
+    }, [gameId, playerUniqueId]);
 
-    const handleRoll = ({ roll, moves, game, gameInfo }) => {
+    if (!gameState) {
+        return <div>Loading game...</div>;
+    }
+
+    const handleRoll = ({ roll, moves, gameInfo }) => {
         const { total } = roll;
         setLastRoll(total);
-
         // which player moves which?
-        handleScore(game, playerUniqueId);
         setCurrentMoves(moves);
         takeStep(moves[0]);
     };
 
-    const handleScore = (game, playerId) => {
-        const { players } = game;
-        const player = players.find((p) => p.playerUniqueId === playerId);
-        if (player) setScore(player.score);
-    };
-
     const takeStep = (move) => {
-        const { next } = move;
+        const { next, playerUniqueId: movingPlayerId } = move;
+        setPosition(next);
 
-        const prevLevel = position >= 60 ? 2 : position >= 30 ? 1 : 0;
-        const nextLevel = next >= 60 ? 2 : next >= 30 ? 1 : 0;
-
-        if (nextLevel > prevLevel) {
-            let transitionType = "ELEVATOR";
-            if (nextLevel === 2) {
-                transitionType = score >= 60 ? "HEAVEN" : "HELL";
-            }
-            setTransition(transitionType);
-
-            setTimeout(() => {
-                setTransition(null);
-                setPosition(next);
-            }, 3000);
-        } else {
-            setPosition(next);
-        }
+        const { gameInfo } = gameState;
+        setGameState({
+            gameInfo: updatePlayerPos(gameInfo, movingPlayerId, next),
+            playerUniqueId,
+        });
     };
 
     const handlePieceArrive = (pos) => {
-        const { playerUniqueId, next, nextType, content, isActive } =
-            currentMoves[0];
+        const {
+            playerUniqueId: movingPlayerId,
+            next,
+            nextType,
+            content,
+            isActive,
+        } = currentMoves[0];
         setCurrentMoves(R.tail(currentMoves));
+
+        if (movingPlayerId !== playerUniqueId) return;
 
         if (pos >= 90) {
             const endgame = {
@@ -178,45 +156,42 @@ function Game() {
         setLastRoll(null);
         setPopup(null);
         setWon(false);
-        setTransition(null);
-        gameStateRef.current = null;
 
-        setGameState(null);
         socket.disconnect();
+        setGameState(null);
         navigate("/");
     };
 
-    const handleClosePopup = () => {
-        setPopup(null);
-        currentMoves[0] && takeStep(currentMoves[0]);
-        if (position >= 90) handleQuit();
-        setWon(false);
+    const checkRequestRollComplete = () => {
+        // If no moves left, we can call roll-complete
+        // Make sure this func is only called on popup closing
+        if (currentMoves.length === 0) {
+            socket.emit("request-roll-complete", { playerUniqueId });
+        }
     };
 
-    const handleSubmit = (option) => {
+    const handleCloseQuizPopup = () => {
         setPopup(null);
-        currentMoves[0] && takeStep(currentMoves[0]);
+        checkRequestRollComplete();
     };
 
-    const level = position >= 60 ? 2 : position >= 30 ? 1 : 0;
-    let realm = "NORMAL";
-    if (level === 1) realm = "PUBLISHING_HOUSE";
-    if (level === 2) realm = score >= 60 ? "HEAVEN" : "HELL";
+    const handleCloseInfoPopup = () => {
+        // Could have further moves (such as Goose)
+        setPopup(null);
+        checkRequestRollComplete();
+        currentMoves[0] && takeStep(currentMoves[0]);
+        if (position >= 90) {
+            handleQuit();
+        }
+    };
 
     return (
         <div
             className="game-wrapper"
             style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "stretch",
-                minHeight: "100vh",
-                padding: "16px",
-                boxSizing: "border-box",
-                width: "100%",
+                padding: 10,
             }}
         >
-            <TransitionOverlay type={transition} />
             <div
                 className="game-board"
                 style={{
@@ -228,9 +203,9 @@ function Game() {
             >
                 <Board
                     playerPosition={position}
-                    level={level}
-                    realm={realm}
                     onPieceArrive={handlePieceArrive}
+                    gameState={gameState}
+                    setGameState={setGameState}
                 />
 
                 <GameControls
@@ -240,46 +215,26 @@ function Game() {
                     position={position}
                     onRoll={handleRoll}
                     onQuit={handleQuit}
+                    gameState={gameState}
+                    setGameState={setGameState}
                 />
 
                 <QuizPopup
                     open={popup?.type === POSITION_TYPE.CHALLENGE}
                     payload={popup?.content}
-                    onClose={handleClosePopup}
-                    onSubmit={handleSubmit}
-                    handleScore={handleScore}
+                    onClose={handleCloseQuizPopup}
+                    // onSubmit={handleSubmit}
+                    gameState={gameState}
+                    setGameState={setGameState}
                 />
                 <InfoPopup
                     open={popup?.type === POSITION_TYPE.INFO}
                     payload={popup?.content}
-                    onClose={handleClosePopup}
+                    onClose={handleCloseInfoPopup}
                 />
 
                 <Celebration show={won} />
             </div>
-
-            {/* <GameControls
-        isCurrentTurn={true}
-        lastRoll={lastRoll}
-        points={score}
-        onRoll={(total) => handleRoll(total)}
-        onQuit={handleQuit}
-      /> */}
-
-            {/* <QuizPopup
-                open={popup?.type === POSITION_TYPE.CHALLENGE}
-                payload={popup?.content}
-                onClose={handleClosePopup}
-                onSubmit={handleSubmit}
-                handleScore={handleScore}
-            />
-            <InfoPopup
-                open={popup?.type === POSITION_TYPE.INFO}
-                payload={popup?.content}
-                onClose={handleClosePopup}
-            /> */}
-
-            {/* <Celebration show={won} /> */}
         </div>
     );
 }

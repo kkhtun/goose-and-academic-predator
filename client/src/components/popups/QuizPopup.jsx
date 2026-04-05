@@ -1,8 +1,8 @@
-import { useLocalStorage } from "@uidotdev/usehooks";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { apiPost } from "../../api";
 import { QUIZ_TYPE } from "../../constants";
 import CrosswordBuilder from "./CrosswordBuilder";
+import { socket } from "../../socket";
 
 function TrueFalseQuiz({ content, handleSubmit, hasAnswered }) {
     const { statement } = content;
@@ -100,18 +100,16 @@ export default function QuizPopup({
     open,
     onClose,
     payload = {},
-    handleScore,
+    gameState,
+    setGameState,
 }) {
     if (!open) return null;
 
     const [hasAnswered, setHasAnswered] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
 
-    const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
-    const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
-        "PLAYER_UNIQUE_ID",
-        null,
-    );
+    const { gameInfo, playerUniqueId } = gameState;
+    const { gameId } = gameInfo;
 
     const { type, content, _id: quizId } = payload;
 
@@ -121,20 +119,28 @@ export default function QuizPopup({
         onClose();
     };
 
-    const handleSubmit = (opt) => {
-        // Handle logic for answer check and feedback
-        apiPost(`/game/${gameId}/check-answer`, {
+    useEffect(() => {
+        const handleAnswerComplete = (data) => {
+            console.log("Answer complete event received");
+            const { isCorrect, gameInfo: updatedGameInfo } = data;
+            setHasAnswered(true);
+            setIsCorrect(isCorrect);
+            console.log("GameInfo ", updatedGameInfo);
+            setGameState({ playerUniqueId, gameInfo: updatedGameInfo });
+        };
+
+        socket.on("answer-complete", handleAnswerComplete);
+
+        return () => {
+            socket.off("answer-complete", handleAnswerComplete);
+        };
+    }, []);
+
+    const onSubmit = (opt) => {
+        socket.emit("check-answer", {
             playerUniqueId,
             quizId,
             answer: opt,
-        }).then((data) => {
-            const { isCorrect, game } = data;
-            setHasAnswered(true);
-            setIsCorrect(isCorrect);
-
-            if (isCorrect) {
-                handleScore(game, playerUniqueId);
-            }
         });
     };
 
@@ -167,21 +173,21 @@ export default function QuizPopup({
                     {type === QUIZ_TYPE.MCQ && (
                         <MCQQuiz
                             content={content}
-                            handleSubmit={handleSubmit}
+                            handleSubmit={onSubmit}
                             hasAnswered={hasAnswered}
                         />
                     )}
                     {type === QUIZ_TYPE.TRUE_FALSE && (
                         <TrueFalseQuiz
                             content={content}
-                            handleSubmit={handleSubmit}
+                            handleSubmit={onSubmit}
                             hasAnswered={hasAnswered}
                         />
                     )}
                     {type === QUIZ_TYPE.CROSS_WORDS && (
                         <CrosswordBuilder
                             content={content}
-                            handleSubmit={handleSubmit}
+                            handleSubmit={onSubmit}
                             hasAnswered={hasAnswered}
                         />
                     )}

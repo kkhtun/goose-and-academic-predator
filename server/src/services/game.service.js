@@ -71,12 +71,13 @@ async function retrieveContextFromTopic({
 // API functions (mapping 1 to 1 with api endpoints)
 
 // For frontend
-async function startGame({ initialPlayerName: playerName }) {
+async function startGame({ playerName, avatar }) {
     // Maybe more players here?
 
     const playerOneId = uuid();
     const player = {
         playerName,
+        avatar,
         playerUniqueId: playerOneId,
         status: PLAYER_STATUS.READY,
     };
@@ -84,6 +85,7 @@ async function startGame({ initialPlayerName: playerName }) {
     const newGame = new GameModel();
     newGame.moves = [];
     newGame.players = [player];
+    newGame.turnPlayerId = playerOneId;
 
     const game = await newGame.save();
     return {
@@ -111,6 +113,7 @@ async function addPlayer({ gameId, playerName, avatar }) {
         throw new CustomError("Cannot join already started games.");
 
     game.players.push(player);
+    if (!game.turnPlayerId) game.turnPlayerId = playerUniqueId;
     const updatedGame = await game.save();
 
     return {
@@ -124,8 +127,35 @@ async function getGame({ gameId }) {
     return game;
 }
 
-async function roll({ gameId, playerUniqueId }) {
-    const game = await GameModel.findById(gameId).exec();
+function getNextTurn({ game, currentPlayerId, currentPosType }) {
+    // If DICE_TWICE is currentPosType, then the same playerUniqueId is returned
+    if (currentPosType === POSITION_TYPE.DICE_TWICE)
+        return { releaseIds: [], nextId: currentPlayerId };
+
+    let nextIndex;
+    for (let i = 0; i < game.players.length; i++) {
+        if (game.players[i].playerUniqueId === currentPlayerId) nextIndex = i;
+    }
+
+    let releaseIds = [];
+    do {
+        nextIndex = (nextIndex + 1) % game.players.length;
+        const player = game.players[nextIndex];
+
+        if (player.status === PLAYER_STATUS.JUMPED) {
+            player.status = PLAYER_STATUS.READY;
+            releaseIds.push(player.playerUniqueId);
+        } else {
+            return {
+                releaseIds,
+                nextId: game.players[nextIndex].playerUniqueId,
+            };
+        }
+    } while (true);
+}
+
+async function validateGamePlayer({ gameId, playerUniqueId }) {
+    const game = await GameModel.findById(gameId);
     if (!game) throw new CustomError("Game not found");
 
     // Validity checks
@@ -134,8 +164,18 @@ async function roll({ gameId, playerUniqueId }) {
     );
     if (!player) throw new CustomError("Player not found in game");
 
+    return { game, player };
+}
+
+async function roll({ game, player }) {
+    const gameId = game._id;
+    const { playerUniqueId } = player;
+
     // Check if player is ready (is his turn)
     if (player.status !== PLAYER_STATUS.READY)
+        throw new CustomError("Not your turn");
+
+    if (playerUniqueId !== game.turnPlayerId)
         throw new CustomError("Not your turn");
 
     // Logic here for "can the player move?"
@@ -194,9 +234,15 @@ async function roll({ gameId, playerUniqueId }) {
                 isActive: true,
             });
         } else if (move.nextType === POSITION_TYPE.JUMP_TURN) {
-            break; // Since currently only one player
+            game.players = game.players.map((p) => {
+                if (p.playerUniqueId === playerUniqueId) {
+                    return { ...p, status: PLAYER_STATUS.JUMPED }; // Set to JUMPED
+                }
+                return p;
+            });
+            break;
         } else if (move.nextType === POSITION_TYPE.DICE_TWICE) {
-            break; // Since currently only one player
+            break;
         } else if (move.nextType === POSITION_TYPE.BACK_TO_START) {
             moves.push({
                 playerUniqueId,
@@ -240,9 +286,24 @@ async function roll({ gameId, playerUniqueId }) {
         }
     }
 
-    // Artificial delay for 1000ms
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    // // Update turn here (determine whose turn it is next)
+    // const { releaseIds, nextId } = getNextTurn({
+    //     game,
+    //     currentPlayerId: playerUniqueId,
+    // });
 
+    // // Release players from JUMPED to READY
+    // game.players = game.players.map((p) => {
+    //     if (releaseIds.includes(p.playerUniqueId)) {
+    //         return { ...p, status: PLAYER_STATUS.READY };
+    //     }
+    //     return p;
+    // });
+
+    // // Artificial delay for 1000ms
+    // // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // game.turnPlayerId = nextId;
     game.moves.push(...moves);
     await game.save();
     return {
@@ -253,17 +314,32 @@ async function roll({ gameId, playerUniqueId }) {
     };
 }
 
-async function answerQuiz({ gameId, playerUniqueId, quizId, answer }) {
-    // Check answer by the user and increment score
+async function updateTurn({ game, currentPlayerId }) {
+    // Update turn here (determine whose turn it is next)
+    const { moves } = game;
+    const { releaseIds, nextId } = getNextTurn({
+        game,
+        currentPlayerId,
+        currentPosType: moves.length > 0 ? moves[moves.length - 1] : null,
+    });
 
-    const game = await GameModel.findById(gameId).exec();
-    if (!game) throw new CustomError("Game not found");
+    // Release players from JUMPED to READY
+    game.players = game.players.map((p) => {
+        if (releaseIds.includes(p.playerUniqueId)) {
+            return { ...p, status: PLAYER_STATUS.READY };
+        }
+        return p;
+    });
 
-    // Validity checks
-    const player = game.players.find(
-        (p) => p.playerUniqueId === playerUniqueId
-    );
-    if (!player) throw new CustomError("Player not found in game");
+    game.turnPlayerId = nextId;
+    return { game: await game.save() };
+}
+
+async function prevalidateAnswerQuiz({ gameId, playerUniqueId, quizId }) {
+    const { game, player } = await validateGamePlayer({
+        gameId,
+        playerUniqueId,
+    });
 
     // Must be the last move (cannot re-answer old questions!!)
     const lastMove = game.moves[game.moves.length - 1];
@@ -275,6 +351,11 @@ async function answerQuiz({ gameId, playerUniqueId, quizId, answer }) {
     if (quiz._id.toString() !== quizId)
         throw new CustomError("Cannot answer question at this time");
 
+    return { game, quiz };
+}
+
+async function answerQuiz({ game, quiz, playerUniqueId, answer }) {
+    // Check answer by the user and increment score
     let isCorrect = false;
     const quizContent = quiz.content;
     if (quiz.type === QUIZ_TYPE.CROSS_WORDS) {
@@ -318,41 +399,19 @@ async function getTopics() {
     return { data: topics, count: topics.length };
 }
 
-// Quizzes
-// async function generateMcqBatch({
-//     topic,
-//     difficulty,
-//     kbCount = 10,
-//     outputCount = 5,
-// }) {
-//     // can refine the 'query'
-//     const retrievedChunks = await retrieveContextFromTopic({
-//         topic,
-//         query: `${topic} facts`,
-//         difficulty,
-//         limit: 100,
-//     });
-
-//     // Take first count entries
-//     const chunks = retrievedChunks.slice(0, kbCount);
-
-//     const generatedQuizzes = await callGenerateMcqBatchFromContext({
-//         topic,
-//         difficulty,
-//         retrievedChunks: chunks,
-//         count: outputCount,
-//     });
-
-//     const insertedQuizzes = await QuizModel.insertMany(generatedQuizzes);
-//     return insertedQuizzes;
-// }
-
 module.exports = {
     retrieveContextFromTopic,
     // API funcs
     startGame,
+
+    validateGamePlayer,
     roll,
+
+    prevalidateAnswerQuiz,
     answerQuiz,
+
+    updateTurn,
+
     // House keeping
     getQuiz,
     // generateMcqBatch,

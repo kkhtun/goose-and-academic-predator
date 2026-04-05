@@ -10,7 +10,8 @@ const {
 module.exports = {
     startGame: async (req, res, next) => {
         const schema = Joi.object({
-            initialPlayerName: Joi.string().required(),
+            playerName: Joi.string().required(),
+            avatar: Joi.string().required(),
         });
         const { error, value } = schema.validate(req.body || {});
         if (error) return next(error);

@@ -19,17 +19,12 @@ export default function StartGame() {
         if (!name) return toast.error("Please enter a valid player name.");
         if (!avatar) return toast.error("Please select a player avatar.");
 
-        apiPost("/game/start", { initialPlayerName: name }).then((data) => {
+        apiPost("/game/start", { playerName: name, avatar }).then((data) => {
             const { playerUniqueId, gameInfo } = data;
             const { gameId } = gameInfo;
-            setGameState({ playerUniqueId, gameInfo });
+            // setGameState({ playerUniqueId, gameInfo });
 
-            // setGameId(_id);
-            // setPlayerName(playerName);
-            // setPlayerUniqueId(playerUniqueId);
-            // setPlayerAvatar(avatar);
-
-            navigate(`/game/${gameId}`);
+            navigate(`/game/${gameId}?playerUniqueId=${playerUniqueId}`);
         });
     };
 

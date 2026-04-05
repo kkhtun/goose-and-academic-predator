@@ -9,53 +9,25 @@ import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function JoinGame() {
     const navigate = useNavigate();
-    const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
-
-    // const [popup, setPopup] = useState(null);
-    // const [gameId, setGameId] = useLocalStorage("GAME_ID", null);
-    // const [playerUniqueId, setPlayerUniqueId] = useLocalStorage(
-    //     "PLAYER_UNIQUE_ID",
-    //     null,
-    // );
-    // const [playerName, setPlayerName] = useLocalStorage("PLAYER_NAME", null);
-    // const [playerAvatar, setPlayerAvatar] = useLocalStorage(
-    //     "PLAYER_AVATAR",
-    //     "dog",
-    // );
+    // const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
 
     // Component states
     const [name, setName] = useState("");
     const [avatar, setAvatar] = useState("");
-    const [url, setURL] = useState("");
-
-    const extractGameId = (urlString) => {
-        try {
-            const url = new URL(urlString);
-            const parts = url.pathname.split("/").filter(Boolean);
-
-            if (parts.length === 2 && parts[0] === "game") {
-                return parts[1];
-            }
-            return null;
-        } catch {
-            return null;
-        }
-    };
+    const [gameId, setGameId] = useState("");
 
     const handleJoinGame = () => {
         if (!name) return toast.error("Please enter a valid player name.");
         if (!avatar) return toast.error("Please select a player avatar.");
-
-        const gameId = extractGameId(url);
-        if (!gameId) return toast.error("Please provide a valid game URL.");
+        if (!gameId) return toast.error("Please provide a valid game ID.");
 
         apiPost("/game/add-player", { gameId, playerName: name, avatar }).then(
             (data) => {
                 const { playerUniqueId, gameInfo } = data;
-                setGameState({ playerUniqueId, gameInfo });
+                // setGameState({ playerUniqueId, gameInfo });
 
                 const { gameId } = gameInfo;
-                navigate(`/game/${gameId}`);
+                navigate(`/game/${gameId}?playerUniqueId=${playerUniqueId}`);
             },
         );
     };
@@ -155,14 +127,14 @@ export default function JoinGame() {
                         />
                     </div>
 
-                    {/* Game URL Text */}
+                    {/* Game ID Text */}
                     <div style={{}}>
-                        <h3 style={{}}>Game URL</h3>
+                        <h3 style={{}}>Game ID</h3>
                         <input
                             type="text"
                             required
-                            placeholder="Game URL"
-                            onChange={(e) => setURL(e.target.value)}
+                            placeholder="Game ID"
+                            onChange={(e) => setGameId(e.target.value)}
                             // onKeyDown={handleKeyDown}
                             autoFocus={true}
                             style={{
@@ -173,7 +145,7 @@ export default function JoinGame() {
                                 fontSize: 14,
                                 boxSizing: "border-box",
                             }}
-                            value={url}
+                            value={gameId}
                         />
                     </div>
 
@@ -207,13 +179,6 @@ export default function JoinGame() {
                         Back
                     </button>
                 </>
-
-                {/* <ShortAnswerPopup
-                    open={!!popup}
-                    payload={popup}
-                    onClose={handleClosePopup}
-                    onSubmit={handleSubmitPopup}
-                /> */}
             </div>
         </div>
     );

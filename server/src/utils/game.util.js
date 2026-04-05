@@ -2,7 +2,7 @@ const { CustomError } = require("./CustomError");
 
 const PLAYER_STATUS = {
     READY: "READY",
-    WAIT: "WAIT",
+    JUMPED: "JUMPED",
 };
 
 const POSITION_DESCRIPTIONS = {
@@ -157,7 +157,7 @@ function getPlayerPos({ playerUniqueId, moves }) {
 }
 
 function formatGameInfoForClientStore(game) {
-    const { _id: gameId, players, moves } = game;
+    const { _id: gameId, players, moves, turnPlayerId } = game;
     return {
         gameId,
         players: players.map((player) => {
@@ -173,6 +173,7 @@ function formatGameInfoForClientStore(game) {
                 score: player.score,
             };
         }),
+        turnPlayerId,
     };
 }
 

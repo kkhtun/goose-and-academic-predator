@@ -48,7 +48,7 @@ const gameSchema = new mongoose.Schema(
                 },
                 status: {
                     type: String,
-                    enum: Object.values(PLAYER_STATUS),
+                    enum: Object.values(PLAYER_STATUS), // For jump or not
                     required: true,
                 },
                 score: {
@@ -57,6 +57,10 @@ const gameSchema = new mongoose.Schema(
                 },
             },
         ],
+        turnPlayerId: {
+            type: String,
+            required: true,
+        },
     },
     {
         timestamps: true,
