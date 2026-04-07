@@ -209,7 +209,7 @@ async function roll({ game, player }) {
         let move = moves[moves.length - 1];
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
             const randomQuiz = await QuizModel.aggregate([
-                // { $match: { type: QUIZ_TYPE.CROSS_WORDS } }, // ADJUST here if you want only 1 quiz type for testing
+                { $match: { type: QUIZ_TYPE.TRUE_FALSE } }, // ADJUST here if you want only 1 quiz type for testing
                 { $sample: { size: 1 } },
             ]);
             move.content = {
@@ -286,20 +286,6 @@ async function roll({ game, player }) {
         }
     }
 
-    // // Update turn here (determine whose turn it is next)
-    // const { releaseIds, nextId } = getNextTurn({
-    //     game,
-    //     currentPlayerId: playerUniqueId,
-    // });
-
-    // // Release players from JUMPED to READY
-    // game.players = game.players.map((p) => {
-    //     if (releaseIds.includes(p.playerUniqueId)) {
-    //         return { ...p, status: PLAYER_STATUS.READY };
-    //     }
-    //     return p;
-    // });
-
     // // Artificial delay for 1000ms
     // // await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -308,6 +294,7 @@ async function roll({ game, player }) {
     await game.save();
     return {
         roll: throwResult,
+        rollingPlayerId: playerUniqueId,
         moves,
         game: R.omit(["moves"], game.toObject()),
         gameInfo: formatGameInfoForClientStore(game),
@@ -333,6 +320,22 @@ async function updateTurn({ game, currentPlayerId }) {
 
     game.turnPlayerId = nextId;
     return { game: await game.save() };
+}
+
+// We will lock the game at the start of each roll
+// To prevent players spamming the roll button while the calculations in backend haven't finished
+async function lockRolling(gameId, isLocked) {
+    const game = await GameModel.findOneAndUpdate(
+        { _id: gameId },
+        { $set: { isLocked } },
+        { new: true }
+    );
+    return game;
+}
+
+async function checkIsLocked(gameId) {
+    const game = await GameModel.findById(gameId);
+    return game.isLocked;
 }
 
 async function prevalidateAnswerQuiz({ gameId, playerUniqueId, quizId }) {
@@ -406,6 +409,8 @@ module.exports = {
 
     validateGamePlayer,
     roll,
+    lockRolling,
+    checkIsLocked,
 
     prevalidateAnswerQuiz,
     answerQuiz,

@@ -15,6 +15,7 @@
         "crossword-layout-generator": "^0.1.1",
         "express": "^5.2.1",
         "joi": "^18.0.2",
+        "joi-objectid": "^4.0.2",
         "mongoose": "^9.1.5",
         "openai": "^6.9.1",
         "ramda": "^0.32.0",

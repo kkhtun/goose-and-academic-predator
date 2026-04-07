@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { apiPost } from "../../api";
 import { QUIZ_TYPE } from "../../constants";
 import CrosswordBuilder from "./CrosswordBuilder";
 import { socket } from "../../socket";
+import CancelButton from "../buttons/CancelButton";
+import PrimaryButton from "../buttons/PrimaryButton";
+import SecondaryButton from "../buttons/SecondaryButton";
 
 function TrueFalseQuiz({ content, handleSubmit, hasAnswered }) {
     const { statement } = content;
-    const options = ["True", "False"];
 
     return (
         <>
@@ -20,34 +21,16 @@ function TrueFalseQuiz({ content, handleSubmit, hasAnswered }) {
                     gap: 12, // space between True and False
                 }}
             >
-                {options.map((opt) => {
-                    // Set color scheme for True vs False
-                    const isTrue = opt === "True";
-                    const bgColor = isTrue ? "#d1fae5" : "#fee2e2"; // greenish for True, reddish for False
-                    const textColor = isTrue ? "#065f46" : "#b91c1c";
-
-                    return (
-                        <button
-                            key={opt}
-                            onClick={() => handleSubmit(isTrue)}
-                            disabled={hasAnswered}
-                            style={{
-                                padding: "10px 20px",
-                                borderRadius: 6,
-                                border: "1px solid #ddd",
-                                background: bgColor,
-                                color: textColor,
-                                cursor: "pointer",
-                                fontSize: 18,
-                                fontWeight: 600,
-                                flex: 1,
-                                maxWidth: 120,
-                            }}
-                        >
-                            {opt}
-                        </button>
-                    );
-                })}
+                <PrimaryButton
+                    text={"True"}
+                    onClick={() => handleSubmit(true)}
+                    disabled={hasAnswered}
+                />
+                <SecondaryButton
+                    text={"False"}
+                    onClick={() => handleSubmit(false)}
+                    disabled={hasAnswered}
+                />
             </div>
         </>
     );
@@ -69,27 +52,21 @@ function MCQQuiz({ content, handleSubmit, hasAnswered }) {
             </div>
             <div style={{ display: "grid", gap: 8 }}>
                 {options.map((opt, i) => (
-                    <button
+                    <PrimaryButton
                         key={i}
+                        text={
+                            <div style={{ display: "flex" }}>
+                                <span style={{ fontWeight: 700 }}>
+                                    {String.fromCharCode(65 + i)}.&nbsp;
+                                </span>
+                                {opt}
+                            </div>
+                        }
                         onClick={() =>
                             handleSubmit(String.fromCharCode(65 + i))
                         }
                         disabled={hasAnswered}
-                        style={{
-                            padding: "8px 12px",
-                            borderRadius: 6,
-                            border: "1px solid #ddd",
-                            background: "#fff",
-                            cursor: "pointer",
-                            fontSize: 16,
-                            textAlign: "left",
-                        }}
-                    >
-                        <span style={{ fontWeight: 700 }}>
-                            {String.fromCharCode(65 + i)}.&nbsp;
-                        </span>
-                        {opt}
-                    </button>
+                    />
                 ))}
             </div>
         </>
@@ -145,6 +122,7 @@ export default function QuizPopup({
     };
 
     return (
+        // This code looks spaghetti at the moment but crosswords will handle its own dialog
         <div
             role="dialog"
             aria-modal="true"
@@ -162,7 +140,7 @@ export default function QuizPopup({
             <div
                 onClick={(e) => e.stopPropagation()}
                 style={{
-                    maxWidth: "60%",
+                    width: type === QUIZ_TYPE.CROSS_WORDS ? "80%" : "60%",
                     background: "#ffffff",
                     borderRadius: 8,
                     padding: 30,
@@ -189,10 +167,11 @@ export default function QuizPopup({
                             content={content}
                             handleSubmit={onSubmit}
                             hasAnswered={hasAnswered}
+                            isCorrect={isCorrect}
                         />
                     )}
 
-                    {hasAnswered && (
+                    {type !== QUIZ_TYPE.CROSS_WORDS && hasAnswered && (
                         <div
                             style={{
                                 marginTop: 12,
@@ -236,19 +215,11 @@ export default function QuizPopup({
                         marginTop: 14,
                     }}
                 >
-                    <button
+                    <CancelButton
+                        text={"Close"}
                         onClick={handleClose}
-                        style={{
-                            padding: "8px 12px",
-                            borderRadius: 8,
-                            border: "1px solid #ddd",
-                            background: "#f5f5f5",
-                            cursor: "pointer",
-                        }}
                         disabled={!hasAnswered}
-                    >
-                        Close
-                    </button>
+                    />
                 </div>
             </div>
         </div>

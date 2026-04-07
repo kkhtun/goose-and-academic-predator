@@ -1,6 +1,7 @@
 import { useState } from "react";
+import PrimaryButton from "../buttons/PrimaryButton";
 
-const CROSSWORD_FILL_RATIO = 0.9; // 20% letters prefilled
+const CROSSWORD_FILL_RATIO = 1; // 20% letters prefilled
 
 function createStartingPosLookupObj(wordResults) {
     const obj = {};
@@ -12,9 +13,8 @@ function createStartingPosLookupObj(wordResults) {
     return obj;
 }
 
-function CrosswordBuilder({ content, handleSubmit, hasAnswered }) {
+function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
     const crosswordData = content;
-    console.log(content);
     const startPosLookup = createStartingPosLookupObj(crosswordData.result);
 
     // Pre-fill letters randomly based on crosswordData.table
@@ -52,9 +52,12 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered }) {
             alignItems: "center",
             fontFamily: "Arial, sans-serif",
             background: "#f0f4f8",
-            padding: "20px",
+            padding: 20,
         },
-        title: { color: "#333" },
+        puzzle: {
+            display: "flex",
+            marginBottom: 16,
+        },
         crossword: {
             display: "grid",
             gridTemplateColumns: `repeat(${crosswordData.cols}, 30px)`,
@@ -75,125 +78,151 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered }) {
         blocked: { background: "#333" },
         cluesContainer: {
             display: "flex",
-            justifyContent: "space-between",
-            marginTop: "20px",
-            marginBottom: "20px",
-            width: "90%",
+            flexDirection: "column",
+            marginLeft: 20,
         },
-        clueSection: { width: "48%", fontSize: 14 },
+        clueSection: { fontSize: 14 },
         clueTitle: { fontWeight: "bold", marginBottom: "10px" },
-        clue: { marginBottom: "8px" },
+        clue: { marginBottom: "4px" },
         status: { marginTop: "20px", fontSize: "18px" },
         solved: { color: "green", fontWeight: "bold" },
     };
 
     return (
         <div style={styles.app}>
-            {/* <h1 style={styles.title}>Crossword Puzzle</h1> */}
-            <div style={styles.crossword}>
-                {crosswordData.table.map((row, rIdx) =>
-                    row.map((cell, cIdx) => (
+            <div style={styles.puzzle}>
+                <div style={styles.crossword}>
+                    {crosswordData.table.map((row, rIdx) =>
+                        row.map((cell, cIdx) => (
+                            <div
+                                key={`${rIdx}-${cIdx}`}
+                                style={{
+                                    position: "relative",
+                                    width: "30px",
+                                    height: "30px",
+                                }}
+                            >
+                                <input
+                                    style={{
+                                        ...styles.cell,
+                                        ...(cell === "-" ? styles.blocked : {}),
+                                        width: "100%",
+                                        height: "100%",
+                                    }}
+                                    disabled={cell === "-"}
+                                    value={grid[rIdx][cIdx]}
+                                    onChange={(e) =>
+                                        handleChange(rIdx, cIdx, e.target.value)
+                                    }
+                                    maxLength={1}
+                                />
+                                {/* for some reason, rIdx is actually column value so we put it after comma */}
+                                {startPosLookup[`${cIdx + 1},${rIdx + 1}`] && (
+                                    <span
+                                        style={{
+                                            position: "absolute",
+                                            top: "2px",
+                                            left: "2px",
+                                            fontSize: "10px",
+                                            fontWeight: "bold",
+                                            color: "#555",
+                                            pointerEvents: "none", // click goes through to input
+                                        }}
+                                    >
+                                        {
+                                            startPosLookup[
+                                                `${cIdx + 1},${rIdx + 1}`
+                                            ].position
+                                        }
+                                    </span>
+                                )}
+                            </div>
+                        )),
+                    )}
+                </div>
+
+                <div style={styles.cluesContainer}>
+                    <div style={styles.clueSection}>
+                        <div style={styles.clueTitle}>Across</div>
+                        {crosswordData.result
+                            .filter((c) => c.orientation === "across")
+                            .map((c) => (
+                                <div key={c.position} style={styles.clue}>
+                                    <strong>{c.position}.</strong> {c.clue}
+                                </div>
+                            ))}
+                    </div>
+                    <div style={styles.clueSection}>
+                        <div style={styles.clueTitle}>Down</div>
+                        {crosswordData.result
+                            .filter((c) => c.orientation === "down")
+                            .map((c) => (
+                                <div key={c.position} style={styles.clue}>
+                                    <strong>{c.position}.</strong> {c.clue}
+                                </div>
+                            ))}
+                    </div>
+
+                    <hr
+                        style={{
+                            width: "100%",
+                            border: "none",
+                            borderTop: "1px solid #ccc",
+                            margin: "16px 0",
+                        }}
+                    />
+
+                    <div style={{ marginTop: 10 }}>
+                        {isSolved() ? (
+                            <PrimaryButton
+                                onClick={() => handleSubmit(grid)}
+                                disabled={hasAnswered}
+                                text={"Submit"}
+                            />
+                        ) : (
+                            <div style={{ fontSize: 14, color: "orange" }}>
+                                Please fill the missing letters to solve the
+                                puzzle.
+                            </div>
+                        )}
+                    </div>
+
+                    {hasAnswered && (
                         <div
-                            key={`${rIdx}-${cIdx}`}
                             style={{
-                                position: "relative",
-                                width: "30px",
-                                height: "30px",
+                                marginTop: 12,
+                                padding: 12,
+                                borderRadius: 8,
+                                background: isCorrect ? "#f0f9ff" : "#fef2f2",
+                                border: `1px solid ${isCorrect ? "#0ea5e9" : "#f87171"}`,
                             }}
                         >
-                            <input
+                            <div
                                 style={{
-                                    ...styles.cell,
-                                    ...(cell === "-" ? styles.blocked : {}),
-                                    width: "100%",
-                                    height: "100%",
+                                    color: isCorrect ? "#0369a1" : "#dc2626",
+                                    fontWeight: 600,
                                 }}
-                                disabled={cell === "-"}
-                                value={grid[rIdx][cIdx]}
-                                onChange={(e) =>
-                                    handleChange(rIdx, cIdx, e.target.value)
-                                }
-                                maxLength={1}
-                            />
-                            {/* for some reason, rIdx is actually column value so we put it after comma */}
-                            {startPosLookup[`${cIdx + 1},${rIdx + 1}`] && (
-                                <span
+                            >
+                                {isCorrect
+                                    ? "✓ Your answer is correct!"
+                                    : "✗ Your answer is incorrect."}
+                            </div>
+                            {/* {content.explanation && (
+                                <div
                                     style={{
-                                        position: "absolute",
-                                        top: "2px",
-                                        left: "2px",
-                                        fontSize: "10px",
-                                        fontWeight: "bold",
-                                        color: "#555",
-                                        pointerEvents: "none", // click goes through to input
+                                        color: isCorrect
+                                            ? "#0369a1"
+                                            : "#dc2626",
+                                        fontSize: 14,
                                     }}
                                 >
-                                    {
-                                        startPosLookup[
-                                            `${cIdx + 1},${rIdx + 1}`
-                                        ].position
-                                    }
-                                </span>
-                            )}
+                                    {content.explanation}
+                                </div>
+                            )} */}
                         </div>
-                    )),
-                )}
-            </div>
-
-            <div style={styles.cluesContainer}>
-                <div style={styles.clueSection}>
-                    <div style={styles.clueTitle}>Across</div>
-                    {crosswordData.result
-                        .filter((c) => c.orientation === "across")
-                        .map((c) => (
-                            <div key={c.position} style={styles.clue}>
-                                <strong>{c.position}.</strong> {c.clue}
-                            </div>
-                        ))}
-                </div>
-                <div style={styles.clueSection}>
-                    <div style={styles.clueTitle}>Down</div>
-                    {crosswordData.result
-                        .filter((c) => c.orientation === "down")
-                        .map((c) => (
-                            <div key={c.position} style={styles.clue}>
-                                <strong>{c.position}.</strong> {c.clue}
-                            </div>
-                        ))}
+                    )}
                 </div>
             </div>
-
-            {isSolved() ? (
-                <div>
-                    <button
-                        onClick={() => handleSubmit(grid)}
-                        disabled={hasAnswered}
-                        style={{
-                            padding: "10px 20px",
-                            borderRadius: 6,
-                            border: "1px solid #ddd",
-                            cursor: "pointer",
-                            fontSize: 18,
-                            fontWeight: 600,
-                            flex: 1,
-                            maxWidth: 120,
-                        }}
-                    >
-                        Submit
-                    </button>
-                </div>
-            ) : (
-                "Fill all letters to solve"
-            )}
-
-            {/* <div style={styles.status}>
-                {isSolved() ? (
-                    // <span style={styles.solved}>🎉 Crossword Solved!</span>
-                   
-                ) : (
-                    "Fill all letters to solve"
-                )}
-            </div> */}
         </div>
     );
 }

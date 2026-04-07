@@ -13,12 +13,12 @@ export const POSITION_TYPE = {
 };
 
 export const POSITION_DESCRIPTIONS = {
-    STANDARD: "Nothing happens when the player lands in this square",
-    GOOSE: "You stepped on the Goose! Make another move based on the previous roll",
-    CHALLENGE: "Please answer a pop-up MCQ quiz to get a score",
-    INFO: "Here is some information to educate yourself",
-    JUMP_TURN: "Your turn has been skipped",
-    DICE_TWICE: "You get another chance to pull the dice",
+    STANDARD: "Nothing happens when the player lands in this square.",
+    GOOSE: "You stepped on the Goose! Make another move based on the previous roll.",
+    CHALLENGE: "Please answer a pop-up MCQ quiz to get a score.",
+    INFO: "Here is some information to educate yourself.",
+    JUMP_TURN: "Your turn has been skipped.",
+    DICE_TWICE: "You get another chance to pull the dice.",
     BACK_TO_START: "You go back to start again!",
     LUCKY: "You stepped on a lucky box. Your score has been doubled!",
     // RETURN_PREV: "RETURN_PREV", // Return to previous position

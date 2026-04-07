@@ -21,15 +21,15 @@ export default function JoinGame() {
         if (!avatar) return toast.error("Please select a player avatar.");
         if (!gameId) return toast.error("Please provide a valid game ID.");
 
-        apiPost("/game/add-player", { gameId, playerName: name, avatar }).then(
-            (data) => {
+        apiPost("/game/add-player", { gameId, playerName: name, avatar })
+            .then((data) => {
                 const { playerUniqueId, gameInfo } = data;
                 // setGameState({ playerUniqueId, gameInfo });
 
                 const { gameId } = gameInfo;
                 navigate(`/game/${gameId}?playerUniqueId=${playerUniqueId}`);
-            },
-        );
+            })
+            .catch((err) => toast.error(err.message));
     };
 
     return (

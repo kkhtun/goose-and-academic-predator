@@ -16,6 +16,7 @@ import { socket } from "../socket";
 import { toast } from "react-toastify";
 // import useLocalStorage from "../hooks/useLocalStorage";
 import { findPlayer, updatePlayerPos } from "../utils/common.utils";
+import { BoxIcon } from "./icons/BoxIcon";
 
 function Game() {
     const navigate = useNavigate();
@@ -27,11 +28,15 @@ function Game() {
     const [gameState, setGameState] = useState(null);
 
     const [position, setPosition] = useState(0);
+
+    // A roll includes all dice throws, popups and answerings
+    // These states (rollingPlayerId and currentMoves) are only concerned with moving the piece on board and calling correct events
+    // Not involved with turn synchronization or validation
+    const [rollingPlayerId, setRollingPlayerId] = useState(null);
     const [currentMoves, setCurrentMoves] = useState([]);
 
     const [lastRoll, setLastRoll] = useState(null);
     const [score, setScore] = useState(0);
-
     const [popup, setPopup] = useState(null);
     const [won, setWon] = useState(false);
 
@@ -83,26 +88,52 @@ function Game() {
         };
     }, [gameId, playerUniqueId]);
 
-    if (!gameState) {
-        return <div>Loading game...</div>;
-    }
-
-    const handleRoll = ({ roll, moves, gameInfo }) => {
+    const handleRoll = ({ roll, moves, gameInfo, rollingPlayerId }) => {
         const { total } = roll;
+        setRollingPlayerId(rollingPlayerId);
         setLastRoll(total);
-        // which player moves which?
         setCurrentMoves(moves);
-        takeStep(moves[0]);
     };
 
-    const takeStep = (move) => {
-        const { next, playerUniqueId: movingPlayerId } = move;
-        setPosition(next);
+    const checkRequestRollComplete = () => {
+        // If no moves left, we can call roll-complete
+        // Make sure this func is only called when player has nothing left to do such as popup closing
+        if (currentMoves.length === 0) {
+            socket.emit("request-roll-complete", { playerUniqueId });
+            console.log(
+                "Roll complete event requested by player " + playerUniqueId,
+            );
+        }
+    };
 
+    useEffect(() => {
+        if (currentMoves.length === 0) {
+            setRollingPlayerId(null);
+        }
+    }, [currentMoves]);
+
+    useEffect(() => {
+        if (!rollingPlayerId) return;
+        if (rollingPlayerId === playerUniqueId && currentMoves.length === 0) {
+            checkRequestRollComplete(); // Will only hit if rollingPlayer is the same as you (client)
+            return;
+        }
+        if (currentMoves.length === 0) return;
+        const move = currentMoves[0];
+        const { next } = move;
         const { gameInfo } = gameState;
         setGameState({
-            gameInfo: updatePlayerPos(gameInfo, movingPlayerId, next),
+            gameInfo: updatePlayerPos(gameInfo, rollingPlayerId, next),
             playerUniqueId,
+        });
+    }, [currentMoves, rollingPlayerId]);
+
+    // Could be multiple moves (such as Goose)
+    // useEffect will trigger upon queueing updated move
+    const queueNextMove = () => {
+        setCurrentMoves((prevMoves) => {
+            const updatedMoves = R.tail(prevMoves);
+            return updatedMoves;
         });
     };
 
@@ -114,9 +145,10 @@ function Game() {
             content,
             isActive,
         } = currentMoves[0];
-        setCurrentMoves(R.tail(currentMoves));
 
-        if (movingPlayerId !== playerUniqueId) return;
+        if (movingPlayerId !== playerUniqueId) {
+            return queueNextMove();
+        }
 
         if (pos >= 90) {
             const endgame = {
@@ -126,7 +158,7 @@ function Game() {
             setWon(true);
             setPopup({ type: POSITION_TYPE.INFO, content: endgame });
         } else if (pos == 0 || isActive === false) {
-            return;
+            queueNextMove();
         } else if (pos === next) {
             if (nextType === POSITION_TYPE.CHALLENGE) {
                 const { quiz } = content;
@@ -135,17 +167,42 @@ function Game() {
                 setPopup({
                     type: POSITION_TYPE.INFO,
                     content: {
-                        title: `Special Box - ${toTitle(nextType)}`,
+                        title: (
+                            <div>
+                                Special Box{" "}
+                                <BoxIcon number={pos} type={nextType} /> -{" "}
+                                {toTitle(nextType)}
+                            </div>
+                        ),
                         text: content.info,
                     },
                 });
             } else {
                 const content = {
-                    title: `Special Box - ${toTitle(nextType)}`,
+                    title: (
+                        <div>
+                            Special Box <BoxIcon number={pos} type={nextType} />{" "}
+                            - {toTitle(nextType)}
+                        </div>
+                    ),
                     text: POSITION_DESCRIPTIONS[nextType],
                 };
                 setPopup({ type: POSITION_TYPE.INFO, content });
             }
+        }
+    };
+
+    const handleCloseQuizPopup = () => {
+        setPopup(null);
+        queueNextMove();
+    };
+
+    const handleCloseInfoPopup = () => {
+        // Could have further moves (such as Goose)
+        setPopup(null);
+        queueNextMove();
+        if (position >= 90) {
+            handleQuit();
         }
     };
 
@@ -162,28 +219,9 @@ function Game() {
         navigate("/");
     };
 
-    const checkRequestRollComplete = () => {
-        // If no moves left, we can call roll-complete
-        // Make sure this func is only called on popup closing
-        if (currentMoves.length === 0) {
-            socket.emit("request-roll-complete", { playerUniqueId });
-        }
-    };
-
-    const handleCloseQuizPopup = () => {
-        setPopup(null);
-        checkRequestRollComplete();
-    };
-
-    const handleCloseInfoPopup = () => {
-        // Could have further moves (such as Goose)
-        setPopup(null);
-        checkRequestRollComplete();
-        currentMoves[0] && takeStep(currentMoves[0]);
-        if (position >= 90) {
-            handleQuit();
-        }
-    };
+    if (!gameState) {
+        return <div>Loading game...</div>;
+    }
 
     return (
         <div

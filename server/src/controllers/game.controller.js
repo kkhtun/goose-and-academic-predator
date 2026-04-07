@@ -1,6 +1,7 @@
 const GameService = require("../services/game.service");
 const QuizService = require("../services/quiz.service");
 const Joi = require("joi");
+Joi.objectId = require("joi-objectid")(Joi);
 const {
     BOARD_POSITIONS,
     POSITION_TYPE,
@@ -26,7 +27,12 @@ module.exports = {
 
     addPlayer: async (req, res, next) => {
         const schema = Joi.object({
-            gameId: Joi.string().required(),
+            gameId: Joi.objectId().required().messages({
+                "string.pattern.base": "Invalid Game ID",
+                "string.pattern.name": "Invalid Game ID",
+                "any.required": "Game ID is required",
+                "string.empty": "Game ID cannot be empty",
+            }),
             playerName: Joi.string().required(),
             avatar: Joi.string().required(),
         });

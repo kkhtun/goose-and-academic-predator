@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 const API_BASE = import.meta.env.VITE_API_HOST;
 
 export async function apiGet(path) {
@@ -12,6 +14,20 @@ export async function apiPost(path, body) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body ?? {}),
     });
-    if (!res.ok) throw new Error(`POST ${path} failed: ${res.status}`);
-    return res.json();
+
+    let data;
+
+    try {
+        data = await res.json(); // try parse response
+    } catch {
+        data = null;
+    }
+
+    if (!res.ok) {
+        const message = data?.message || "Something went wrong";
+        throw new Error(message);
+    }
+
+    // success
+    return data;
 }

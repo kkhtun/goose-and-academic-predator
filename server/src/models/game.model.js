@@ -61,6 +61,11 @@ const gameSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        isLocked: {
+            // if true, prevent any further rolling
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,

@@ -1,3 +1,5 @@
+import CancelButton from "../buttons/CancelButton";
+
 export default function InfoPopup({ open, onClose, payload = {} }) {
     if (!open) return null;
 
@@ -24,7 +26,7 @@ export default function InfoPopup({ open, onClose, payload = {} }) {
             <div
                 onClick={(e) => e.stopPropagation()}
                 style={{
-                    maxWidth: "60%",
+                    width: "60%",
                     background: "#ffffff",
                     borderRadius: 8,
                     padding: 30,
@@ -51,18 +53,7 @@ export default function InfoPopup({ open, onClose, payload = {} }) {
                         marginTop: 14,
                     }}
                 >
-                    <button
-                        onClick={handleClose}
-                        style={{
-                            padding: "8px 12px",
-                            borderRadius: 8,
-                            border: "1px solid #ddd",
-                            background: "#f5f5f5",
-                            cursor: "pointer",
-                        }}
-                    >
-                        Close
-                    </button>
+                    <CancelButton text={"Close"} onClick={handleClose} />
                 </div>
             </div>
         </div>

@@ -10,7 +10,7 @@ import StartGame from "./components/StartGame";
 function App() {
     return (
         <>
-            <ToastContainer />
+            <ToastContainer autoClose={1800} />
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<MainMenu />} />
@@ -21,14 +21,6 @@ function App() {
             </BrowserRouter>
         </>
     );
-    // return (
-    //   <>
-    //     {/* <StartGame /> */}
-    //     {/* <GamePanel/>
-    //       <Topics/>
-    //       <Quiz/> */}
-    //   </>
-    // );
 }
 
 export default App;

@@ -2,10 +2,12 @@ const GameService = require("../services/game.service");
 const { CustomError } = require("../utils/CustomError");
 const { formatGameInfoForClientStore } = require("../utils/game.util");
 
+// Socket helpers
+
+// Main socket handlers
 const registerSocketControllers = (io, socket) => {
     socket.on("joinGame", async (data) => {
         const { gameId, playerUniqueId } = data;
-
         const { game, player } = await GameService.validateGamePlayer({
             gameId,
             playerUniqueId,
@@ -25,21 +27,33 @@ const registerSocketControllers = (io, socket) => {
     });
 
     socket.on("roll-start", async ({ playerUniqueId }) => {
+        const { gameId } = socket.data;
+
         try {
             // Just validations
-            const { gameId } = socket.data;
-            const { game, player } = await GameService.validateGamePlayer({
+            let { game, player } = await GameService.validateGamePlayer({
                 gameId,
                 playerUniqueId,
             });
 
             if (playerUniqueId !== game.turnPlayerId) {
-                socket.emit("error", { message: "Not Your Turn" });
+                socket.emit("error", { message: "Not your turn!" });
                 return;
             }
 
+            if (await GameService.checkIsLocked(gameId)) {
+                socket.emit("error", {
+                    message: "A player is current rolling!",
+                });
+                return;
+            }
+            game = await GameService.lockRolling(gameId, true);
+
             // To let other players in the room know that the current player is rolling
-            io.to(gameId).emit("roll-start", { playerUniqueId });
+            io.to(gameId).emit("roll-start", {
+                playerUniqueId,
+                gameInfo: formatGameInfoForClientStore(game),
+            });
             console.log("Event roll-start emitted for player ", playerUniqueId);
 
             const result = await GameService.roll({ game, player });
@@ -52,6 +66,7 @@ const registerSocketControllers = (io, socket) => {
             );
         } catch (error) {
             console.log("[Socket Error]", error);
+            await GameService.lockRolling(gameId, false);
             socket.emit("error", {
                 message: error.message || "Internal Server Error",
             });
@@ -59,8 +74,9 @@ const registerSocketControllers = (io, socket) => {
     });
 
     socket.on("check-answer", async ({ playerUniqueId, quizId, answer }) => {
+        const { gameId } = socket.data;
+
         try {
-            const { gameId } = socket.data;
             const { game, quiz } = await GameService.prevalidateAnswerQuiz({
                 gameId,
                 playerUniqueId,
@@ -74,6 +90,8 @@ const registerSocketControllers = (io, socket) => {
                 playerUniqueId,
             });
 
+            await GameService.lockRolling(gameId, true);
+
             // Updated scores will be here
             const updatedGame = await GameService.getGame({ gameId });
 
@@ -84,6 +102,7 @@ const registerSocketControllers = (io, socket) => {
             });
         } catch (err) {
             console.log("[Socket Error]", err);
+            await GameService.lockRolling(gameId, false);
             socket.emit("error", {
                 message: err.message || "Internal Server Error",
             });
@@ -91,8 +110,9 @@ const registerSocketControllers = (io, socket) => {
     });
 
     socket.on("request-roll-complete", async ({ playerUniqueId }) => {
+        const { gameId } = socket.data;
+
         try {
-            const { gameId } = socket.data;
             const { game } = await GameService.validateGamePlayer({
                 gameId,
                 playerUniqueId,
@@ -108,10 +128,13 @@ const registerSocketControllers = (io, socket) => {
             // All other boxes will have been calculated and communicated to frontend on roll-result call
 
             // Update turn
-            const { game: updatedGame } = await GameService.updateTurn({
+            await GameService.updateTurn({
                 game,
                 currentPlayerId,
             });
+
+            // Unlock roll
+            const updatedGame = await GameService.lockRolling(gameId, false);
 
             // Emit roll-complete with gameInfo
             io.to(gameId).emit("roll-complete", {
@@ -119,6 +142,7 @@ const registerSocketControllers = (io, socket) => {
             });
         } catch (err) {
             console.log("[Socket Error]", err);
+            await GameService.lockRolling(gameId, false);
             socket.emit("error", {
                 message: err.message || "Internal Server Error",
             });

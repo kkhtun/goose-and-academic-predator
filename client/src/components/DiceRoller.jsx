@@ -1,13 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { apiPost } from "../api";
 import { socket } from "../socket";
+import CallToActionButton from "./buttons/CallToActionButton";
 // import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function DiceRoller({
     singleDie = false,
     onResult,
-    isYourTurn,
+    isAllowedRoll,
     gameState,
     setGameState,
 }) {
@@ -22,7 +22,10 @@ export default function DiceRoller({
     useEffect(() => {
         if (!socket) return;
 
-        const handleRollStart = ({ playerUniqueId: rollingPlayerId }) => {
+        const handleRollStart = ({
+            playerUniqueId: rollingPlayerId,
+            gameInfo,
+        }) => {
             console.log(
                 "Roll start event received for player:",
                 rollingPlayerId,
@@ -33,6 +36,7 @@ export default function DiceRoller({
                 Math.ceil(Math.random() * 6),
                 Math.ceil(Math.random() * 6),
             ]);
+            setGameState({ playerUniqueId, gameInfo });
         };
 
         const handleRollResult = (data) => {
@@ -62,21 +66,13 @@ export default function DiceRoller({
         socket.emit("roll-start", { playerUniqueId });
     };
 
-    const dynamicStyle = {
-        background: !isYourTurn
-            ? "#bdc3c7" // disabled grey
-            : "#3498db",
-    };
-
     return (
         <>
-            <button
+            <CallToActionButton
                 onClick={rollDice}
-                style={{ ...styles.button, ...dynamicStyle }}
-                disabled={!isYourTurn}
-            >
-                🎲 Roll Dice
-            </button>
+                text={"🎲 Roll"}
+                disabled={!isAllowedRoll}
+            />
 
             <AnimatePresence>
                 {showDice && (
@@ -171,6 +167,7 @@ const styles = {
         justifyContent: "center",
         gap: 40,
         pointerEvents: "none",
+        zIndex: 40,
     },
     die: {
         width: 80,

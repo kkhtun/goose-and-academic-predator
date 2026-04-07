@@ -143,7 +143,7 @@ function throwDie(count = 2) {
     const die2 = Math.floor(Math.random() * 6) + 1;
     const total = die1 + die2;
 
-    // return { die1: 1, die2: 2, total: 3 };
+    // return { die1: 2, die2: 2, total: 4 };
     return { die1, die2, total };
 }
 
@@ -157,7 +157,7 @@ function getPlayerPos({ playerUniqueId, moves }) {
 }
 
 function formatGameInfoForClientStore(game) {
-    const { _id: gameId, players, moves, turnPlayerId } = game;
+    const { _id: gameId, players, moves, turnPlayerId, isLocked } = game;
     return {
         gameId,
         players: players.map((player) => {
@@ -174,6 +174,7 @@ function formatGameInfoForClientStore(game) {
             };
         }),
         turnPlayerId,
+        isLocked,
     };
 }
 
