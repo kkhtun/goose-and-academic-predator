@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
-const URL = "http://localhost:3000"; // Need to change dynamically
+const API_BASE = import.meta.env.VITE_API_HOST; // Need to change dynamically
 
-export const socket = io(URL, {
+export const socket = io(API_BASE, {
     autoConnect: false, // we will decide when to connect
 });
