@@ -135,15 +135,24 @@ function adjustPosition(pos) {
     return pos;
 }
 
-function throwDie(count = 2) {
-    const die1 = Math.floor(Math.random() * 6) + 1;
-    if (count === 1) {
-        return { die1, total: die1 };
-    }
-    const die2 = Math.floor(Math.random() * 6) + 1;
-    const total = die1 + die2;
+function throwDie(pos = 0) {
+    // Instead of giving only 1 dice
+    // We can artificially nudge the probability of dice towards the end of the game to allow for easier winning conditions
+    // This prevents remodelling entire pipeline (including UI)
+    let die1 = Math.floor(Math.random() * 6) + 1;
+    let die2 = Math.floor(Math.random() * 6) + 1;
+    let total = die1 + die2;
 
     // return { die1: 2, die2: 2, total: 4 };
+
+    if (pos > 85 && total > 6) {
+        // 50% chance to re-roll high values
+        if (Math.random() < 0.5) {
+            die1 = Math.floor(Math.random() * 3) + 1; // bias lower
+            die2 = Math.floor(Math.random() * 3) + 1;
+            total = die1 + die2;
+        }
+    }
     return { die1, die2, total };
 }
 

@@ -189,8 +189,8 @@ async function roll({ game, player }) {
     const lastMove = playerMoves[playerMoves.length - 1];
     const current = lastMove ? lastMove.next : 0;
 
-    const dieCount = current >= 85 ? 1 : 2;
-    const throwResult = throwDie(dieCount); // ADJUST here if you want particular die throw for testing
+    // const dieCount = current >= 85 ? 1 : 2;
+    const throwResult = throwDie(current); // ADJUST here if you want particular die throw for testing
     const { total } = throwResult;
 
     // Initial move by die throw
