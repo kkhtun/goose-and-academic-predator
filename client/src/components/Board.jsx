@@ -26,10 +26,17 @@ export default function Board({
                     <Square key={num} number={num} />
                 ))}{" "}
                 {players.map(
-                    ({ playerUniqueId, playerPos, avatar, playerName }) => (
+                    ({
+                        playerUniqueId,
+                        playerPos,
+                        avatar,
+                        playerName,
+                        playerPath,
+                    }) => (
                         <PlayerPiece
                             key={playerUniqueId}
                             avatar={avatar}
+                            playerPath={playerPath}
                             position={playerPos}
                             playerName={playerName}
                             onArrive={onPieceArrive}

@@ -5,6 +5,7 @@ import { GiCamel } from "react-icons/gi";
 
 export default function PlayerPiece({
     position,
+    playerPath,
     onArrive,
     avatar,
     playerName,
@@ -26,46 +27,45 @@ export default function PlayerPiece({
     };
 
     useEffect(() => {
-        const from = prevPosRef.current;
-        const to = position;
-        if (from === to) {
-            // ensure initial placement
-            const { x, y } = posToXY(to);
-            controls.set({ x, y });
+        // Animate if path exists
+        if (playerPath && playerPath.length > 0) {
+            const startPos = prevPosRef.current ?? position;
+
+            const fullPath = [startPos, ...playerPath];
+
+            const xs = fullPath.map((p) => posToXY(p).x);
+            const ys = fullPath.map((p) => posToXY(p).y);
+
+            const perStep = 0.18;
+            const total = Math.max(0.001, playerPath.length * perStep);
+
+            const times = xs.map((_, i) =>
+                xs.length === 1 ? 1 : i / (xs.length - 1),
+            );
+
+            controls
+                .start({
+                    x: xs,
+                    y: ys,
+                    transition: { duration: total, times, ease: "linear" },
+                })
+                .then(() => {
+                    const finalPos = fullPath[fullPath.length - 1];
+                    prevPosRef.current = finalPos;
+
+                    if (typeof onArrive === "function") {
+                        onArrive(finalPos);
+                    }
+                });
+
             return;
         }
 
-        const step = from < to ? 1 : -1;
-        const steps = [];
-        for (let p = from + step; step > 0 ? p <= to : p >= to; p += step) {
-            steps.push(p);
-        }
-
-        // Build keyframe arrays starting from the current cell
-        const start = posToXY(from);
-        const xs = [start.x, ...steps.map((p) => posToXY(p).x)];
-        const ys = [start.y, ...steps.map((p) => posToXY(p).y)];
-
-        // Timing: adjust per-step duration (seconds)
-        const perStep = 0.18;
-        const total = Math.max(0.001, steps.length * perStep);
-        const times = xs.map((_, i) =>
-            xs.length === 1 ? 1 : i / (xs.length - 1),
-        );
-
-        controls
-            .start({
-                x: xs,
-                y: ys,
-                transition: { duration: total, times, ease: "linear" },
-            })
-            .then(() => {
-                prevPosRef.current = to;
-                if (typeof onArrive === "function") onArrive(to);
-            });
-
-        prevPosRef.current = to;
-    }, [position, controls]);
+        // No path - just place (refresh case)
+        const { x, y } = posToXY(position);
+        controls.set({ x, y });
+        prevPosRef.current = position;
+    }, [playerPath, position, controls]);
 
     // initial placement
     const initial = posToXY(position);
@@ -148,3 +148,47 @@ export default function PlayerPiece({
         </motion.div>
     );
 }
+
+// Last useEffect (just saving in case sth breaks)
+
+// useEffect(() => {
+//     const from = prevPosRef.current;
+//     const to = position;
+//     if (from === to) {
+//         // ensure initial placement
+//         const { x, y } = posToXY(to);
+//         controls.set({ x, y });
+//         return;
+//     }
+
+//     const step = from < to ? 1 : -1;
+//     const steps = [];
+//     for (let p = from + step; step > 0 ? p <= to : p >= to; p += step) {
+//         steps.push(p);
+//     }
+
+//     // Build keyframe arrays starting from the current cell
+//     const start = posToXY(from);
+//     const xs = [start.x, ...steps.map((p) => posToXY(p).x)];
+//     const ys = [start.y, ...steps.map((p) => posToXY(p).y)];
+
+//     // Timing: adjust per-step duration (seconds)
+//     const perStep = 0.18;
+//     const total = Math.max(0.001, steps.length * perStep);
+//     const times = xs.map((_, i) =>
+//         xs.length === 1 ? 1 : i / (xs.length - 1),
+//     );
+
+//     controls
+//         .start({
+//             x: xs,
+//             y: ys,
+//             transition: { duration: total, times, ease: "linear" },
+//         })
+//         .then(() => {
+//             prevPosRef.current = to;
+//             if (typeof onArrive === "function") onArrive(to);
+//         });
+
+//     prevPosRef.current = to;
+// }, [position, controls]);

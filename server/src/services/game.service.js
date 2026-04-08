@@ -199,6 +199,7 @@ async function roll({ game, player }) {
         current,
         next: adjustPosition(current + total), // Adjust for > 90
         isActive: true,
+        steps: total,
     };
     initMove.nextType = BOARD_POSITIONS[initMove.next];
 
@@ -209,7 +210,7 @@ async function roll({ game, player }) {
         let move = moves[moves.length - 1];
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
             const randomQuiz = await QuizModel.aggregate([
-                { $match: { type: QUIZ_TYPE.TRUE_FALSE } }, // ADJUST here if you want only 1 quiz type for testing
+                // { $match: { type: QUIZ_TYPE.TRUE_FALSE } }, // ADJUST here if you want only 1 quiz type for testing
                 { $sample: { size: 1 } },
             ]);
             move.content = {
@@ -232,6 +233,7 @@ async function roll({ game, player }) {
                 next: newPos,
                 nextType: BOARD_POSITIONS[newPos],
                 isActive: true,
+                steps: total,
             });
         } else if (move.nextType === POSITION_TYPE.JUMP_TURN) {
             game.players = game.players.map((p) => {
@@ -250,6 +252,7 @@ async function roll({ game, player }) {
                 next: 0,
                 nextType: BOARD_POSITIONS[0],
                 isActive: true,
+                steps: -move.next,
             });
             break;
         } else if (move.nextType === POSITION_TYPE.LUCKY) {
@@ -270,13 +273,15 @@ async function roll({ game, player }) {
                     return p;
                 }
             });
-            // Return to prev position (currently assuming that this is the position the player took off from)
+            // Return to prev position (currently assuming that this is the last position the player took off from)
+            // If the player steps on GOOSE before stepping penalty, the player will move to its initial position (assumption)
             moves.push({
                 playerUniqueId,
                 current: move.next,
                 next: moves[0].current,
                 nextType: BOARD_POSITIONS[moves[0].current],
                 isActive: false,
+                steps: -(move.next - moves[0].current),
             });
             // Currently, we assume we won't do anything at the previous position even if it is special
             // So we break

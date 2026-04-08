@@ -31,6 +31,10 @@ const gameSchema = new mongoose.Schema(
                     type: Boolean,
                     default: true,
                 },
+                steps: {
+                    type: Number,
+                    required: true,
+                },
             },
         ],
         players: [

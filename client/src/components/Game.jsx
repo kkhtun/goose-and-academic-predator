@@ -90,6 +90,8 @@ function Game() {
 
     const handleRoll = ({ roll, moves, gameInfo, rollingPlayerId }) => {
         const { total } = roll;
+        // [BUG] We don't update gameInfo here, have some issues with path calculation
+        // since playerPos comes precalcuated to final pos on backend
         setRollingPlayerId(rollingPlayerId);
         setLastRoll(total);
         setCurrentMoves(moves);
@@ -120,10 +122,17 @@ function Game() {
         }
         if (currentMoves.length === 0) return;
         const move = currentMoves[0];
-        const { next } = move;
-        const { gameInfo } = gameState;
+        const { current, next, steps } = move;
+        const { gameInfo } = gameState; // This gameInfo is an old one (with old player pos)
         setGameState({
-            gameInfo: updatePlayerPos(gameInfo, rollingPlayerId, next),
+            gameInfo: updatePlayerPos(
+                gameInfo,
+                rollingPlayerId,
+                current,
+                next,
+                steps, // We add step here since it can be from 87 to 89 and step is 4 (and not 2!)
+            ),
+            // gameInfo: updatePlayerPos(gameInfo, rollingPlayerId, next),
             playerUniqueId,
         });
     }, [currentMoves, rollingPlayerId]);

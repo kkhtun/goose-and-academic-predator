@@ -47,11 +47,9 @@ export default function PlayerPiece({
     };
 
     useEffect(() => {
-        // console.log("Ref", prevPosRef.current);
-        // console.log("Pos", position);
-        console.log("Pos", position);
         const from = prevPosRef.current;
         const to = position;
+
         if (from === to) {
             // ensure initial placement
             const { x, y } = posToXY(to);
