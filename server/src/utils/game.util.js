@@ -135,6 +135,10 @@ function adjustPosition(pos) {
     return pos;
 }
 
+function findPlayer(game, playerUniqueId) {
+    return game.players.find((p) => p.playerUniqueId === playerUniqueId);
+}
+
 function throwDie(pos = 0) {
     // Instead of giving only 1 dice
     // We can artificially nudge the probability of dice towards the end of the game to allow for easier winning conditions
@@ -143,7 +147,7 @@ function throwDie(pos = 0) {
     let die2 = Math.floor(Math.random() * 6) + 1;
     let total = die1 + die2;
 
-    // return { die1: 2, die2: 2, total: 4 };
+    return { die1: 4, die2: 5, total: 9 };
 
     if (pos > 85 && total > 6) {
         // 50% chance to re-roll high values
@@ -180,6 +184,7 @@ function formatGameInfoForClientStore(game) {
                 }),
                 status: player.status,
                 score: player.score,
+                isActive: player.isActive,
             };
         }),
         turnPlayerId,
@@ -196,4 +201,5 @@ module.exports = {
     throwDie,
     formatGameInfoForClientStore,
     getPlayerPos,
+    findPlayer,
 };

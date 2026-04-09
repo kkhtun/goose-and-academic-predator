@@ -59,6 +59,10 @@ const gameSchema = new mongoose.Schema(
                     type: Number,
                     default: 0,
                 },
+                isActive: {
+                    type: Boolean, // Player may quit halfway or entirely (need to skip turn determination for skipped players)
+                    default: false,
+                },
             },
         ],
         turnPlayerId: {

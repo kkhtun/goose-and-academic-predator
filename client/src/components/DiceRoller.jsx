@@ -5,7 +5,6 @@ import CallToActionButton from "./buttons/CallToActionButton";
 // import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function DiceRoller({
-    singleDie = false,
     onResult,
     isAllowedRoll,
     gameState,
@@ -86,9 +85,7 @@ export default function DiceRoller({
                             animate={
                                 rolling
                                     ? {
-                                          x: singleDie
-                                              ? [0, 0]
-                                              : [-200, 200, -150, 150, 0],
+                                          x: [-200, 200, -150, 150, 0],
                                           rotate: [0, 360, 720],
                                       }
                                     : {
@@ -112,35 +109,33 @@ export default function DiceRoller({
                             {dice[0]}
                         </motion.div>
 
-                        {!singleDie && (
-                            <motion.div
-                                animate={
-                                    rolling
-                                        ? {
-                                              x: [200, -200, 150, -150, 0],
-                                              rotate: [0, -360, -720],
-                                          }
-                                        : {
-                                              x: 0,
-                                              rotate: 0,
-                                          }
-                                }
-                                transition={
-                                    rolling
-                                        ? {
-                                              duration: 1,
-                                              repeat: Infinity,
-                                              ease: "linear",
-                                          }
-                                        : {
-                                              duration: 0.3,
-                                          }
-                                }
-                                style={styles.die}
-                            >
-                                {dice[1]}
-                            </motion.div>
-                        )}
+                        <motion.div
+                            animate={
+                                rolling
+                                    ? {
+                                          x: [200, -200, 150, -150, 0],
+                                          rotate: [0, -360, -720],
+                                      }
+                                    : {
+                                          x: 0,
+                                          rotate: 0,
+                                      }
+                            }
+                            transition={
+                                rolling
+                                    ? {
+                                          duration: 1,
+                                          repeat: Infinity,
+                                          ease: "linear",
+                                      }
+                                    : {
+                                          duration: 0.3,
+                                      }
+                            }
+                            style={styles.die}
+                        >
+                            {dice[1]}
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>

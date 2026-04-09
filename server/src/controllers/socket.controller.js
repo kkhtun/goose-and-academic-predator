@@ -1,29 +1,62 @@
+const R = require("ramda");
 const GameService = require("../services/game.service");
 const { CustomError } = require("../utils/CustomError");
-const { formatGameInfoForClientStore } = require("../utils/game.util");
+const {
+    formatGameInfoForClientStore,
+    findPlayer,
+} = require("../utils/game.util");
 
 // Socket helpers
+const disconnectTimers = new Map();
 
 // Main socket handlers
 const registerSocketControllers = (io, socket) => {
     socket.on("joinGame", async (data) => {
-        const { gameId, playerUniqueId } = data;
-        const { game, player } = await GameService.validateGamePlayer({
-            gameId,
-            playerUniqueId,
-        });
+        try {
+            const { gameId, playerUniqueId } = data;
+            const { player } = await GameService.validateGamePlayer({
+                gameId,
+                playerUniqueId,
+            });
 
-        socket.join(gameId);
-        socket.data = { gameId };
+            let game = await GameService.activatePlayer(
+                gameId,
+                playerUniqueId,
+                true
+            );
 
-        io.to(gameId).emit("playerJoined", {
-            playerUniqueId,
-            gameInfo: formatGameInfoForClientStore(game),
-        });
+            socket.join(gameId);
+            socket.data = { gameId, playerUniqueId };
 
-        console.log(
-            `Player ${playerUniqueId}: ${player.playerName} joined game ${gameId}`
-        );
+            // We will give the player the dice if they are the only player active when they join
+            const activePlayers = R.filter(R.propEq(true, "isActive"))(
+                game.players
+            );
+            if (
+                activePlayers.length === 1 &&
+                activePlayers[0].playerUniqueId === playerUniqueId
+            ) {
+                game = await GameService.lockRolling(gameId, false);
+                game = await GameService.updateTurn({
+                    game,
+                    currentPlayerId: playerUniqueId,
+                });
+            }
+
+            io.to(gameId).emit("playerJoined", {
+                playerUniqueId,
+                gameInfo: formatGameInfoForClientStore(game),
+            });
+
+            console.log(
+                `Player ${playerUniqueId}: ${player.playerName} joined game ${gameId}`
+            );
+        } catch (err) {
+            console.log("[Socket Error]", err);
+            socket.emit("error", {
+                message: err.message || "Internal Server Error",
+            });
+        }
     });
 
     socket.on("roll-start", async ({ playerUniqueId }) => {
@@ -147,6 +180,68 @@ const registerSocketControllers = (io, socket) => {
                 message: err.message || "Internal Server Error",
             });
         }
+    });
+
+    // Quitting (assume player no longer wants to play)
+    // Currently, FE will just disconnect on quit (see below)
+
+    // socket.on("request-quit", async () => {
+    //     const { gameId, playerUniqueId } = socket.data;
+    //     const game = await GameService.quitPlayer({
+    //         gameId,
+    //         playerUniqueId,
+    //     });
+
+    //     io.to(gameId).emit("playerDisconnected", {
+    //         disconnectedPlayerId: playerUniqueId,
+    //         gameInfo: formatGameInfoForClientStore(game),
+    //     });
+    // });
+
+    // Disconnecting (due to refresh or browser issues, handle with grace period)
+    socket.on("disconnect", async () => {
+        const { gameId, playerUniqueId } = socket.data;
+        console.log(
+            `[Socket Event] User disconnected: ${socket.id} ${gameId}:${playerUniqueId}`
+        );
+
+        await GameService.validateGamePlayer({ gameId, playerUniqueId });
+        await GameService.activatePlayer(gameId, playerUniqueId, false);
+
+        const key = `${gameId}:${playerUniqueId}`;
+        // Clear any existing timer first
+        if (disconnectTimers.has(key)) {
+            clearTimeout(disconnectTimers.get(key));
+        }
+
+        // Set a timeout of 5s for any disconnecting players
+        // After that, send an event to all other players that the player has disconnected
+        const timeoutId = setTimeout(async () => {
+            let game = await GameService.getGame({ gameId });
+            const player = findPlayer(game, playerUniqueId);
+
+            if (player && !player.isActive) {
+                // In the case where disconnecting player is the current player
+                // We unlock the game and update turn and continue the game with active players
+                if (game.turnPlayerId === playerUniqueId) {
+                    await GameService.lockRolling(gameId, false);
+                    game = await GameService.updateTurn({
+                        game,
+                        currentPlayerId: playerUniqueId,
+                    });
+                }
+
+                io.to(gameId).emit("playerDisconnected", {
+                    disconnectedPlayerId: player.playerUniqueId,
+                    gameInfo: formatGameInfoForClientStore(game),
+                });
+            }
+
+            // cleanup
+            disconnectTimers.delete(key);
+        }, 5000);
+
+        disconnectTimers.set(key, timeoutId);
     });
 };
 

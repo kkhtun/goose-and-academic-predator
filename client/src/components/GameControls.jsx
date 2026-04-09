@@ -6,7 +6,6 @@ import CallToActionButton from "./buttons/CallToActionButton";
 import ConfirmPopup from "./popups/ConfirmPopup";
 
 export default function GameControls({
-    position = 0,
     lastRoll,
     onRoll,
     onQuit,
@@ -78,7 +77,6 @@ export default function GameControls({
                 </div>
 
                 <DiceRoller
-                    singleDie={position >= 85}
                     onResult={onRoll}
                     gameState={gameState}
                     setGameState={setGameState}

@@ -27,8 +27,6 @@ function Game() {
     // const [gameState, setGameState] = useLocalStorage("GAME_STATE", null);
     const [gameState, setGameState] = useState(null);
 
-    const [position, setPosition] = useState(0);
-
     // A roll includes all dice throws, popups and answerings
     // These states (rollingPlayerId and currentMoves) are only concerned with moving the piece on board and calling correct events
     // Not involved with turn synchronization or validation
@@ -36,7 +34,6 @@ function Game() {
     const [currentMoves, setCurrentMoves] = useState([]);
 
     const [lastRoll, setLastRoll] = useState(null);
-    const [score, setScore] = useState(0);
     const [popup, setPopup] = useState(null);
     const [won, setWon] = useState(false);
 
@@ -74,15 +71,28 @@ function Game() {
             setGameState((prev) => ({ ...prev, gameInfo }));
         };
 
+        const handlePlayerDisconnected = ({
+            gameInfo,
+            disconnectedPlayerId,
+        }) => {
+            console.log(disconnectedPlayerId);
+            toast.info(
+                `${findPlayer(gameInfo, disconnectedPlayerId).playerName} has disconnected.`,
+            );
+            setGameState((prev) => ({ ...prev, gameInfo }));
+        };
+
         socket.on("connect", handleConnect);
         socket.on("playerJoined", handlePlayerJoined);
         socket.on("roll-complete", handleRollComplete);
+        socket.on("playerDisconnected", handlePlayerDisconnected);
         socket.on("error", handleError);
 
         return () => {
             socket.off("connect", handleConnect);
             socket.off("playerJoined", handlePlayerJoined);
             socket.off("roll-complete", handleRollComplete);
+            socket.off("playerDisconnected", handlePlayerDisconnected);
             socket.off("error", handleError);
             socket.disconnect();
         };
@@ -210,19 +220,13 @@ function Game() {
         // Could have further moves (such as Goose)
         setPopup(null);
         queueNextMove();
-        if (position >= 90) {
-            handleQuit();
-        }
     };
 
     const handleQuit = () => {
-        setPosition(0);
         setCurrentMoves([]);
-        setScore(0);
         setLastRoll(null);
         setPopup(null);
         setWon(false);
-
         socket.disconnect();
         setGameState(null);
         navigate("/");
@@ -249,7 +253,6 @@ function Game() {
                 }}
             >
                 <Board
-                    playerPosition={position}
                     onPieceArrive={handlePieceArrive}
                     gameState={gameState}
                     setGameState={setGameState}
@@ -258,8 +261,6 @@ function Game() {
                 <GameControls
                     isCurrentTurn={true}
                     lastRoll={lastRoll}
-                    points={score}
-                    position={position}
                     onRoll={handleRoll}
                     onQuit={handleQuit}
                     gameState={gameState}
@@ -270,7 +271,6 @@ function Game() {
                     open={popup?.type === POSITION_TYPE.CHALLENGE}
                     payload={popup?.content}
                     onClose={handleCloseQuizPopup}
-                    // onSubmit={handleSubmit}
                     gameState={gameState}
                     setGameState={setGameState}
                 />

@@ -16,6 +16,7 @@ const {
     BOARD_POSITIONS,
     POSITION_TYPE,
     formatGameInfoForClientStore,
+    findPlayer,
 } = require("../utils/game.util");
 const {
     DIFFICULTY,
@@ -125,33 +126,6 @@ async function addPlayer({ gameId, playerName, avatar }) {
 async function getGame({ gameId }) {
     const game = await GameModel.findById(gameId);
     return game;
-}
-
-function getNextTurn({ game, currentPlayerId, currentPosType }) {
-    // If DICE_TWICE is currentPosType, then the same playerUniqueId is returned
-    if (currentPosType === POSITION_TYPE.DICE_TWICE)
-        return { releaseIds: [], nextId: currentPlayerId };
-
-    let nextIndex;
-    for (let i = 0; i < game.players.length; i++) {
-        if (game.players[i].playerUniqueId === currentPlayerId) nextIndex = i;
-    }
-
-    let releaseIds = [];
-    do {
-        nextIndex = (nextIndex + 1) % game.players.length;
-        const player = game.players[nextIndex];
-
-        if (player.status === PLAYER_STATUS.JUMPED) {
-            player.status = PLAYER_STATUS.READY;
-            releaseIds.push(player.playerUniqueId);
-        } else {
-            return {
-                releaseIds,
-                nextId: game.players[nextIndex].playerUniqueId,
-            };
-        }
-    } while (true);
 }
 
 async function validateGamePlayer({ gameId, playerUniqueId }) {
@@ -306,13 +280,55 @@ async function roll({ game, player }) {
     };
 }
 
+function getNextTurn({ game, currentPlayer, currentPosType }) {
+    // [WARNING] Potential infinite loop (e.g. if all players are inactive)
+    const currentPlayerId = currentPlayer.playerUniqueId;
+
+    // If DICE_TWICE is currentPosType (and active player), then the same playerUniqueId is returned
+    if (currentPosType === POSITION_TYPE.DICE_TWICE && currentPlayer.isActive)
+        return { releaseIds: [], nextId: currentPlayerId };
+
+    let nextIndex;
+    // Find current player index and save it in nextIndex
+    for (let i = 0; i < game.players.length; i++) {
+        if (game.players[i].playerUniqueId === currentPlayerId) nextIndex = i;
+    }
+
+    let releaseIds = [];
+    // Try to increment nextIndex
+    // Check for turn jumps along the way (if a player has been jumped a turn, they do not need to jump again)
+    do {
+        nextIndex = (nextIndex + 1) % game.players.length;
+        const player = game.players[nextIndex];
+
+        // Ignore the inactive player (this is different to jumping turns as a game mechanic)
+        if (!player.isActive) continue;
+
+        if (player.status === PLAYER_STATUS.JUMPED) {
+            player.status = PLAYER_STATUS.READY;
+            releaseIds.push(player.playerUniqueId);
+        } else {
+            return {
+                releaseIds,
+                nextId: game.players[nextIndex].playerUniqueId,
+            };
+        }
+    } while (true);
+}
+
 async function updateTurn({ game, currentPlayerId }) {
     // Update turn here (determine whose turn it is next)
     const { moves } = game;
+    const currentPlayer = findPlayer(game, currentPlayerId);
+
+    const noActivePlayers = R.all(R.propEq(false, "isActive"))(game.players);
+    if (noActivePlayers) return game; // No change in turn if no active players
+
     const { releaseIds, nextId } = getNextTurn({
         game,
-        currentPlayerId,
-        currentPosType: moves.length > 0 ? moves[moves.length - 1] : null,
+        currentPlayer,
+        currentPosType:
+            moves.length > 0 ? moves[moves.length - 1].nextType : null,
     });
 
     // Release players from JUMPED to READY
@@ -324,7 +340,15 @@ async function updateTurn({ game, currentPlayerId }) {
     });
 
     game.turnPlayerId = nextId;
-    return { game: await game.save() };
+    return await game.save();
+}
+
+async function forceTurn({ gameId, turnPlayerId }) {
+    return await GameModel.findOneAndUpdate(
+        { _id: gameId },
+        { $set: { turnPlayerId } },
+        { new: true }
+    );
 }
 
 // We will lock the game at the start of each roll
@@ -391,6 +415,42 @@ async function answerQuiz({ game, quiz, playerUniqueId, answer }) {
     return { isCorrect };
 }
 
+async function activatePlayer(gameId, playerUniqueId, isActive = true) {
+    return await GameModel.findOneAndUpdate(
+        { _id: gameId },
+        {
+            $set: {
+                "players.$[p].isActive": isActive,
+            },
+        },
+        {
+            arrayFilters: [{ "p.playerUniqueId": playerUniqueId }],
+            new: true,
+        }
+    );
+}
+
+async function quitPlayer({ gameId, playerUniqueId }) {
+    // Handle everything about user quitting (skip turns if needed)
+    await validateGamePlayer({ gameId, playerUniqueId });
+
+    const game = await activatePlayer(gameId, playerUniqueId, false);
+
+    // If the game is locked in this player's turn and the player quits
+    // (then we need to force update the turn and unlock)
+    if (game.turnPlayerId === playerUniqueId) {
+        await lockRolling(gameId, false);
+        const { game: updatedGame } = await updateTurn({
+            game,
+            currentPlayerId: playerUniqueId,
+        });
+
+        return updatedGame;
+    }
+
+    return game;
+}
+
 // Housekeeping
 async function getQuiz({ topic, difficulty }) {
     const query = topic || difficulty ? { topic, difficulty } : {};
@@ -414,14 +474,16 @@ module.exports = {
 
     validateGamePlayer,
     roll,
+    updateTurn,
+    forceTurn,
     lockRolling,
     checkIsLocked,
 
     prevalidateAnswerQuiz,
     answerQuiz,
 
-    updateTurn,
-
+    activatePlayer,
+    quitPlayer,
     // House keeping
     getQuiz,
     // generateMcqBatch,
