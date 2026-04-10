@@ -147,7 +147,7 @@ function throwDie(pos = 0) {
     let die2 = Math.floor(Math.random() * 6) + 1;
     let total = die1 + die2;
 
-    return { die1: 4, die2: 5, total: 9 };
+    // return { die1: 4, die2: 5, total: 9 };
 
     if (pos > 85 && total > 6) {
         // 50% chance to re-roll high values
