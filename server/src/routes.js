@@ -9,13 +9,9 @@ router.post("/game/generate-true-false", GameController.generateTrueFalse);
 router.post("/game/generate-random-quiz", GameController.generateRandomQuiz);
 
 // router.post("/game/generate-mcq-batch", GameController.generateMcqBatch);
-router.get("/game/mcq-topics", GameController.getTopics);
 
 router.post("/game/start", GameController.startGame);
 router.post("/game/add-player", GameController.addPlayer);
 router.get("/game/board-positions", GameController.getBoardPositions);
-
-router.post("/game/:gameId/roll", GameController.roll);
-router.post("/game/:gameId/check-answer", GameController.answerQuiz);
 
 module.exports = { router };

@@ -2,21 +2,21 @@ const mongoose = require("mongoose");
 
 const kbChunkSchema = new mongoose.Schema(
     {
-        topic: {
-            // topic category
-            type: String,
-            required: true,
-            index: true,
-        },
+        // topic: {
+        //     // topic category
+        //     type: String,
+        //     required: true,
+        //     index: true,
+        // },
 
         difficultyHint: {
             type: String,
             enum: ["easy", "medium", "hard"],
-            required: false,
+            required: true,
         },
 
         text: {
-            // the actual knowledge (paragraph of 200-400 words)
+            // the actual knowledge (paragraph of 100-400 words)
             type: String,
             required: true,
         },
@@ -26,11 +26,16 @@ const kbChunkSchema = new mongoose.Schema(
             // For tracing and debugging
         },
 
-        embedding: {
-            // Vector embedding for query
-            type: [Number],
+        type: {
+            type: String,
+            enum: ["TERM", "ABSTRACT"],
             required: true,
         },
+        // embedding: {
+        //     // Vector embedding for query
+        //     type: [Number],
+        //     required: true,
+        // },
     },
     {
         timestamps: true,

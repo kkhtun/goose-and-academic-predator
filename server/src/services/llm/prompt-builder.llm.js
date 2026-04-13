@@ -68,12 +68,12 @@ Rules:
 }
 
 // Build Crossword prompt for generation
-function buildCrosswordPrompt({ topic, difficulty, context, wordCount = 8 }) {
+function buildCrosswordPrompt({ topic, difficulty, context, wordCount = 6 }) {
     return `
 You are a crossword puzzle generator.
 
-Use ONLY the information in the CONTEXT section.
-Do NOT use outside knowledge.
+Use the information in the CONTEXT section as a clue for words. 
+You are allowed to use appropriate outside information to reason and provide explanation where necessary.
 
 DIFFICULTY: ${difficulty}
 COUNT: ${wordCount}
@@ -216,7 +216,6 @@ function normalizeTrueFalseResponse(obj) {
 
 function normalizeCrosswordResponse(arr) {
     // Maybe check if 6-8 words?
-    console.log("LLM Response for CROSS_WORDS", arr);
     const filteredWords = arr.filter((item) => {
         if (typeof item !== "object" || item === null) return false;
         const { answer, clue } = item;

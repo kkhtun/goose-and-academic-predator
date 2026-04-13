@@ -25,16 +25,17 @@ function getRandomQuizType() {
     }
 }
 
-async function retrieveRandomContext({ count = 10 }) {
+async function retrieveRandomContext({ type = "ABSTRACT", count = 10 }) {
     // For now, retrieve random stuff (not using quizType or difficulty)
     const results = await KbChunkModel.aggregate([
+        { $match: { type } },
         { $sample: { size: count } },
     ]);
     return results;
 }
 
 async function generateCrossword({ difficulty = DIFFICULTY.MEDIUM }) {
-    const chunks = await retrieveRandomContext({ count: 10 });
+    const chunks = await retrieveRandomContext({ type: "TERM", count: 10 });
     const wordList = await generateQuiz({
         type: QUIZ_TYPE.CROSS_WORDS,
         chunks,

@@ -32,42 +32,42 @@ const {
 
 // Helper functions (calling other underlying models and api clients)
 
-async function retrieveContextFromTopic({
-    topic,
-    query,
-    difficulty: difficultyHint,
-    limit = 10,
-}) {
-    // Embed the query
-    const queryVector = await embedText(query);
+// async function retrieveContextFromTopic({
+//     topic,
+//     query,
+//     difficulty: difficultyHint,
+//     limit = 10,
+// }) {
+//     // Embed the query
+//     const queryVector = await embedText(query);
 
-    // Vector search in MongoDB
-    const results = await KbChunkModel.aggregate([
-        {
-            $vectorSearch: {
-                index: "embedding_vector_indx", // name of your Atlas vector index
-                path: "embedding",
-                queryVector,
-                numCandidates: 100,
-                limit,
-                filter: {
-                    topic,
-                    ...(difficultyHint ? { difficultyHint } : {}),
-                },
-            },
-        },
-        {
-            $project: {
-                text: 1,
-                topic: 1,
-                difficultyHint: 1,
-                score: { $meta: "vectorSearchScore" },
-            },
-        },
-    ]);
+//     // Vector search in MongoDB
+//     const results = await KbChunkModel.aggregate([
+//         {
+//             $vectorSearch: {
+//                 index: "embedding_vector_indx", // name of your Atlas vector index
+//                 path: "embedding",
+//                 queryVector,
+//                 numCandidates: 100,
+//                 limit,
+//                 filter: {
+//                     topic,
+//                     ...(difficultyHint ? { difficultyHint } : {}),
+//                 },
+//             },
+//         },
+//         {
+//             $project: {
+//                 text: 1,
+//                 topic: 1,
+//                 difficultyHint: 1,
+//                 score: { $meta: "vectorSearchScore" },
+//             },
+//         },
+//     ]);
 
-    return results;
-}
+//     return results;
+// }
 
 // API functions (mapping 1 to 1 with api endpoints)
 
@@ -459,17 +459,7 @@ async function getQuiz({ topic, difficulty }) {
     return quiz;
 }
 
-async function getTopics() {
-    const topicGroups = await KbChunkModel.aggregate([
-        { $group: { _id: null, topic: { $addToSet: "$topic" } } },
-    ]);
-    const topics = topicGroups[0].topic || [];
-    return { data: topics, count: topics.length };
-}
-
 module.exports = {
-    retrieveContextFromTopic,
-    // API funcs
     startGame,
 
     validateGamePlayer,
@@ -484,10 +474,8 @@ module.exports = {
 
     activatePlayer,
     quitPlayer,
-    // House keeping
+
     getQuiz,
-    // generateMcqBatch,
-    getTopics,
     getGame,
     addPlayer,
 };
