@@ -134,6 +134,7 @@ function Game() {
         const move = currentMoves[0];
         const { current, next, steps } = move;
         const { gameInfo } = gameState; // This gameInfo is an old one (with old player pos)
+
         setGameState({
             gameInfo: updatePlayerPos(
                 gameInfo,
@@ -237,19 +238,14 @@ function Game() {
     }
 
     return (
-        <div
-            className="game-wrapper"
-            style={{
-                padding: 10,
-            }}
-        >
+        <div className="game-wrapper">
             <div
                 className="game-board"
                 style={{
-                    flex: 1,
-                    width: "100%",
+                    // width: "100%",
                     display: "flex",
                     gap: 10,
+                    paddingTop: 10,
                 }}
             >
                 <Board

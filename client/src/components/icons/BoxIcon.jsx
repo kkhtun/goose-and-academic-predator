@@ -1,15 +1,16 @@
 import { POSITION_TYPE } from "../../constants";
 import GooseIcon from "../../assets/goose-icon.svg";
 
-export function BoxIcon({ number, type, onSquare = false }) {
+export function BoxIcon({ number, type, onSquare = false, style = {} }) {
     const iconStyle = onSquare
         ? {
               fontSize: 18,
               position: "absolute",
               bottom: 4,
               right: 6,
+              ...style,
           }
-        : {};
+        : { ...style };
 
     if (number === 0) return <span style={iconStyle}>🚩</span>;
     if (number === 90) return <span style={iconStyle}>🎓</span>;

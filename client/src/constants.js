@@ -128,4 +128,14 @@ export const QUIZ_TYPE = {
     CROSS_WORDS: "CROSS_WORDS",
 };
 
+export const LEVEL_MARKER = {
+    LEVEL_0_END: 29,
+    LEVEL_1_END: 59,
+};
+
+export const REALM_TYPE = {
+    HEAVEN: "HEAVEN",
+    HELL: "HELL",
+};
+
 export const BOARD_SIZE = Object.keys(BOARD_POSITIONS).length;

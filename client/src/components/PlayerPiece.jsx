@@ -2,6 +2,12 @@ import { useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { FaDog, FaCat, FaCrow, FaFish } from "react-icons/fa";
 import { GiCamel } from "react-icons/gi";
+import {
+    GAP_BETWEEN_SQUARES,
+    getRow,
+    POS_PER_ROW,
+    SQUARE_SIZE,
+} from "../utils/position.utils";
 
 export default function PlayerPiece({
     position,
@@ -10,7 +16,7 @@ export default function PlayerPiece({
     avatar,
     playerName,
 }) {
-    const squareSize = 86; // 80px square + 6px gap (matches Board grid)
+    const squareSize = SQUARE_SIZE + GAP_BETWEEN_SQUARES; // 80px square + 6px gap (matches Board grid)
     const pieceSize = 48;
     const centerOffset = (squareSize - pieceSize) / 2;
 
@@ -18,8 +24,16 @@ export default function PlayerPiece({
     const prevPosRef = useRef(position);
 
     const posToXY = (pos) => {
-        const col = pos % 10;
-        const row = Math.floor(pos / 10);
+        // const col = pos % 10;
+        const row = getRow(pos);
+
+        // Even rows will be left to right
+        // Odd rows will go from right to left
+        const col =
+            row % 2 === 1
+                ? POS_PER_ROW - (pos % POS_PER_ROW) - 1
+                : pos % POS_PER_ROW;
+
         return {
             x: col * squareSize + centerOffset,
             y: row * squareSize + centerOffset,

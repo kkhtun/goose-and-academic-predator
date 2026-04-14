@@ -1,29 +1,32 @@
-import { useRef, useEffect, useState } from "react";
 import Square from "./Square";
 import PlayerPiece from "./PlayerPiece";
-// import useLocalStorage from "../hooks/useLocalStorage";
-import { BOARD_SIZE } from "../constants";
-// import { useLocalStorage } from "@uidotdev/usehooks";
+import { BOARD_SIZE, LEVEL_MARKER, REALM_TYPE } from "../constants";
+import {
+    GAP_BETWEEN_SQUARES,
+    getOrderedSquares,
+    SQUARE_SIZE,
+} from "../utils/position.utils";
+import { findPlayer } from "../utils/common.utils";
 
-export default function Board({
-    // playerPosition,
-    // level = 0,
-    // realm = "NORMAL",
-    onPieceArrive,
-    gameState,
-    setGameState,
-}) {
-    // const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
-    const { gameInfo } = gameState;
+export default function Board({ onPieceArrive, gameState, setGameState }) {
+    const { gameInfo, playerUniqueId } = gameState;
     const { players } = gameInfo;
 
-    const squares = Array.from({ length: BOARD_SIZE }, (_, i) => i);
+    const clientPlayer = findPlayer(gameInfo, playerUniqueId);
+    const clientPlayerPos = clientPlayer.playerPos;
+    // If client player pos is after LEVEL 1 and still not enough score, change to HELL
+    const heavenOrHell =
+        clientPlayerPos > LEVEL_MARKER.LEVEL_1_END && clientPlayer.score < 10
+            ? REALM_TYPE.HELL
+            : REALM_TYPE.HEAVEN;
+
+    const squares = getOrderedSquares(BOARD_SIZE);
 
     return (
         <div style={styles.wrapper}>
             <div style={styles.board}>
-                {squares.map((num) => (
-                    <Square key={num} number={num} />
+                {squares.map((num, i) => (
+                    <Square key={i} number={num} heavenOrHell={heavenOrHell} />
                 ))}{" "}
                 {players.map(
                     ({
@@ -55,8 +58,8 @@ const styles = {
     },
     board: {
         display: "grid",
-        gridTemplateColumns: "repeat(10, 80px)",
-        gap: "6px",
+        gridTemplateColumns: `repeat(10, ${SQUARE_SIZE}px)`,
+        gap: `${GAP_BETWEEN_SQUARES}px`,
         padding: "12px",
         background: "#2c3e50",
         borderRadius: "12px",
