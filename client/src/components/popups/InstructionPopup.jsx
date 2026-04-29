@@ -47,6 +47,10 @@ export default function InstructionPopup({ open, onClose }) {
                     {/* 👇 Added instructions here */}
                     <ul style={{ paddingLeft: 20, lineHeight: 1.6 }}>
                         <li>
+                            Learn how to avoid predatory journals and discover
+                            best practices for ethical research.
+                        </li>
+                        <li>
                             Click on <b>🎲 Roll</b> button to move your piece.
                         </li>
                         <li>Each position has an associated quiz or event.</li>

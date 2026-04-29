@@ -2,14 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { apiPost } from "../api";
 import { toast } from "react-toastify";
 import { useState } from "react";
-// import { useLocalStorage } from "@uidotdev/usehooks";
 import "../index.css";
 import { avatars } from "./PlayerAvatars";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function JoinGame() {
     const navigate = useNavigate();
-    // const [gameState, setGameState] = useLocalStorage("GAME_STATE", {});
 
     // Component states
     const [name, setName] = useState("");
@@ -24,8 +22,6 @@ export default function JoinGame() {
         apiPost("/game/add-player", { gameId, playerName: name, avatar })
             .then((data) => {
                 const { playerUniqueId, gameInfo } = data;
-                // setGameState({ playerUniqueId, gameInfo });
-
                 const { gameId } = gameInfo;
                 navigate(`/game/${gameId}?playerUniqueId=${playerUniqueId}`);
             })

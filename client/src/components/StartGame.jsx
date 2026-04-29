@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { apiPost } from "../api";
 import { useState } from "react";
-// import { useLocalStorage } from "@uidotdev/usehooks";
 import "../index.css";
 import { avatars } from "./PlayerAvatars";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -22,8 +21,6 @@ export default function StartGame() {
         apiPost("/game/start", { playerName: name, avatar }).then((data) => {
             const { playerUniqueId, gameInfo } = data;
             const { gameId } = gameInfo;
-            // setGameState({ playerUniqueId, gameInfo });
-
             navigate(`/game/${gameId}?playerUniqueId=${playerUniqueId}`);
         });
     };
