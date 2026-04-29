@@ -13,18 +13,34 @@ export const POSITION_TYPE = {
 };
 
 export const POSITION_DESCRIPTIONS = {
-    STANDARD: "Nothing happens when the player lands in this square.",
-    GOOSE: "You stepped on the Goose! You advance your position based on the last roll.",
-    CHALLENGE: "Please answer a pop-up quiz to get a score.",
-    INFO: "Here is some information to educate yourself.",
-    JUMP_TURN: "Your turn has been skipped.",
-    DICE_TWICE: "You get another chance to pull the dice.",
-    BACK_TO_START: "Go back to start again!",
-    LUCKY: "You stepped on a lucky box. Your score has been doubled!",
+    // STANDARD: "Nothing happens when the player lands in this square.",
+    GOOSE: "A goose friend allows you to make another move based on your previous roll.",
+    CHALLENGE: "Face a quiz challenge. Answer correctly to earn points.",
+    INFO: "Discover a quick tip about the goose and academic predators.",
+    JUMP_TURN: "Oh no! your next turn is skipped.",
+    DICE_TWICE: "Lucky! You get another chance to roll the dice.",
+    BACK_TO_START: "Tough break! you must return to the start.",
+    LUCKY: "Jackpot! You stepped on a lucky box. Your current score has been doubled!",
     // RETURN_PREV: "RETURN_PREV", // Return to previous position
     // PURCHASE: "PURCHASE", // Purchase the corresponding product
     PENALTY:
-        "You stepped on a penalty box! Return to your last position and pay a penalty of 2 points.",
+        "You have been attacked by deadly predators! Move back to your last position and pay a penalty of 2 points.",
+};
+
+export const POSITION_INSTRUCTIONS = {
+    // STANDARD: "Nothing happens when the player lands in this square.",
+    GOOSE: "A goose friend allows you to make another move based on your previous roll.",
+    CHALLENGE: "A quiz challenge position. Answer correctly to earn a score.",
+    INFO: "A small tip to educate about goose and academic predator.",
+    JUMP_TURN: "Your turn will be skipped upon landing this square.",
+    DICE_TWICE: "You get another chance to roll the dice on this square.",
+    BACK_TO_START:
+        "You will go back to start again if you step on this square!",
+    LUCKY: "Your current score will be double upon landing on this lucky square!",
+    // RETURN_PREV: "RETURN_PREV", // Return to previous position
+    // PURCHASE: "PURCHASE", // Purchase the corresponding product
+    PENALTY:
+        "You will be attacked by deadly predators on this square! You will need to return your last position and pay a penalty of 2 points.",
 };
 
 export const BOARD_POSITIONS = {

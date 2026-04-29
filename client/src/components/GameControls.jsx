@@ -9,6 +9,7 @@ export default function GameControls({
     lastRoll,
     onRoll,
     onQuit,
+    setOpenInstruct,
     gameState,
     setGameState,
 }) {
@@ -111,6 +112,10 @@ export default function GameControls({
                     text={copied ? "✅ Copied" : "📋 Game ID"}
                     disabled={copied}
                     style={{ marginTop: 20 }}
+                />
+                <SecondaryButton
+                    onClick={() => setOpenInstruct(true)}
+                    text={"Help"}
                 />
                 <CallToActionButton
                     onClick={() => setShowConfirmQuit(true)}

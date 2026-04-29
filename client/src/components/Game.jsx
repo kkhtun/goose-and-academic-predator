@@ -17,9 +17,11 @@ import { toast } from "react-toastify";
 // import useLocalStorage from "../hooks/useLocalStorage";
 import { findPlayer, updatePlayerPos } from "../utils/common.utils";
 import { BoxIcon } from "./icons/BoxIcon";
+import InstructionPopup from "./popups/InstructionPopup";
 
 function Game() {
     const navigate = useNavigate();
+
     const { gameId } = useParams();
     const [searchParams] = useSearchParams();
     const playerUniqueId = searchParams.get("playerUniqueId");
@@ -34,7 +36,10 @@ function Game() {
     const [currentMoves, setCurrentMoves] = useState([]);
 
     const [lastRoll, setLastRoll] = useState(null);
+
+    // Bit redundant here, but we will differentiate state for instruction (inert) popup and in-game popups
     const [popup, setPopup] = useState(null);
+    const [openInstruct, setOpenInstruct] = useState(false);
     const [won, setWon] = useState(false);
 
     // SocketIO
@@ -259,6 +264,7 @@ function Game() {
                     lastRoll={lastRoll}
                     onRoll={handleRoll}
                     onQuit={handleQuit}
+                    setOpenInstruct={setOpenInstruct}
                     gameState={gameState}
                     setGameState={setGameState}
                 />
@@ -274,6 +280,10 @@ function Game() {
                     open={popup?.type === POSITION_TYPE.INFO}
                     payload={popup?.content}
                     onClose={handleCloseInfoPopup}
+                />
+                <InstructionPopup
+                    open={openInstruct}
+                    onClose={() => setOpenInstruct(false)}
                 />
 
                 <Celebration show={won} />
