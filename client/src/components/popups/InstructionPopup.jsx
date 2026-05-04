@@ -1,4 +1,6 @@
+import { POSITION_INSTRUCTIONS } from "../../constants";
 import CancelButton from "../buttons/CancelButton";
+import { BoxIcon } from "../icons/BoxIcon";
 
 export default function InstructionPopup({ open, onClose }) {
     if (!open) return null;
@@ -68,6 +70,44 @@ export default function InstructionPopup({ open, onClose }) {
                         </li>
                         <li>
                             Land on the <b>square 90</b> to win the game! 🎉
+                        </li>
+                    </ul>
+
+                    <div
+                        style={{
+                            fontWeight: 700,
+                            marginBottom: 20,
+                            fontSize: 18,
+                        }}
+                    >
+                        Position Guide
+                    </div>
+
+                    {/* 👇 Added instructions here */}
+                    <ul style={{ paddingLeft: 20, lineHeight: 1.6 }}>
+                        <li>
+                            <BoxIcon number={0} type={""} onSquare={false} />
+                            <span style={{ marginLeft: 8 }}>
+                                This is the start square.
+                            </span>
+                        </li>
+                        {Object.keys(POSITION_INSTRUCTIONS).map((type) => (
+                            <li>
+                                <BoxIcon
+                                    number={22} // arbitrary
+                                    type={type}
+                                    onSquare={false}
+                                />
+                                <span style={{ marginLeft: 8 }}>
+                                    {POSITION_INSTRUCTIONS[type]}
+                                </span>
+                            </li>
+                        ))}
+                        <li>
+                            <BoxIcon number={90} type={""} onSquare={false} />
+                            <span style={{ marginLeft: 8 }}>
+                                Land on this square to win the game! 🎉
+                            </span>
                         </li>
                     </ul>
                 </div>
