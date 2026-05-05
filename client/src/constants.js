@@ -36,7 +36,7 @@ export const POSITION_INSTRUCTIONS = {
     DICE_TWICE: "You get another chance to roll the dice on this square.",
     BACK_TO_START:
         "You will go back to start again if you step on this square!",
-    LUCKY: "Your current score will be double upon landing on this lucky square!",
+    LUCKY: "Your current score will be doubled upon landing on this lucky square!",
     // RETURN_PREV: "RETURN_PREV", // Return to previous position
     // PURCHASE: "PURCHASE", // Purchase the corresponding product
     PENALTY:

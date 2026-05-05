@@ -36,6 +36,10 @@ export default function GameControls({
         return !gameInfo.isLocked;
     };
 
+    const gameHasBegun = (gameInfo) => {
+        return gameInfo.players.some((p) => p.playerPos > 0);
+    };
+
     const handleCopy = async () => {
         const domain = window.location.origin;
         // const message = `Hi, you are invited to the game of "Goose and Academic Predator"! Here is the link to join the game ${domain}, your game ID is ${gameId}`;
@@ -145,7 +149,7 @@ export default function GameControls({
                 <SecondaryButton
                     onClick={handleCopy}
                     text={copied ? "✅ Copied" : "📋 Game ID"}
-                    disabled={copied}
+                    disabled={gameHasBegun(gameInfo) || copied}
                     style={{ marginTop: 20 }}
                 />
                 <SecondaryButton
