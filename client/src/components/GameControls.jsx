@@ -4,6 +4,7 @@ import { findPlayer } from "../utils/common.utils";
 import SecondaryButton from "./buttons/SecondaryButton";
 import CallToActionButton from "./buttons/CallToActionButton";
 import ConfirmPopup from "./popups/ConfirmPopup";
+import { getLevel } from "../utils/position.utils";
 
 export default function GameControls({
     lastRoll,
@@ -55,11 +56,12 @@ export default function GameControls({
                 <h2 style={styles.title}>Game Status</h2>
 
                 <div style={styles.section}>
-                    <strong>Player:</strong> {player.playerName || "UNK"}
+                    <strong>Player</strong>
+                    <span>{player.playerName || "UNK"}</span>
                 </div>
 
                 <div style={styles.section}>
-                    <strong>Turn:</strong>{" "}
+                    <strong>Turn</strong>{" "}
                     <span
                         style={{
                             color: isYourTurn(gameInfo) ? "#27ae60" : "#c0392b",
@@ -70,11 +72,11 @@ export default function GameControls({
                 </div>
 
                 <div style={styles.section}>
-                    <strong>Score:</strong> {player.score}
+                    <strong>Score</strong> <span>{player.score}</span>
                 </div>
 
                 <div style={styles.section}>
-                    <strong>Last Roll:</strong> {lastRoll ?? "-"}
+                    <strong>Last Roll</strong> <span>{lastRoll ?? "-"}</span>
                 </div>
 
                 <DiceRoller
@@ -87,6 +89,39 @@ export default function GameControls({
                 />
 
                 <div style={{ marginTop: 20 }}>
+                    <strong>Scoreboard</strong>
+
+                    <div style={styles.scoreList}>
+                        {players.map((p) => {
+                            const isCurrentTurn =
+                                p.playerUniqueId ===
+                                nextTurnPlayer(gameInfo).playerUniqueId;
+
+                            return (
+                                <div
+                                    key={p.playerUniqueId}
+                                    style={{
+                                        ...styles.scoreItem,
+                                        ...(isCurrentTurn
+                                            ? styles.activePlayer
+                                            : {}),
+                                    }}
+                                >
+                                    <div style={styles.scoreRow}>
+                                        <span>{p.playerName}</span>
+                                        <span>{p.score}</span>
+                                    </div>
+
+                                    <div style={styles.levelText}>
+                                        Level {getLevel(p.playerPos)}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* <div style={{ marginTop: 20 }}>
                     <strong>Scores:</strong>
                     <div style={styles.scoreList}>
                         {players.map((p) => (
@@ -105,7 +140,7 @@ export default function GameControls({
                             </div>
                         ))}
                     </div>
-                </div>
+                </div> */}
 
                 <SecondaryButton
                     onClick={handleCopy}
@@ -159,6 +194,9 @@ const styles = {
     },
     section: {
         fontSize: 15,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
     },
     button: {
         marginTop: 10,
@@ -178,20 +216,55 @@ const styles = {
         background: "#e74c3c",
         color: "white",
     },
+    // scoreList: {
+    //     marginTop: 6,
+    //     display: "flex",
+    //     flexDirection: "column",
+    //     gap: 6,
+    // },
+
+    // scoreItem: {
+    //     padding: "6px 8px",
+    //     borderRadius: 8,
+    //     background: "#273444", // slightly lighter than panel
+    //     fontSize: 14,
+    //     display: "flex",
+    //     justifyContent: "space-between",
+    //     alignItems: "center",
+    // },
+
     scoreList: {
-        marginTop: 6,
+        marginTop: 8,
         display: "flex",
         flexDirection: "column",
-        gap: 6,
+        gap: 8,
     },
 
     scoreItem: {
-        padding: "6px 8px",
+        padding: "8px 10px",
         borderRadius: 8,
-        background: "#273444", // slightly lighter than panel
+        background: "#1e2a38",
+        border: "1px solid #3b82f6",
         fontSize: 14,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+    },
+
+    scoreRow: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
+    },
+
+    levelText: {
+        fontSize: 12,
+        opacity: 0.75,
+        color: "#93c5fd",
+    },
+
+    activePlayer: {
+        border: "2px solid #60a5fa",
+        background: "#243447",
     },
 };

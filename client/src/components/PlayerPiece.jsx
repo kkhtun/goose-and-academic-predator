@@ -1,13 +1,22 @@
 import { useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
-import { FaDog, FaCat, FaCrow, FaFish } from "react-icons/fa";
-import { GiCamel } from "react-icons/gi";
 import {
     GAP_BETWEEN_SQUARES,
+    getLevel,
     getRow,
     POS_PER_ROW,
     SQUARE_SIZE,
 } from "../utils/position.utils";
+import { DogIcon } from "./piece/DogIcon";
+import { DogGradIcon } from "./piece/DogGradIcon";
+import { CatIcon } from "./piece/CatIcon";
+import { CatGradIcon } from "./piece/CatGradIcon";
+import { BirdIcon } from "./piece/BirdIcon";
+import { BirdGradIcon } from "./piece/BirdGradIcon";
+import { FishIcon } from "./piece/FishIcon";
+import { FishGradIcon } from "./piece/FishGradIcon";
+import { CamelIcon } from "./piece/CamelIcon";
+import { CamelGradIcon } from "./piece/CamelGradIcon";
 
 export default function PlayerPiece({
     position,
@@ -17,7 +26,7 @@ export default function PlayerPiece({
     playerName,
 }) {
     const squareSize = SQUARE_SIZE + GAP_BETWEEN_SQUARES; // 80px square + 6px gap (matches Board grid)
-    const pieceSize = 48;
+    const pieceSize = 60;
     const centerOffset = (squareSize - pieceSize) / 2;
 
     const controls = useAnimation();
@@ -84,28 +93,30 @@ export default function PlayerPiece({
     // initial placement
     const initial = posToXY(position);
 
+    const level = getLevel(position);
+
     let Icon;
     let tint;
     switch (avatar) {
         case "cat":
-            Icon = FaCat;
+            Icon = level === 2 ? CatGradIcon : CatIcon;
             tint = "#e84393";
             break;
         case "bird":
-            Icon = FaCrow;
+            Icon = level === 2 ? BirdGradIcon : BirdIcon;
             tint = "#00b894";
             break;
         case "fish":
-            Icon = FaFish;
+            Icon = level === 2 ? FishGradIcon : FishIcon;
             tint = "#0984e3";
             break;
         case "camel":
-            Icon = GiCamel;
+            Icon = level === 2 ? CamelGradIcon : CamelIcon;
             tint = "#e17055";
             break;
         case "dog":
         default:
-            Icon = FaDog;
+            Icon = level === 2 ? DogGradIcon : DogIcon;
             tint = "#6c5ce7";
             break;
     }
@@ -162,47 +173,3 @@ export default function PlayerPiece({
         </motion.div>
     );
 }
-
-// Last useEffect (just saving in case sth breaks)
-
-// useEffect(() => {
-//     const from = prevPosRef.current;
-//     const to = position;
-//     if (from === to) {
-//         // ensure initial placement
-//         const { x, y } = posToXY(to);
-//         controls.set({ x, y });
-//         return;
-//     }
-
-//     const step = from < to ? 1 : -1;
-//     const steps = [];
-//     for (let p = from + step; step > 0 ? p <= to : p >= to; p += step) {
-//         steps.push(p);
-//     }
-
-//     // Build keyframe arrays starting from the current cell
-//     const start = posToXY(from);
-//     const xs = [start.x, ...steps.map((p) => posToXY(p).x)];
-//     const ys = [start.y, ...steps.map((p) => posToXY(p).y)];
-
-//     // Timing: adjust per-step duration (seconds)
-//     const perStep = 0.18;
-//     const total = Math.max(0.001, steps.length * perStep);
-//     const times = xs.map((_, i) =>
-//         xs.length === 1 ? 1 : i / (xs.length - 1),
-//     );
-
-//     controls
-//         .start({
-//             x: xs,
-//             y: ys,
-//             transition: { duration: total, times, ease: "linear" },
-//         })
-//         .then(() => {
-//             prevPosRef.current = to;
-//             if (typeof onArrive === "function") onArrive(to);
-//         });
-
-//     prevPosRef.current = to;
-// }, [position, controls]);
