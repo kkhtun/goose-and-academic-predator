@@ -6,6 +6,7 @@ const {
     generateCrossword,
     generateTrueFalse,
     seedBatchQuizzes,
+    generateSummarizedInfo,
 } = require("../services/quiz.service.js");
 
 const QUIZ_GENERATORS = {
@@ -41,12 +42,16 @@ const CONCURRENCY_LIMIT = 3; // avoid hammering LLM APIs
 //     return results;
 // }
 
+async function seedInfo() {
+    return await generateSummarizedInfo({ level: 0 });
+}
+
 async function seed() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to DB");
 
-    await QuizModel.deleteMany({});
-    console.log("Cleared existing quizzes");
+    // await QuizModel.deleteMany({});
+    // console.log("Cleared existing quizzes");
 
     // const allQuizzes = [];
     // for (const [type, generator] of Object.entries(QUIZ_GENERATORS)) {
@@ -54,10 +59,15 @@ async function seed() {
     //     const quizzes = await generateBatch(type, generator, QUIZZES_PER_TYPE);
     //     allQuizzes.push(...quizzes);
     // }
-    const allQuizzes = await seedBatchQuizzes({});
 
-    await QuizModel.insertMany(allQuizzes);
-    console.log(`Inserted ${allQuizzes.length} quizzes`);
+    const res = await seedInfo();
+    console.log(res);
+
+    // const allQuizzes = await seedBatchQuizzes({});
+
+    // await QuizModel.insertMany(allQuizzes);
+    // console.log(`Inserted ${allQuizzes.length} quizzes`);
+
     await mongoose.disconnect();
     console.log("Disconnected");
 }

@@ -5,7 +5,7 @@ const QuizModel = require("../models/quiz.model");
 const generateLayout = require("crossword-layout-generator");
 const KbChunkModel = require("../models/kb-chunk.model");
 const { QUIZ_TYPE } = require("../utils/quiz.util");
-const { generateQuiz } = require("./llm/openai.llm-adapter");
+const { generateQuiz, generateInfo } = require("./llm/openai.llm-adapter");
 const { REALM_TYPE } = require("../utils/game.util");
 
 function getRandomQuizType() {
@@ -36,7 +36,6 @@ async function retrieveRandomContext({ type = "ABSTRACT", level, count = 1 }) {
     }
 
     pipeline.push({ $sample: { size: count } });
-
     const results = await KbChunkModel.aggregate(pipeline);
     return results;
 }
@@ -122,6 +121,16 @@ async function getQuiz({ type, level, realm }) {
     return randomQuiz.length > 0 ? randomQuiz[0] : {}; // Maybe template quiz here if {}
 }
 
+async function generateSummarizedInfo({ level }) {
+    const chunk = await retrieveRandomContext({
+        type: "ABSTRACT",
+        level: Math.min(level, 1),
+        count: 1,
+    }).then(R.head);
+    const res = await generateInfo({ chunk });
+    return res.takeaway || "";
+}
+
 async function seedBatchQuizzes({}) {
     // Note: We do not need to consider realm here
     // Generate n MCQ / Crossword / TF quizzes for each level 0, 1
@@ -178,4 +187,5 @@ module.exports = {
     getRandomQuiz,
     getQuiz,
     seedBatchQuizzes,
+    generateSummarizedInfo,
 };

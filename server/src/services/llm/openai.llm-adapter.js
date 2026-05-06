@@ -27,6 +27,55 @@ function formatChunkIntoContextString(chunks) {
     return chunks.map((c, i) => `CHUNK ${i + 1}:\n${c.text}`).join("\n\n");
 }
 
+// Functions that call Open AI API
+async function callLLMSummarizeContent({ content }) {
+    const resp = await client.chat.completions.create({
+        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        temperature: 0.2,
+        response_format: {
+            type: "json_schema",
+            json_schema: {
+                name: "note_summary",
+                schema: {
+                    type: "object",
+                    properties: {
+                        takeaway: {
+                            type: "string",
+                            description: "2-3 line general knowledge summary",
+                        },
+                    },
+                    required: ["takeaway"],
+                    additionalProperties: false,
+                },
+            },
+        },
+        messages: [
+            {
+                role: "system",
+                content: `You convert research notes into concise, general knowledge takeaways.`,
+            },
+            {
+                role: "user",
+                content: `
+Summarize the note into 2-3 lines.
+
+Rules:
+- Do NOT mention "the paper", "the study", "researchers", or any source.
+- Write as general knowledge or practical insight.
+- Preserve nuance and core argument.
+- Avoid meta-language like "this shows", "this suggests"
+- Keep it concise (2-3 lines max).
+
+Note:
+${content}
+`,
+            },
+        ],
+    });
+
+    return JSON.parse(resp.choices[0].message.content);
+}
+
 async function callLLM({ prompt }) {
     const resp = await client.chat.completions.create({
         model: process.env.OPENAI_MODEL || "gpt-4o-mini",
@@ -43,7 +92,14 @@ async function callLLM({ prompt }) {
     }
 }
 
-// Generate single quiz
+// Wrapper functions
+
+async function generateInfo({ chunk }) {
+    const { text } = chunk;
+    const response = await callLLMSummarizeContent({ content: text });
+    return response;
+}
+
 async function generateQuiz({ type, chunks }) {
     const context = formatChunkIntoContextString(chunks);
 
@@ -90,4 +146,5 @@ module.exports = {
     embedText,
     formatChunkIntoContextString,
     generateQuiz,
+    generateInfo,
 };

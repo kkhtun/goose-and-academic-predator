@@ -145,20 +145,17 @@ async function roll({ game, player }) {
 
     while (true) {
         let move = moves[moves.length - 1];
+        const { level, realm } = getRealm(move.next, score);
+
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
-            const { level, realm } = getRealm(move.next, score);
             move.content = { quiz: await QuizService.getQuiz({ level }) };
-            // const randomQuiz = await QuizModel.aggregate([
-            //     // { $match: { type: QUIZ_TYPE.TRUE_FALSE } }, // ADJUST here if you want only 1 quiz type for testing
-            //     { $sample: { size: 1 } },
-            // ]);
             break;
         } else if (move.nextType === POSITION_TYPE.INFO) {
-            const randomChunk = await KbChunkModel.aggregate([
-                { $sample: { size: 1 } },
-            ]);
+            // const randomChunk = await KbChunkModel.aggregate([
+            //     { $sample: { size: 1 } },
+            // ]);
             move.content = {
-                info: randomChunk.length > 0 ? randomChunk[0].text : "",
+                info: await QuizService.generateSummarizedInfo({ level }),
             };
             break;
         } else if (move.nextType === POSITION_TYPE.GOOSE) {
