@@ -11,6 +11,7 @@ const http = require("http");
 const {
     registerSocketControllers,
 } = require("./controllers/socket.controller");
+const { agenda } = require("./services/job.service");
 
 const app = express();
 
@@ -81,10 +82,8 @@ app.use((req, res, next) =>
 const PORT = process.env.PORT || 3000;
 (async function main() {
     await connectDB();
+    await agenda.start();
     server.listen(PORT, () => {
         console.log(`[Express] Server running on port ${PORT}`);
     });
-    // app.listen(PORT, () => {
-    //     console.log(`Server running on port ${PORT}`);
-    // });
 })();

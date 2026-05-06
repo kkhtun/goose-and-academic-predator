@@ -109,8 +109,11 @@ async function generateSummarizedInfo({ level }) {
 }
 
 // These two functions fetch pre-generated quiz and info respectively from database
+// We use a mix of NEW vs USED quizzes and infos
+const NEW_RATIO = 1; // For now, we will just use NEW quizzes when possible
 async function getQuiz({ type, level, realm }) {
-    const pipeline = [];
+    const basePipeline = [];
+    const status = Math.random() < NEW_RATIO ? "NEW" : "USED";
 
     // Only in heaven?
     // if (realm && realm === REALM_TYPE.HEAVEN) {
@@ -120,28 +123,70 @@ async function getQuiz({ type, level, realm }) {
     // }
 
     if (level) {
-        pipeline.push({ $match: { level } });
+        basePipeline.push({ $match: { level } });
     }
 
     // If there is no type, then will get a random quiz
     if (type) {
-        pipeline.push({ $match: { type } });
+        basePipeline.push({ $match: { type } });
     }
 
-    pipeline.push({ $sample: { size: 1 } });
-    const randomQuiz = await QuizModel.aggregate(pipeline);
-    return randomQuiz.length > 0 ? randomQuiz[0] : {}; // Maybe template quiz here if {}
+    // First try with preferred status
+    if (status) {
+        const preferredPipeline = [
+            ...basePipeline,
+            { $match: { status } },
+            { $sample: { size: 1 } },
+        ];
+
+        const preferredQuiz = await QuizModel.aggregate(preferredPipeline);
+        if (preferredQuiz.length > 0) return preferredQuiz[0];
+    }
+
+    // Fallback: query without status restriction
+    const fallbackPipeline = [...basePipeline, { $sample: { size: 1 } }];
+    const randomQuiz = await QuizModel.aggregate(fallbackPipeline);
+    return randomQuiz.length > 0 ? randomQuiz[0] : {};
 }
 
 async function getInfo({ level }) {
-    const pipeline = [];
+    const basePipeline = [];
     if (level) {
-        pipeline.push({ $match: { level } });
+        basePipeline.push({ $match: { level } });
+    }
+    // First try with preferred status
+    const status = Math.random() < NEW_RATIO ? "NEW" : "USED";
+    if (status) {
+        const preferredPipeline = [
+            ...basePipeline,
+            { $match: { status } },
+            { $sample: { size: 1 } },
+        ];
+
+        const preferredInfo = await InfoModel.aggregate(preferredPipeline);
+        if (preferredInfo.length > 0) return preferredInfo[0];
     }
 
-    pipeline.push({ $sample: { size: 1 } });
-    const randomInfo = await InfoModel.aggregate(pipeline);
-    return randomInfo.length > 0 ? randomInfo[0] : {}; // Maybe template info here if {}
+    // Fallback: query without status restriction
+    const fallbackPipeline = [...basePipeline, { $sample: { size: 1 } }];
+    const randomInfo = await InfoModel.aggregate(fallbackPipeline);
+    return randomInfo.length > 0 ? randomInfo[0] : {};
+}
+
+// These mark the quiz or info as used
+async function markQuizUsed({ quizId }) {
+    return await QuizModel.findOneAndUpdate(
+        { _id: quizId },
+        { $set: { status: "USED" } },
+        { new: true }
+    );
+}
+async function markInfoUsed({ infoId }) {
+    return await InfoModel.findOneAndUpdate(
+        { _id: infoId },
+        { $set: { status: "USED" } },
+        { new: true }
+    );
 }
 
 async function seedBatchInfo({}) {
@@ -229,6 +274,8 @@ module.exports = {
     getRandomQuiz,
     getQuiz,
     getInfo,
+    markQuizUsed,
+    markInfoUsed,
     seedBatchQuizzes,
     seedBatchInfo,
     generateSummarizedInfo,

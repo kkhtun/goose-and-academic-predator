@@ -31,6 +31,7 @@ const {
     haveSameEntries,
     isArrayOfArrays,
 } = require("../utils/common.util");
+const { triggerRefillQuizzes } = require("./job.service");
 
 // API functions (mapping 1 to 1 with api endpoints)
 
@@ -148,14 +149,16 @@ async function roll({ game, player }) {
         const { level, realm } = getRealm(move.next, score);
 
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
-            move.content = { quiz: await QuizService.getQuiz({ level }) };
+            const quiz = await QuizService.getQuiz({ level });
+            move.content = { quiz };
+            await QuizService.markQuizUsed({ quizId: quiz._id });
+            await triggerRefillQuizzes({});
             break;
         } else if (move.nextType === POSITION_TYPE.INFO) {
-            move.content = {
-                info: await QuizService.getInfo({ level }).then(
-                    R.prop("content")
-                ),
-            };
+            const info = await QuizService.getInfo({ level });
+            move.content = { info: info.content };
+            await QuizService.markInfoUsed({ infoId: info._id });
+            await triggerRefillQuizzes({});
             break;
         } else if (move.nextType === POSITION_TYPE.GOOSE) {
             const newPos = adjustPosition(move.next + total);
