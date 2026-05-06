@@ -33,7 +33,6 @@ const quizSchema = new mongoose.Schema(
             type: String,
             enum: ["NEW", "USED"],
             default: "NEW",
-            index: true,
         },
     },
     {

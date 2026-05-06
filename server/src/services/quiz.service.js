@@ -1,6 +1,7 @@
 const R = require("ramda");
 
 const QuizModel = require("../models/quiz.model");
+const InfoModel = require("../models/info.model.js"); // Not the best practice to mix services, but will do for now
 
 const generateLayout = require("crossword-layout-generator");
 const KbChunkModel = require("../models/kb-chunk.model");
@@ -97,6 +98,17 @@ async function getRandomQuiz({}) {
     };
 }
 
+async function generateSummarizedInfo({ level }) {
+    const chunk = await retrieveRandomContext({
+        type: "ABSTRACT",
+        level: Math.min(level, 1),
+        count: 1,
+    }).then(R.head);
+    const res = await generateInfo({ chunk });
+    return { content: res.takeaway || "" };
+}
+
+// These two functions fetch pre-generated quiz and info respectively from database
 async function getQuiz({ type, level, realm }) {
     const pipeline = [];
 
@@ -121,14 +133,44 @@ async function getQuiz({ type, level, realm }) {
     return randomQuiz.length > 0 ? randomQuiz[0] : {}; // Maybe template quiz here if {}
 }
 
-async function generateSummarizedInfo({ level }) {
-    const chunk = await retrieveRandomContext({
-        type: "ABSTRACT",
-        level: Math.min(level, 1),
-        count: 1,
-    }).then(R.head);
-    const res = await generateInfo({ chunk });
-    return res.takeaway || "";
+async function getInfo({ level }) {
+    const pipeline = [];
+    if (level) {
+        pipeline.push({ $match: { level } });
+    }
+
+    pipeline.push({ $sample: { size: 1 } });
+    const randomInfo = await InfoModel.aggregate(pipeline);
+    return randomInfo.length > 0 ? randomInfo[0] : {}; // Maybe template info here if {}
+}
+
+async function seedBatchInfo({}) {
+    const levels = [0, 1, 2];
+
+    const INFO_PER_LEVEL = 2;
+    const CONCURRENCY_LIMIT = 2;
+    const totalCount = levels.length * INFO_PER_LEVEL;
+
+    const results = [];
+    for (let i = 0; i < totalCount; i += CONCURRENCY_LIMIT) {
+        const level = Math.floor(i / INFO_PER_LEVEL);
+
+        const batch = Array.from({ length: CONCURRENCY_LIMIT }, async () => {
+            try {
+                const { content } = await generateSummarizedInfo({
+                    level: level >= 2 ? 1 : level, // For now, we don't have level 2 chunks so we reuse from level 1
+                });
+                return { content, level }; // Final formatting for quiz insertion happens her;
+            } catch (err) {
+                console.error(`Error generating info:`, err.message);
+                return null;
+            }
+        });
+
+        const resolved = await Promise.all(batch);
+        results.push(...resolved.filter(Boolean));
+    }
+    return results;
 }
 
 async function seedBatchQuizzes({}) {
@@ -186,6 +228,8 @@ module.exports = {
     generateTrueFalse,
     getRandomQuiz,
     getQuiz,
+    getInfo,
     seedBatchQuizzes,
+    seedBatchInfo,
     generateSummarizedInfo,
 };

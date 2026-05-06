@@ -7,7 +7,9 @@ const {
     generateTrueFalse,
     seedBatchQuizzes,
     generateSummarizedInfo,
+    seedBatchInfo,
 } = require("../services/quiz.service.js");
+const InfoModel = require("../models/info.model.js");
 
 const QUIZ_GENERATORS = {
     MCQ: generateMcq,
@@ -43,30 +45,30 @@ const CONCURRENCY_LIMIT = 3; // avoid hammering LLM APIs
 // }
 
 async function seedInfo() {
-    return await generateSummarizedInfo({ level: 0 });
+    await InfoModel.deleteMany({});
+    console.log("Cleared existing infos");
+
+    const allInfos = await seedBatchInfo({});
+
+    await InfoModel.insertMany(allInfos);
+    console.log(`Inserted ${allInfos.length} info`);
+}
+
+async function seedQuizzes() {
+    await QuizModel.deleteMany({});
+    console.log("Cleared existing quizzes");
+
+    const allQuizzes = await seedBatchQuizzes({});
+
+    await QuizModel.insertMany(allQuizzes);
+    console.log(`Inserted ${allQuizzes.length} quizzes`);
 }
 
 async function seed() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to DB");
 
-    // await QuizModel.deleteMany({});
-    // console.log("Cleared existing quizzes");
-
-    // const allQuizzes = [];
-    // for (const [type, generator] of Object.entries(QUIZ_GENERATORS)) {
-    //     console.log(`Generating ${QUIZZES_PER_TYPE} ${type} quizzes...`);
-    //     const quizzes = await generateBatch(type, generator, QUIZZES_PER_TYPE);
-    //     allQuizzes.push(...quizzes);
-    // }
-
-    const res = await seedInfo();
-    console.log(res);
-
-    // const allQuizzes = await seedBatchQuizzes({});
-
-    // await QuizModel.insertMany(allQuizzes);
-    // console.log(`Inserted ${allQuizzes.length} quizzes`);
+    await seedInfo();
 
     await mongoose.disconnect();
     console.log("Disconnected");

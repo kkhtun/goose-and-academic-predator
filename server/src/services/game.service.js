@@ -151,11 +151,10 @@ async function roll({ game, player }) {
             move.content = { quiz: await QuizService.getQuiz({ level }) };
             break;
         } else if (move.nextType === POSITION_TYPE.INFO) {
-            // const randomChunk = await KbChunkModel.aggregate([
-            //     { $sample: { size: 1 } },
-            // ]);
             move.content = {
-                info: await QuizService.generateSummarizedInfo({ level }),
+                info: await QuizService.getInfo({ level }).then(
+                    R.prop("content")
+                ),
             };
             break;
         } else if (move.nextType === POSITION_TYPE.GOOSE) {
