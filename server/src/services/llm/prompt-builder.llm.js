@@ -103,12 +103,13 @@ function normalizeMcqResponse(obj) {
         entry.questionText = obj.questionText;
     }
 
-    if (obj.options && Array.isArray(obj.options) && obj.options.length >= 4) {
-        entry.options = obj.options;
-    }
-
     if (isString(obj.correctAnswer) && obj.correctAnswer.length === 1) {
         entry.correctAnswer = obj.correctAnswer;
+    }
+
+    if (obj.options && Object.values(obj.options).length === 4) {
+        const optionsArr = Object.values(obj.options);
+        entry.options = optionsArr;
     }
 
     if (isString(obj.explanation)) {

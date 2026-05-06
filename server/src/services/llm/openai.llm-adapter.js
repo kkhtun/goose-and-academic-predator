@@ -24,7 +24,7 @@ async function embedText(text) {
 }
 
 function formatChunkIntoContextString(chunks) {
-    return chunks.map((c, i) => `CHUNK ${i + 1}:\n${c.text}`).join("\n\n");
+    return chunks.map((c, i) => `${c.text}`).join("\n\n");
 }
 
 // Functions that call Open AI API
@@ -76,20 +76,217 @@ ${content}
     return JSON.parse(resp.choices[0].message.content);
 }
 
-async function callLLM({ prompt }) {
+async function callLLMMCQ({ context }) {
     const resp = await client.chat.completions.create({
         model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-        temperature: 0.7,
-        messages: [{ role: "user", content: prompt }],
-        // response_format: { type: "json_object" }, // model returns a JSON object, we’ll parse the array from it safely
+        temperature: 0.2,
+        response_format: {
+            type: "json_schema",
+            json_schema: {
+                name: "mcq",
+                strict: true,
+                schema: {
+                    type: "object",
+                    additionalProperties: false,
+                    properties: {
+                        questionText: { type: "string" },
+                        options: {
+                            type: "object",
+                            additionalProperties: false,
+                            properties: {
+                                A: { type: "string" },
+                                B: { type: "string" },
+                                C: { type: "string" },
+                                D: { type: "string" },
+                            },
+                            required: ["A", "B", "C", "D"],
+                        },
+                        correctAnswer: {
+                            type: "string",
+                            enum: ["A", "B", "C", "D"],
+                        },
+                        explanation: { type: "string" },
+                    },
+                    required: [
+                        "questionText",
+                        "options",
+                        "correctAnswer",
+                        "explanation",
+                    ],
+                },
+            },
+        },
+        messages: [
+            {
+                role: "system",
+                content: `
+You are a quiz generator. Use only the provided context.
+Generate one high-quality multiple-choice question.
+`,
+            },
+            {
+                role: "user",
+                content: `
+CONTEXT:
+${context}
+
+Generate ONE MCQ.
+
+Rules:
+- The question must be answerable only from the context.
+- Options A-D must contain full answer text, not just letters.
+- Exactly one option must be correct.
+- Distractors must be plausible but clearly wrong.
+- Explanation should explain why the correct answer is right.
+- Do not mention context, chunks, papers, studies, or internal sources in either the questionText, options or in explanation.
+`,
+            },
+        ],
     });
-    const raw = resp.choices[0].message.content;
-    try {
-        return JSON.parse(raw);
-    } catch (error) {
-        console.log("Raw : ", raw);
-        throw new Error("Failed to parse JSON");
-    }
+
+    return JSON.parse(resp.choices[0].message.content);
+}
+
+async function callLLMTrueFalse({ context }) {
+    const resp = await client.chat.completions.create({
+        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        temperature: 0.2,
+        response_format: {
+            type: "json_schema",
+            json_schema: {
+                name: "true_false_question",
+                strict: true,
+                schema: {
+                    type: "object",
+                    additionalProperties: false,
+                    properties: {
+                        statement: {
+                            type: "string",
+                            description:
+                                "A concise statement that is clearly true or false based only on the provided context.",
+                        },
+                        answer: {
+                            type: "boolean",
+                            description:
+                                "Whether the statement is true or false.",
+                        },
+                        explanation: {
+                            type: "string",
+                            description:
+                                "Natural explanation of why the answer is correct, without mentioning the context or chunks.",
+                        },
+                    },
+                    required: ["statement", "answer", "explanation"],
+                },
+            },
+        },
+        messages: [
+            {
+                role: "system",
+                content: `
+You are a quiz generator. Use only the provided context.
+Generate one true/false question.
+`,
+            },
+            {
+                role: "user",
+                content: `
+CONTEXT:
+${context}
+
+Generate ONE true/false statement.
+
+Rules:
+- The statement must be fully verifiable using only the context.
+- The statement must be concise and unambiguous.
+- Ensure a balanced mix of TRUE and FALSE across multiple generations (do not always return TRUE).
+- Explanation should explain why the answer is correct in natural language.
+- Do not mention context, chunks, papers, studies, or internal sources in either the statement or explanation.
+`,
+            },
+        ],
+    });
+
+    return JSON.parse(resp.choices[0].message.content);
+}
+
+async function callLLMCrossword({ context }) {
+    const resp = await client.chat.completions.create({
+        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        temperature: 0.3,
+        response_format: {
+            type: "json_schema",
+            json_schema: {
+                name: "crossword_entries",
+                strict: true,
+                schema: {
+                    type: "object",
+                    additionalProperties: false,
+                    properties: {
+                        entries: {
+                            type: "array",
+                            minItems: 6,
+                            maxItems: 8,
+                            items: {
+                                type: "object",
+                                additionalProperties: false,
+                                properties: {
+                                    answer: {
+                                        type: "string",
+                                        pattern: "^[A-Z]{4,10}$",
+                                        description:
+                                            "Single uppercase word, A-Z only, 4-10 letters",
+                                    },
+                                    clue: {
+                                        type: "string",
+                                        minLength: 20,
+                                        maxLength: 300,
+                                        description:
+                                            "Concise crossword clue, 10-30 words",
+                                    },
+                                },
+                                required: ["answer", "clue"],
+                            },
+                        },
+                    },
+                    required: ["entries"],
+                },
+            },
+        },
+        messages: [
+            {
+                role: "system",
+                content: `
+You are a crossword puzzle generator.
+Use the provided context to generate high-quality crossword entries.
+`,
+            },
+            {
+                role: "user",
+                content: `
+CONTEXT:
+${context}
+
+Generate 6-8 crossword entries.
+
+Rules:
+- Each answer must be a SINGLE WORD in uppercase (A-Z only).
+- Length must be between 4 and 10 letters.
+- Each clue must be 10-30 words and clearly point to the answer.
+- Do NOT include the answer word inside the clue.
+- Avoid duplicates.
+- Avoid very obscure terms.
+- Prefer important and meaningful terms from the context.
+- Clues should be natural and human-readable.
+- Do not mention context, chunks, papers, studies, or internal sources in the clues.
+
+`,
+            },
+        ],
+    });
+
+    const parsed = JSON.parse(resp.choices[0].message.content);
+    return parsed.entries;
 }
 
 // Wrapper functions
@@ -104,35 +301,22 @@ async function generateQuiz({ type, chunks }) {
     const context = formatChunkIntoContextString(chunks);
 
     let prompt = "";
-    if (type === QUIZ_TYPE.CROSS_WORDS) {
-        prompt = buildCrosswordPrompt({
-            context,
-            wordCount: 8,
-        });
-    } else if (type === QUIZ_TYPE.TRUE_FALSE) {
-        prompt = buildTrueFalsePrompt({
-            context,
-        });
-    } else {
-        // By default MCQ
-        prompt = buildMcqPrompt({
-            context,
-        });
-    }
+    let response = {};
+    let normalizedRes = {};
 
-    const response = await callLLM({ prompt });
-
-    // Validate response
-    let normalizedRes;
     if (type === QUIZ_TYPE.CROSS_WORDS) {
+        response = await callLLMCrossword({ context });
         normalizedRes = normalizeCrosswordResponse(response);
     } else if (type === QUIZ_TYPE.TRUE_FALSE) {
+        response = await callLLMTrueFalse({ context });
         normalizedRes = normalizeTrueFalseResponse(response);
     } else {
+        // By default MCQ
+        response = await callLLMMCQ({ context });
         normalizedRes = normalizeMcqResponse(response);
     }
-    const { isValid, entry } = normalizedRes;
 
+    const { isValid, entry } = normalizedRes;
     if (isValid) return entry;
 
     console.log(`[ADAPTER] Unable to normalize the response : `);
