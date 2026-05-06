@@ -1,81 +1,13 @@
 const { isString } = require("../../utils/common.util");
 
-// function buildMultipleChoiceQuizPrompt({
-//   domain,
-//   difficulty,
-//   context,
-//   count = 10,
-// }) {
-//   return `
-// You are a quiz generator. Use ONLY the information in the CONTEXT section.
-// If the answer is unknown, say so explicitly in the explanation.
-
-// DOMAIN: ${domain}
-// DIFFICULTY: ${difficulty}
-// COUNT: ${count}
-// CONTEXT:
-// ${context}
-
-// OUTPUT STRICTLY AS VALID JSON (no markdown, no extra text).
-// Return a JSON array of exactly ${count} objects in this format:
-
-// {
-//   "type": ${QUIZ_TYPE.MULTIPLE_CHOICE},
-//   "questionText": "string",
-//   "options": ["A","B","C","D"],
-//   "correctAnswer": "string",
-//   "explanation": "string"
-// }
-
-// Rules:
-// - "correctAnswer" must be exactly one of the values in "options".
-// - Options must be plausible and distinct.
-// `;
-// }
-
-// Build MCQ prompt for generation
-function buildMcqBatchPrompt({ topic, difficulty, context, count = 3 }) {
-    return `
-You are a quiz generator. Use ONLY the information in the CONTEXT section.
-Do NOT use outside knowledge. Each question must be fully answerable from the CONTEXT.
-
-TOPIC: ${topic}
-DIFFICULTY: ${difficulty}
-COUNT: ${count}
-
-CONTEXT:
-${context}
-
-OUTPUT STRICTLY AS VALID JSON (no markdown, no extra text).
-Return a JSON array of exactly ${count} objects in this format:
-
-[
-  {
-    "type": "multiple_choice",
-    "questionText": "string",
-    "options": ["A","B","C","D"],
-    "correctAnswer": "A|B|C|D",
-    "explanation": "string"
-  }
-]
-
-Rules:
-- No duplicates within the batch.
-- Options must be plausible and distinct.
-- correctAnswer must be exactly one of the options ("A","B","C","D").
-- Keep explanations short and clearly tied to the CONTEXT.
-`;
-}
-
 // Build Crossword prompt for generation
-function buildCrosswordPrompt({ topic, difficulty, context, wordCount = 6 }) {
+function buildCrosswordPrompt({ topic, context, wordCount = 6 }) {
     return `
 You are a crossword puzzle generator.
 
 Use the information in the CONTEXT section as a clue for words. 
 You are allowed to use appropriate outside information to reason and provide explanation where necessary.
 
-DIFFICULTY: ${difficulty}
 COUNT: ${wordCount}
 
 CONTEXT:
@@ -107,12 +39,10 @@ Rules:
 `;
 }
 
-function buildMcqPrompt({ topic, difficulty, context }) {
+function buildMcqPrompt({ topic, context }) {
     return `
 You are a quiz generator. Use ONLY the information in the CONTEXT section.
 Do NOT use outside knowledge. The question must be fully answerable from the CONTEXT.
-
-DIFFICULTY: ${difficulty}
 
 CONTEXT:
 ${context}
@@ -138,12 +68,10 @@ Rules:
 `;
 }
 
-function buildTrueFalsePrompt({ topic, difficulty, context }) {
+function buildTrueFalsePrompt({ topic, context }) {
     return `
 You are a quiz generator. Use ONLY the information in the CONTEXT section.
 Do NOT use outside knowledge. The statement must be fully verifiable from the CONTEXT.
-
-DIFFICULTY: ${difficulty}
 
 CONTEXT:
 ${context}
@@ -231,8 +159,6 @@ function normalizeCrosswordResponse(arr) {
 }
 
 module.exports = {
-    buildMcqBatchPrompt,
-    // normalizeQuizObject,
     // Single normalize
     normalizeCrosswordResponse,
     normalizeMcqResponse,

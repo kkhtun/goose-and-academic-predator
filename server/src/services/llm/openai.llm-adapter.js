@@ -44,25 +44,22 @@ async function callLLM({ prompt }) {
 }
 
 // Generate single quiz
-async function generateQuiz({ type, chunks, difficulty = DIFFICULTY.MEDIUM }) {
+async function generateQuiz({ type, chunks }) {
     const context = formatChunkIntoContextString(chunks);
 
     let prompt = "";
     if (type === QUIZ_TYPE.CROSS_WORDS) {
         prompt = buildCrosswordPrompt({
-            difficulty,
             context,
             wordCount: 8,
         });
     } else if (type === QUIZ_TYPE.TRUE_FALSE) {
         prompt = buildTrueFalsePrompt({
-            difficulty,
             context,
         });
     } else {
         // By default MCQ
         prompt = buildMcqPrompt({
-            difficulty,
             context,
         });
     }

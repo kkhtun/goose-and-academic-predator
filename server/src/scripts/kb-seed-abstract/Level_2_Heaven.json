@@ -1,0 +1,434 @@
+[
+  {
+    "sourceTitle": "Question",
+    "text": "How has peer review improved your manuscript and your research?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does publishing in a recognised journal strengthen the credibility of your research?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why does peer-reviewed publication remain the gold standard for validating scientific knowledge?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does rigorous peer review improve the quality, clarity, and impact of your work?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do legitimate journals protect authors from reputational harm?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does publishing in authoritative journals contribute to respected academic integrity?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does publishing in high-impact journals influence promotion, tenure, and hiring decisions?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do funding agencies value publications in trusted, indexed journals?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does a strong publication record open doors to new research projects?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why are most cited articles often published in recognized, well-curated journals?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does legitimate publishing support long-term career opportunities inside and outside academia?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does publishing in respected journals contribute to your academic reputation?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why does visibility in authoritative journals increase invitations to collaborate, review, or speak?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does publishing ethically contribute to personal confidence and professional pride?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why is protecting your scholarly identity essential in the digital era?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does legitimate publication help you achieve lasting scholarly recognition?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "What does the Journal Impact Factor (JIF) actually measure—and what does it not?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why is JIF meaningful only when sourced from Clarivate’s Journal Citation Reports?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How do predatory journals misuse or invent fake impact factors?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why should impact factor be considered alongside, not instead of, research quality?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How do Scimago Journal Rankings (SJR) complement impact factor assessments?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does publishing in legitimate journals contribute to a reliable H-index?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do citations from predatory journals often not count toward meaningful metrics?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does long-term archiving affect citation accumulation over time?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why are web metrics valuable only when journals are indexed and discoverable?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How can publishing ethically prevent metric inflation scandals?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "What are the advantages of publishing in legitimate open access journals?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does open access improve research visibility and global reach?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do reputable OA journals clearly disclose APCs before submission?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does open access support equity in knowledge dissemination?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why is open access compatible with high-quality peer review?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do subscription journals remain influential in many disciplines?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How do library-backed subscription models ensure editorial sustainability?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "What are the benefits of publishing in long-established subscription journals?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How do subscription journals maintain strong archival stability?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do tenure committees often recognize both OA and subscription journals—if legitimate?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does publishing in indexed journals increase discoverability in databases?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why are legitimate journals integrated into Google Scholar, Scopus, Web of Science?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does trusted publishing help you publicize your articles responsibly?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do legitimate publishers support media outreach and press releases?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "What is the importance of international collaboration in science?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does journal reputation affect how often your work is read, cited, and reused?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How do legitimate journals support FAIR data principles (Findable, Accessible, Interoperable, Reusable)?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do trusted publishers provide long-term digital preservation?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does archiving protect your work from disappearing?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do predatory journals often fail to preserve articles permanently?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does compliance with data-sharing policies support future funding applications?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does publishing in recognized journals attract new research collaborators?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do funding agencies evaluate journal quality during grant review?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does legitimate publication improve success in international funding calls?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do interdisciplinary projects prefer partners with credible publication records?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does journal reputation influence participation in global research networks?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do legitimate conferences have transparent review processes?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does publishing conference papers in recognized proceedings add value?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "What are the risks of presenting at deceptive or fake conferences?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do legitimate conferences never guarantee acceptance?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How can conference participation enhance professional visibility—if vetted properly?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How can you verify a journal’s indexing claims independently?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why is aggressive email solicitation a warning sign?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How do fake editorial boards damage scholarly trust?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Why do legitimate journals never ask for payment via unsafe methods?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does consulting whitelists and institutional guidance protect your work?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How does my publication strategy align with my long-term career goals?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Am I prioritizing quality and integrity over speed?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "In what ways can publishing in high-impact journals improve the career of an early-career researcher?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How will this journal reflect on my reputation five or ten years from now?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Does this publisher strengthen or weaken trust in my work?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Am I building a sustainable and respected scholarly profile?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Publishing in legitimate journals is not just about metrics—it is about trust, visibility, collaboration, funding, and lasting academic reputation.",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "Choosing wisely protects your work, your career, and the integrity of scholarship itself.",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "What are the benefits of publishing in legitimate journals, for example, research visibility and citation potential?",
+    "level": 2,
+    "type": "QUESTION"
+  },
+  {
+    "sourceTitle": "Question",
+    "text": "How do legitimate journals enable long-term archiving of articles within structured editorial databases?",
+    "level": 2,
+    "type": "QUESTION"
+  }
+]

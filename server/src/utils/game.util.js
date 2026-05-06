@@ -128,6 +128,20 @@ const BOARD_POSITIONS = {
     90: POSITION_TYPE.STANDARD,
 };
 
+// These constants need to be in sync with frontend
+const SCORE_FOR_HEAVEN = 10;
+
+const REALM_TYPE = {
+    HEAVEN: "HEAVEN",
+    HELL: "HELL",
+    BOTH: "BOTH",
+};
+
+const LEVEL_MARKER = {
+    LEVEL_0_END: 29,
+    LEVEL_1_END: 59,
+};
+
 // Check < 1 and also reverses if position > 90
 function adjustPosition(pos) {
     if (pos < 1) throw new CustomError("Error position < 1");
@@ -147,7 +161,7 @@ function throwDie(pos = 0) {
     let die2 = Math.floor(Math.random() * 6) + 1;
     let total = die1 + die2;
 
-    // return { die1: 4, die2: 5, total: 9 };
+    // return { die1: 1, die2: 1, total: 2 };
 
     if (pos > 85 && total > 6) {
         // 50% chance to re-roll high values
@@ -167,6 +181,30 @@ function getPlayerPos({ playerUniqueId, moves }) {
         }
     }
     return 0; // Default to start if no moves found
+}
+
+function getLevel(pos) {
+    if (pos <= LEVEL_MARKER.LEVEL_0_END) {
+        return 0;
+    } else if (pos <= LEVEL_MARKER.LEVEL_1_END) {
+        return 1;
+    } else {
+        return 2;
+    }
+}
+
+function getRealm(playerPos, playerScore) {
+    const level = getLevel(playerPos);
+    let realm;
+    if (level >= 2) {
+        realm =
+            playerScore >= SCORE_FOR_HEAVEN
+                ? REALM_TYPE.HEAVEN
+                : REALM_TYPE.HELL;
+    } else {
+        realm = REALM_TYPE.BOTH; // Realm only applies in Level 2
+    }
+    return { realm, level };
 }
 
 function formatGameInfoForClientStore(game) {
@@ -197,9 +235,13 @@ module.exports = {
     POSITION_TYPE,
     BOARD_POSITIONS,
     POSITION_DESCRIPTIONS,
+    REALM_TYPE,
+    SCORE_FOR_HEAVEN,
     adjustPosition,
     throwDie,
     formatGameInfoForClientStore,
     getPlayerPos,
     findPlayer,
+    getRealm,
+    getLevel,
 };

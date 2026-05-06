@@ -140,7 +140,6 @@ export const BOARD_POSITIONS = {
 export const QUIZ_TYPE = {
     MCQ: "MCQ",
     TRUE_FALSE: "TRUE_FALSE",
-    WORDS_FIND: "WORDS_FIND",
     CROSS_WORDS: "CROSS_WORDS",
 };
 

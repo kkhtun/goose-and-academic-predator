@@ -110,17 +110,19 @@ const registerSocketControllers = (io, socket) => {
         const { gameId } = socket.data;
 
         try {
-            const { game, quiz } = await GameService.prevalidateAnswerQuiz({
-                gameId,
-                playerUniqueId,
-                quizId,
-            });
+            const { game, quiz, player, move } =
+                await GameService.prevalidateAnswerQuiz({
+                    gameId,
+                    playerUniqueId,
+                    quizId,
+                });
 
             const { isCorrect } = await GameService.answerQuiz({
                 game,
                 quiz,
                 answer,
-                playerUniqueId,
+                player,
+                move,
             });
 
             await GameService.lockRolling(gameId, true);

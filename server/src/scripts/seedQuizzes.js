@@ -5,6 +5,7 @@ const {
     generateMcq,
     generateCrossword,
     generateTrueFalse,
+    seedBatchQuizzes,
 } = require("../services/quiz.service.js");
 
 const QUIZ_GENERATORS = {
@@ -16,29 +17,29 @@ const QUIZ_GENERATORS = {
 const QUIZZES_PER_TYPE = 12;
 const CONCURRENCY_LIMIT = 3; // avoid hammering LLM APIs
 
-async function generateBatch(type, generator, count) {
-    const results = [];
+// async function generateBatch(type, generator, count) {
+//     const results = [];
 
-    for (let i = 0; i < count; i += CONCURRENCY_LIMIT) {
-        const batch = Array.from({ length: CONCURRENCY_LIMIT }, async () => {
-            try {
-                const content = await generator({});
-                return {
-                    type,
-                    content,
-                };
-            } catch (err) {
-                console.error(`Error generating ${type}:`, err.message);
-                return null;
-            }
-        });
+//     for (let i = 0; i < count; i += CONCURRENCY_LIMIT) {
+//         const batch = Array.from({ length: CONCURRENCY_LIMIT }, async () => {
+//             try {
+//                 const content = await generator({});
+//                 return {
+//                     type,
+//                     content,
+//                 };
+//             } catch (err) {
+//                 console.error(`Error generating ${type}:`, err.message);
+//                 return null;
+//             }
+//         });
 
-        const resolved = await Promise.all(batch);
-        results.push(...resolved.filter(Boolean));
-    }
+//         const resolved = await Promise.all(batch);
+//         results.push(...resolved.filter(Boolean));
+//     }
 
-    return results;
-}
+//     return results;
+// }
 
 async function seed() {
     await mongoose.connect(process.env.MONGO_URI);
@@ -47,18 +48,16 @@ async function seed() {
     await QuizModel.deleteMany({});
     console.log("Cleared existing quizzes");
 
-    const allQuizzes = [];
-
-    for (const [type, generator] of Object.entries(QUIZ_GENERATORS)) {
-        console.log(`Generating ${QUIZZES_PER_TYPE} ${type} quizzes...`);
-        const quizzes = await generateBatch(type, generator, QUIZZES_PER_TYPE);
-        allQuizzes.push(...quizzes);
-    }
+    // const allQuizzes = [];
+    // for (const [type, generator] of Object.entries(QUIZ_GENERATORS)) {
+    //     console.log(`Generating ${QUIZZES_PER_TYPE} ${type} quizzes...`);
+    //     const quizzes = await generateBatch(type, generator, QUIZZES_PER_TYPE);
+    //     allQuizzes.push(...quizzes);
+    // }
+    const allQuizzes = await seedBatchQuizzes({});
 
     await QuizModel.insertMany(allQuizzes);
-
     console.log(`Inserted ${allQuizzes.length} quizzes`);
-
     await mongoose.disconnect();
     console.log("Disconnected");
 }

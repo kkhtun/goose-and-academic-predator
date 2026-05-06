@@ -7,7 +7,7 @@ const {
 } = require("./llm/openai.llm-adapter");
 const KbChunkModel = require("../models/kb-chunk.model");
 const GameModel = require("../models/game.model");
-const QuizModel = require("../models/quiz.model");
+const QuizService = require("../services/quiz.service");
 const { CustomError } = require("../utils/CustomError");
 const {
     PLAYER_STATUS,
@@ -17,6 +17,8 @@ const {
     POSITION_TYPE,
     formatGameInfoForClientStore,
     findPlayer,
+    getRealm,
+    getLevel,
 } = require("../utils/game.util");
 const {
     DIFFICULTY,
@@ -29,45 +31,6 @@ const {
     haveSameEntries,
     isArrayOfArrays,
 } = require("../utils/common.util");
-
-// Helper functions (calling other underlying models and api clients)
-
-// async function retrieveContextFromTopic({
-//     topic,
-//     query,
-//     difficulty: difficultyHint,
-//     limit = 10,
-// }) {
-//     // Embed the query
-//     const queryVector = await embedText(query);
-
-//     // Vector search in MongoDB
-//     const results = await KbChunkModel.aggregate([
-//         {
-//             $vectorSearch: {
-//                 index: "embedding_vector_indx", // name of your Atlas vector index
-//                 path: "embedding",
-//                 queryVector,
-//                 numCandidates: 100,
-//                 limit,
-//                 filter: {
-//                     topic,
-//                     ...(difficultyHint ? { difficultyHint } : {}),
-//                 },
-//             },
-//         },
-//         {
-//             $project: {
-//                 text: 1,
-//                 topic: 1,
-//                 difficultyHint: 1,
-//                 score: { $meta: "vectorSearchScore" },
-//             },
-//         },
-//     ]);
-
-//     return results;
-// }
 
 // API functions (mapping 1 to 1 with api endpoints)
 
@@ -143,7 +106,7 @@ async function validateGamePlayer({ gameId, playerUniqueId }) {
 
 async function roll({ game, player }) {
     const gameId = game._id;
-    const { playerUniqueId } = player;
+    const { playerUniqueId, score } = player;
 
     // Check if player is ready (is his turn)
     if (player.status !== PLAYER_STATUS.READY)
@@ -183,13 +146,12 @@ async function roll({ game, player }) {
     while (true) {
         let move = moves[moves.length - 1];
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
-            const randomQuiz = await QuizModel.aggregate([
-                // { $match: { type: QUIZ_TYPE.TRUE_FALSE } }, // ADJUST here if you want only 1 quiz type for testing
-                { $sample: { size: 1 } },
-            ]);
-            move.content = {
-                quiz: randomQuiz.length > 0 ? randomQuiz[0] : templateQuiz,
-            };
+            const { level, realm } = getRealm(move.next, score);
+            move.content = { quiz: await QuizService.getQuiz({ level }) };
+            // const randomQuiz = await QuizModel.aggregate([
+            //     // { $match: { type: QUIZ_TYPE.TRUE_FALSE } }, // ADJUST here if you want only 1 quiz type for testing
+            //     { $sample: { size: 1 } },
+            // ]);
             break;
         } else if (move.nextType === POSITION_TYPE.INFO) {
             const randomChunk = await KbChunkModel.aggregate([
@@ -383,10 +345,15 @@ async function prevalidateAnswerQuiz({ gameId, playerUniqueId, quizId }) {
     if (quiz._id.toString() !== quizId)
         throw new CustomError("Cannot answer question at this time");
 
-    return { game, quiz };
+    return { game, quiz, player, move: lastMove };
 }
 
-async function answerQuiz({ game, quiz, playerUniqueId, answer }) {
+async function answerQuiz({ game, quiz, player, answer, move }) {
+    const { playerUniqueId } = player;
+    // Score to increment
+    const level = getLevel(move.next);
+    const incScore = level + 1; // Level 0 quizzes have score +1, Level 1 have score +2 and Level 2 has +3
+
     // Check answer by the user and increment score
     let isCorrect = false;
     const quizContent = quiz.content;
@@ -404,7 +371,7 @@ async function answerQuiz({ game, quiz, playerUniqueId, answer }) {
         // Increase score
         game.players = game.players.map((p) => {
             if (p.playerUniqueId === playerUniqueId) {
-                return { ...p, score: p.score + 1 };
+                return { ...p, score: p.score + incScore };
             } else {
                 return p;
             }
@@ -451,14 +418,6 @@ async function quitPlayer({ gameId, playerUniqueId }) {
     return game;
 }
 
-// Housekeeping
-async function getQuiz({ topic, difficulty }) {
-    const query = topic || difficulty ? { topic, difficulty } : {};
-    const quiz = await QuizModel.findOne(query).exec();
-    if (!quiz) throw new CustomError("No quiz found");
-    return quiz;
-}
-
 module.exports = {
     startGame,
 
@@ -475,7 +434,6 @@ module.exports = {
     activatePlayer,
     quitPlayer,
 
-    getQuiz,
     getGame,
     addPlayer,
 };

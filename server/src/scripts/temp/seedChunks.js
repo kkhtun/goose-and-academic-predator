@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const KbChunkModel = require("../models/kb-chunk.model.js");
+const KbChunkModel = require("../../models/kb-chunk.model.js");
 const { testChunks } = require("./testChunks.js");
-const { embedText } = require("../services/llm/openai.llm-adapter.js");
+const { embedText } = require("../../services/llm/openai.llm-adapter.js");
 
 async function seed() {
     await mongoose.connect(process.env.MONGO_URI);

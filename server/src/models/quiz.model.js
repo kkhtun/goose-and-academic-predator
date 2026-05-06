@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { QUIZ_TYPE, DIFFICULTY } = require("../utils/quiz.util");
+const { REALM_TYPE } = require("../utils/game.util");
 
 const quizSchema = new mongoose.Schema(
     {
@@ -24,6 +25,10 @@ const quizSchema = new mongoose.Schema(
         // contextChunks: [
         //     { type: mongoose.Schema.Types.ObjectId, ref: "KbChunk" },
         // ],
+        level: {
+            type: Number,
+            required: true,
+        },
         status: {
             type: String,
             enum: ["NEW", "USED"],

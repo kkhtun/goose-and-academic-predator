@@ -1,7 +1,6 @@
 const QUIZ_TYPE = {
     MCQ: "MCQ",
     TRUE_FALSE: "TRUE_FALSE",
-    WORDS_FIND: "WORDS_FIND",
     CROSS_WORDS: "CROSS_WORDS",
 };
 
@@ -9,13 +8,6 @@ const DIFFICULTY = {
     EASY: "EASY",
     MEDIUM: "MEDIUM",
     HARD: "HARD",
-};
-
-const CONCEPT_TYPE = {
-    DEFINITION: "DEFINITION",
-    TERMINOLOGY: "TERMINOLOGY",
-    CONCEPT: "CONCEPT",
-    LIST: "LIST",
 };
 
 function checkCrosswordGrid(answerGrid, actualGrid) {
@@ -28,4 +20,4 @@ function checkCrosswordGrid(answerGrid, actualGrid) {
     return true;
 }
 
-module.exports = { QUIZ_TYPE, DIFFICULTY, CONCEPT_TYPE, checkCrosswordGrid };
+module.exports = { QUIZ_TYPE, DIFFICULTY, checkCrosswordGrid };

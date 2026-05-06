@@ -1,6 +1,6 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-const { retrieveContext } = require("../services/game.service");
+const { retrieveContext } = require("../../services/game.service");
 
 async function retrieve() {
     await mongoose.connect(process.env.MONGO_URI);

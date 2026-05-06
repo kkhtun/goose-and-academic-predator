@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { REALM_TYPE } = require("../utils/game.util");
 
 const kbChunkSchema = new mongoose.Schema(
     {
@@ -9,10 +10,15 @@ const kbChunkSchema = new mongoose.Schema(
         //     index: true,
         // },
 
-        difficultyHint: {
-            type: String,
-            enum: ["easy", "medium", "hard"],
-            required: true,
+        // difficultyHint: {
+        //     type: String,
+        //     enum: ["easy", "medium", "hard"],
+        //     required: true,
+        // },
+
+        level: {
+            type: Number,
+            required: true, // Relevant to which level this particular information chunk is
         },
 
         text: {
@@ -28,7 +34,7 @@ const kbChunkSchema = new mongoose.Schema(
 
         type: {
             type: String,
-            enum: ["TERM", "ABSTRACT"],
+            enum: ["TERM", "ABSTRACT", "QUESTION"],
             required: true,
         },
         // embedding: {
