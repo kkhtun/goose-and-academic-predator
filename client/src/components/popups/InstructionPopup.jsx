@@ -19,7 +19,7 @@ export default function InstructionPopup({ open, onClose }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                zIndex: 2000,
+                zIndex: 2001,
                 background: "rgba(0,0,0,0.4)",
                 padding: 20,
             }}

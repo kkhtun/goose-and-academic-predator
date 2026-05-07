@@ -40,7 +40,7 @@ function Game() {
 
     // Bit redundant here, but we will differentiate state for instruction (inert) popup and in-game popups
     const [popup, setPopup] = useState(null);
-    const [openInstruct, setOpenInstruct] = useState(false);
+    const [openInstruct, setOpenInstruct] = useState(true);
     const [gameOver, setGameOver] = useState(false);
 
     // SocketIO
