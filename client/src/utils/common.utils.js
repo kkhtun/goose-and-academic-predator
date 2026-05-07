@@ -79,3 +79,8 @@ export const updatePlayerPos = (
 export const findPlayer = (gameInfo, playerUniqueId) => {
     return gameInfo.players.find((p) => p.playerUniqueId === playerUniqueId);
 };
+
+export const isGameOver = (gameInfo) => {
+    const { players } = gameInfo;
+    return players.some((p) => p.playerPos === 90);
+};

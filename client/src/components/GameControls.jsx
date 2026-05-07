@@ -125,27 +125,6 @@ export default function GameControls({
                     </div>
                 </div>
 
-                {/* <div style={{ marginTop: 20 }}>
-                    <strong>Scores:</strong>
-                    <div style={styles.scoreList}>
-                        {players.map((p) => (
-                            <div
-                                key={p.playerUniqueId}
-                                style={{
-                                    ...styles.scoreItem,
-                                    fontWeight:
-                                        p.playerUniqueId ===
-                                        player.playerUniqueId
-                                            ? "bold"
-                                            : "normal",
-                                }}
-                            >
-                                {p.playerName}: {p.score}
-                            </div>
-                        ))}
-                    </div>
-                </div> */}
-
                 <SecondaryButton
                     onClick={handleCopy}
                     text={copied ? "✅ Copied" : "📋 Game ID"}

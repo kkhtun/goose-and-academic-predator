@@ -15,9 +15,10 @@ import Celebration from "./popups/Celebration";
 import { socket } from "../socket";
 import { toast } from "react-toastify";
 // import useLocalStorage from "../hooks/useLocalStorage";
-import { findPlayer, updatePlayerPos } from "../utils/common.utils";
+import { findPlayer, isGameOver, updatePlayerPos } from "../utils/common.utils";
 import { BoxIcon } from "./icons/BoxIcon";
 import InstructionPopup from "./popups/InstructionPopup";
+import GameOverPopup from "./popups/GameOverPopup";
 
 function Game() {
     const navigate = useNavigate();
@@ -40,7 +41,7 @@ function Game() {
     // Bit redundant here, but we will differentiate state for instruction (inert) popup and in-game popups
     const [popup, setPopup] = useState(null);
     const [openInstruct, setOpenInstruct] = useState(false);
-    const [won, setWon] = useState(false);
+    const [gameOver, setGameOver] = useState(false);
 
     // SocketIO
     useEffect(() => {
@@ -61,6 +62,9 @@ function Game() {
                 gameInfo: updatedGameInfo,
                 playerUniqueId,
             });
+
+            if (isGameOver(updatedGameInfo)) setGameOver(true);
+
             toast.info(
                 `${findPlayer(updatedGameInfo, joinedPlayerId).playerName} has joined the game.`,
             );
@@ -102,6 +106,11 @@ function Game() {
             socket.disconnect();
         };
     }, [gameId, playerUniqueId]);
+
+    // useEffect(() => {
+    //     const { gameInfo } = gameState || {};
+    //     if (gameInfo && isGameOver(gameInfo)) setGameOver(true);
+    // }, [gameState]);
 
     const handleRoll = ({ roll, moves, gameInfo, rollingPlayerId }) => {
         const { total } = roll;
@@ -171,18 +180,13 @@ function Game() {
             isActive,
         } = currentMoves[0];
 
+        if (pos >= 90) return setGameOver(true);
+
         if (movingPlayerId !== playerUniqueId) {
             return queueNextMove();
         }
 
-        if (pos >= 90) {
-            const endgame = {
-                title: "Congratulations",
-                text: "You have graduated the game!!! 🎓🎓🎓",
-            };
-            setWon(true);
-            setPopup({ type: POSITION_TYPE.INFO, content: endgame });
-        } else if (pos == 0 || isActive === false) {
+        if (pos == 0 || isActive === false) {
             queueNextMove();
         } else if (pos === next) {
             if (nextType === POSITION_TYPE.CHALLENGE) {
@@ -232,7 +236,7 @@ function Game() {
         setCurrentMoves([]);
         setLastRoll(null);
         setPopup(null);
-        setWon(false);
+        setGameOver(false);
         socket.disconnect();
         setGameState(null);
         navigate("/");
@@ -285,8 +289,15 @@ function Game() {
                     open={openInstruct}
                     onClose={() => setOpenInstruct(false)}
                 />
-
-                <Celebration show={won} />
+                <GameOverPopup
+                    open={gameOver}
+                    gameState={gameState}
+                    onClose={() => {
+                        setPopup(null);
+                        handleQuit();
+                    }}
+                />
+                <Celebration show={gameOver} gameState={gameState} />
             </div>
         </div>
     );

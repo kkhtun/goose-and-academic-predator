@@ -1,5 +1,15 @@
 import { toast } from "react-toastify";
 import { LEVEL_MARKER } from "../constants";
+import { DogIcon } from "../components/piece/DogIcon";
+import { DogGradIcon } from "../components/piece/DogGradIcon";
+import { CatIcon } from "../components/piece/CatIcon";
+import { CatGradIcon } from "../components/piece/CatGradIcon";
+import { BirdIcon } from "../components/piece/BirdIcon";
+import { BirdGradIcon } from "../components/piece/BirdGradIcon";
+import { FishIcon } from "../components/piece/FishIcon";
+import { FishGradIcon } from "../components/piece/FishGradIcon";
+import { CamelIcon } from "../components/piece/CamelIcon";
+import { CamelGradIcon } from "../components/piece/CamelGradIcon";
 
 export const POS_PER_ROW = 10;
 export const SQUARE_SIZE = window.innerHeight < 900 ? 80 : 84; // Some arbitrary UI adjustments for testing
@@ -39,6 +49,35 @@ export const getLevel = (pos) => {
     } else {
         return 2;
     }
+};
+
+export const getPlayerPieceInfo = (avatar, level) => {
+    let Icon;
+    let tint;
+    switch (avatar) {
+        case "cat":
+            Icon = level === 2 ? CatGradIcon : CatIcon;
+            tint = "#e84393";
+            break;
+        case "bird":
+            Icon = level === 2 ? BirdGradIcon : BirdIcon;
+            tint = "#00b894";
+            break;
+        case "fish":
+            Icon = level === 2 ? FishGradIcon : FishIcon;
+            tint = "#0984e3";
+            break;
+        case "camel":
+            Icon = level === 2 ? CamelGradIcon : CamelIcon;
+            tint = "#e17055";
+            break;
+        case "dog":
+        default:
+            Icon = level === 2 ? DogGradIcon : DogIcon;
+            tint = "#6c5ce7";
+            break;
+    }
+    return { Icon, tint };
 };
 
 // Temporary (to remove later)

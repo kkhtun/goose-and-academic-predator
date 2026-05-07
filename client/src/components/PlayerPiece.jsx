@@ -3,20 +3,11 @@ import { motion, useAnimation } from "framer-motion";
 import {
     GAP_BETWEEN_SQUARES,
     getLevel,
+    getPlayerPieceInfo,
     getRow,
     POS_PER_ROW,
     SQUARE_SIZE,
 } from "../utils/position.utils";
-import { DogIcon } from "./piece/DogIcon";
-import { DogGradIcon } from "./piece/DogGradIcon";
-import { CatIcon } from "./piece/CatIcon";
-import { CatGradIcon } from "./piece/CatGradIcon";
-import { BirdIcon } from "./piece/BirdIcon";
-import { BirdGradIcon } from "./piece/BirdGradIcon";
-import { FishIcon } from "./piece/FishIcon";
-import { FishGradIcon } from "./piece/FishGradIcon";
-import { CamelIcon } from "./piece/CamelIcon";
-import { CamelGradIcon } from "./piece/CamelGradIcon";
 
 export default function PlayerPiece({
     position,
@@ -94,32 +85,7 @@ export default function PlayerPiece({
     const initial = posToXY(position);
 
     const level = getLevel(position);
-
-    let Icon;
-    let tint;
-    switch (avatar) {
-        case "cat":
-            Icon = level === 2 ? CatGradIcon : CatIcon;
-            tint = "#e84393";
-            break;
-        case "bird":
-            Icon = level === 2 ? BirdGradIcon : BirdIcon;
-            tint = "#00b894";
-            break;
-        case "fish":
-            Icon = level === 2 ? FishGradIcon : FishIcon;
-            tint = "#0984e3";
-            break;
-        case "camel":
-            Icon = level === 2 ? CamelGradIcon : CamelIcon;
-            tint = "#e17055";
-            break;
-        case "dog":
-        default:
-            Icon = level === 2 ? DogGradIcon : DogIcon;
-            tint = "#6c5ce7";
-            break;
-    }
+    const { Icon, tint } = getPlayerPieceInfo(avatar, level);
 
     return (
         <motion.div

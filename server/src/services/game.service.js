@@ -25,7 +25,6 @@ const {
     QUIZ_TYPE,
     checkCrosswordGrid,
 } = require("../utils/quiz.util");
-const { getRandomQuiz } = require("./quiz.service");
 const {
     isString,
     haveSameEntries,

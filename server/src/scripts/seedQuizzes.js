@@ -7,7 +7,7 @@ const {
     generateTrueFalse,
     seedBatchQuizzes,
     generateSummarizedInfo,
-    seedBatchInfo,
+    addBatchInfo,
 } = require("../services/quiz.service.js");
 const InfoModel = require("../models/info.model.js");
 
@@ -15,7 +15,7 @@ const InfoModel = require("../models/info.model.js");
 //     await InfoModel.deleteMany({});
 //     console.log("Cleared existing infos");
 
-//     const allInfos = await seedBatchInfo({});
+//     const allInfos = await addBatchInfo({});
 
 //     await InfoModel.insertMany(allInfos);
 //     console.log(`Inserted ${allInfos.length} info`);

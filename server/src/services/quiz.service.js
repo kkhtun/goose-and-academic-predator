@@ -9,26 +9,6 @@ const { QUIZ_TYPE } = require("../utils/quiz.util");
 const { generateQuiz, generateInfo } = require("./llm/openai.llm-adapter");
 const { REALM_TYPE } = require("../utils/game.util");
 
-function getRandomQuizType() {
-    const weights = {
-        [QUIZ_TYPE.CROSS_WORDS]: 0.4,
-        [QUIZ_TYPE.MCQ]: 0.4,
-        [QUIZ_TYPE.TRUE_FALSE]: 0.2,
-    };
-
-    const totalWeight = Object.values(weights).reduce((sum, w) => sum + w, 0);
-    const rand = Math.random() * totalWeight;
-
-    let cumulative = 0;
-
-    for (const [type, weight] of Object.entries(weights)) {
-        cumulative += weight;
-        if (rand < cumulative) {
-            return type;
-        }
-    }
-}
-
 async function retrieveRandomContext({ type = "ABSTRACT", level, count = 1 }) {
     const pipeline = [{ $match: { type } }];
 
@@ -87,17 +67,6 @@ const QUIZ_GENERATORS = {
     [QUIZ_TYPE.TRUE_FALSE]: generateTrueFalse,
 };
 
-async function getRandomQuiz({}) {
-    const quizType = getRandomQuizType();
-    const generator = QUIZ_GENERATORS[quizType] || generateMcq;
-    const params = {}; // passed here from args
-
-    return {
-        quiz: await generator(params),
-        quizType,
-    };
-}
-
 async function generateSummarizedInfo({ level }) {
     const chunk = await retrieveRandomContext({
         type: "ABSTRACT",
@@ -110,10 +79,10 @@ async function generateSummarizedInfo({ level }) {
 
 // These two functions fetch pre-generated quiz and info respectively from database
 // We use a mix of NEW vs USED quizzes and infos
-const NEW_RATIO = 1; // For now, we will just use NEW quizzes when possible
+const NEW_VS_USED_RATIO = 0.5; // For now, we will just use NEW quizzes when possible
 async function getQuiz({ type, level, realm }) {
     const basePipeline = [];
-    const status = Math.random() < NEW_RATIO ? "NEW" : "USED";
+    const status = Math.random() < NEW_VS_USED_RATIO ? "NEW" : "USED";
 
     // Only in heaven?
     // if (realm && realm === REALM_TYPE.HEAVEN) {
@@ -155,7 +124,7 @@ async function getInfo({ level }) {
         basePipeline.push({ $match: { level } });
     }
     // First try with preferred status
-    const status = Math.random() < NEW_RATIO ? "NEW" : "USED";
+    const status = Math.random() < NEW_VS_USED_RATIO ? "NEW" : "USED";
     if (status) {
         const preferredPipeline = [
             ...basePipeline,
@@ -189,25 +158,85 @@ async function markInfoUsed({ infoId }) {
     );
 }
 
-async function seedBatchInfo({}) {
+// Seed functions to add quizzes (communicate with LLM)
+async function getQuizCounts() {
+    const result = await QuizModel.aggregate([
+        {
+            $group: {
+                _id: {
+                    level: "$level",
+                    status: "$status",
+                },
+                count: { $sum: 1 },
+            },
+        },
+    ]);
+    const output = {
+        0: { NEW: 0, USED: 0 },
+        1: { NEW: 0, USED: 0 },
+        2: { NEW: 0, USED: 0 },
+    };
+
+    for (const row of result) {
+        const { level, status } = row._id;
+        output[level][status] = row.count;
+    }
+    return output;
+}
+
+async function getInfoCounts() {
+    const result = await InfoModel.aggregate([
+        {
+            $group: {
+                _id: {
+                    level: "$level",
+                    status: "$status", // No level awareness in info
+                },
+                count: { $sum: 1 },
+            },
+        },
+    ]);
+    const output = {
+        0: { NEW: 0, USED: 0 },
+        1: { NEW: 0, USED: 0 },
+        2: { NEW: 0, USED: 0 },
+    };
+
+    for (const row of result) {
+        const { level, status } = row._id;
+        output[level][status] = row.count;
+    }
+    return output;
+}
+
+async function addBatchInfo({}) {
     const levels = [0, 1, 2];
 
     const INFO_PER_LEVEL = 2;
     const CONCURRENCY_LIMIT = 2;
-    const totalCount = levels.length * INFO_PER_LEVEL;
+
+    const infoPlan = levels.flatMap((level) =>
+        Array.from({ length: INFO_PER_LEVEL }, () => ({ level }))
+    );
 
     const results = [];
-    for (let i = 0; i < totalCount; i += CONCURRENCY_LIMIT) {
-        const level = Math.floor(i / INFO_PER_LEVEL);
+    for (let i = 0; i < infoPlan.length; i += CONCURRENCY_LIMIT) {
+        const batchPlan = infoPlan.slice(i, i + CONCURRENCY_LIMIT);
 
-        const batch = Array.from({ length: CONCURRENCY_LIMIT }, async () => {
+        const batch = batchPlan.map(async ({ level }) => {
             try {
                 const { content } = await generateSummarizedInfo({
                     level: level >= 2 ? 1 : level, // For now, we don't have level 2 chunks so we reuse from level 1
                 });
-                return { content, level }; // Final formatting for quiz insertion happens her;
+                return {
+                    content,
+                    level,
+                };
             } catch (err) {
-                console.error(`Error generating info:`, err.message);
+                console.error(
+                    `Error generating info level ${level}:`,
+                    err.message
+                );
                 return null;
             }
         });
@@ -215,15 +244,17 @@ async function seedBatchInfo({}) {
         const resolved = await Promise.all(batch);
         results.push(...resolved.filter(Boolean));
     }
-    return results;
+
+    await InfoModel.insertMany(results);
+    console.log(`Inserted ${results.length} info`);
 }
 
-async function seedBatchQuizzes({}) {
+async function seedBatchQuizzes({ levels = [] } = {}) {
     // Note: We do not need to consider realm here
     // Generate n MCQ / Crossword / TF quizzes for each level 0, 1
     // Generate question only quizzes for level 2
     // But for now, we will use level 1 chunks for generating level 2 quizzes
-    const levels = [0, 1, 2];
+    levels = levels.length > 0 ? levels : [0, 1, 2];
 
     const QUIZZES_PER_TYPE = 2;
     const CONCURRENCY_LIMIT = 2; // avoid hammering LLM APIs
@@ -242,41 +273,42 @@ async function seedBatchQuizzes({}) {
     // Generation start
     const results = [];
     for (let i = 0; i < quizPlan.length; i += CONCURRENCY_LIMIT) {
-        const { type, level } = quizPlan[i];
-        const generator = QUIZ_GENERATORS[type];
-        const batch = Array.from({ length: CONCURRENCY_LIMIT }, async () => {
+        const batchPlan = quizPlan.slice(i, i + CONCURRENCY_LIMIT);
+        const batch = batchPlan.map(async ({ type, level }) => {
             try {
+                const generator = QUIZ_GENERATORS[type];
                 const content = await generator({
-                    level: level >= 2 ? 1 : level, // For now, we don't have level 2 question quizzes so we reuse level 1 quizzes for level 2
+                    level: level >= 2 ? 1 : level,
                 });
                 return {
                     type,
                     content,
-                    level, // Final formatting for quiz insertion happens here
+                    level,
                 };
             } catch (err) {
                 console.error(`Error generating ${type}:`, err.message);
                 return null;
             }
         });
-
         const resolved = await Promise.all(batch);
         results.push(...resolved.filter(Boolean));
     }
 
-    return results;
+    await QuizModel.insertMany(results);
+    console.log(`Inserted ${results.length} quizzes`);
 }
 
 module.exports = {
     generateCrossword,
     generateMcq,
     generateTrueFalse,
-    getRandomQuiz,
+    getQuizCounts,
+    getInfoCounts,
     getQuiz,
     getInfo,
     markQuizUsed,
     markInfoUsed,
     seedBatchQuizzes,
-    seedBatchInfo,
+    addBatchInfo,
     generateSummarizedInfo,
 };
