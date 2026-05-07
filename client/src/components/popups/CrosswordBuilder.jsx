@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 
-const CROSSWORD_FILL_RATIO = 1; // 20% letters prefilled
+const CROSSWORD_FILL_RATIO = 0.8; // 20% letters prefilled
 
 function createStartingPosLookupObj(wordResults) {
     const obj = {};
