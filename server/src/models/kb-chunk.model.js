@@ -21,6 +21,12 @@ const kbChunkSchema = new mongoose.Schema(
             required: true, // Relevant to which level this particular information chunk is
         },
 
+        realm: {
+            type: String,
+            enum: Object.values(REALM_TYPE),
+        },
+
+        // Can be any content although it says text
         text: {
             // the actual knowledge (paragraph of 100-400 words)
             type: String,

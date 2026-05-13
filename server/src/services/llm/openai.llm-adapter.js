@@ -1,12 +1,9 @@
 const OpenAI = require("openai");
 
 const {
-    buildMcqPrompt,
     normalizeCrosswordResponse,
     normalizeMcqResponse,
-    buildCrosswordPrompt,
     normalizeTrueFalseResponse,
-    buildTrueFalsePrompt,
 } = require("./prompt-builder.llm");
 const { DIFFICULTY, QUIZ_TYPE } = require("../../utils/quiz.util");
 const { CustomError } = require("../../utils/CustomError");
@@ -14,6 +11,7 @@ const { CustomError } = require("../../utils/CustomError");
 const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
+const modelName = process.env.OPENAI_MODEL || "gpt-5.4-mini" || "gpt-4o";
 
 async function embedText(text) {
     const response = await client.embeddings.create({
@@ -30,12 +28,13 @@ function formatChunkIntoContextString(chunks) {
 // Functions that call Open AI API
 async function callLLMSummarizeContent({ content }) {
     const resp = await client.chat.completions.create({
-        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        model: modelName,
         temperature: 0.2,
         response_format: {
             type: "json_schema",
             json_schema: {
                 name: "note_summary",
+                strict: true,
                 schema: {
                     type: "object",
                     properties: {
@@ -64,7 +63,7 @@ Rules:
 - Write as general knowledge or practical insight.
 - Preserve nuance and core argument.
 - Avoid meta-language like "this shows", "this suggests"
-- Keep it concise (2-3 lines max).
+- Keep it concise.
 
 Note:
 ${content}
@@ -72,14 +71,13 @@ ${content}
             },
         ],
     });
-
     return JSON.parse(resp.choices[0].message.content);
 }
 
 async function callLLMMCQ({ context }) {
     const resp = await client.chat.completions.create({
-        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-        temperature: 0.2,
+        model: modelName,
+        temperature: 0.4,
         response_format: {
             type: "json_schema",
             json_schema: {
@@ -133,23 +131,35 @@ ${context}
 Generate ONE MCQ.
 
 Rules:
-- The question must be answerable only from the context.
+- The question must be answerable from the context.
 - Options A-D must contain full answer text, not just letters.
-- Exactly one option must be correct.
-- Distractors must be plausible but clearly wrong.
-- Explanation should explain why the correct answer is right.
+- Test the main concept or implication, not a minor detail.
+- Avoid asking about author names, paper titles, study names, copyright notices, publication years, or specific source details.
+- Avoid over-specific named entities unless the entity is essential to the learning objective.
+- Prefer general phrasing that a learner can answer by understanding the paragraph.
+- Do not mention "context", "chunk", "paper", "study", "source", or "article".
+- Distractors must be plausible misconceptions, not obviously silly.
+- There must be exactly one correct answer.
+- Explanation should briefly explain why the correct answer is right.
 - Do not mention context, chunks, papers, studies, or internal sources in either the questionText, options or in explanation.
 `,
             },
         ],
     });
+    // Rules:
+    // - The question must be answerable only from the context.
+    // - Options A-D must contain full answer text, not just letters.
+    // - Exactly one option must be correct.
+    // - Distractors must be plausible but clearly wrong.
+    // - Explanation should explain why the correct answer is right.
+    // - Do not mention context, chunks, papers, studies, or internal sources in either the questionText, options or in explanation.
 
     return JSON.parse(resp.choices[0].message.content);
 }
 
 async function callLLMTrueFalse({ context }) {
     const resp = await client.chat.completions.create({
-        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        model: modelName,
         temperature: 0.2,
         response_format: {
             type: "json_schema",
@@ -212,7 +222,7 @@ Rules:
 
 async function callLLMCrossword({ context }) {
     const resp = await client.chat.completions.create({
-        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        model: modelName,
         temperature: 0.3,
         response_format: {
             type: "json_schema",

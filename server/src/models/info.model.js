@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { REALM_TYPE } = require("../utils/game.util");
 
 const infoSchema = new mongoose.Schema(
     {
@@ -8,6 +9,11 @@ const infoSchema = new mongoose.Schema(
         },
         level: {
             type: Number,
+            required: true,
+        },
+        realm: {
+            type: String,
+            enum: Object.values(REALM_TYPE),
             required: true,
         },
         status: {

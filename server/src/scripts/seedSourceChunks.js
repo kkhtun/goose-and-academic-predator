@@ -5,32 +5,18 @@ const KbChunkModel = require("../models/kb-chunk.model.js");
 const fs = require("fs");
 const path = require("path");
 
-async function seedAbstract() {
-    const seedDir = path.join(__dirname, "kb-seed-abstract");
+async function seedJsonFiles(folderName = "kb-seed") {
+    const seedDir = path.join(__dirname, folderName);
     const files = fs.readdirSync(seedDir).filter((f) => f.endsWith(".json"));
     const testChunks = files.flatMap((file) =>
         JSON.parse(fs.readFileSync(path.join(seedDir, file), "utf-8"))
     );
     console.log(
-        `[SEEDING ABSTRACT] Found ${testChunks.length} chunks across ${files.length} files.`
+        `[SEEDING JSON] Found ${testChunks.length} chunks across ${files.length} files.`
     );
 
     const result = await KbChunkModel.insertMany(testChunks);
-    console.log(`[SEEDING ABSTRACT] Inserted ${result.length} chunks.`);
-
-    // const embedding = [];
-
-    // for (const chunk of testChunks) {
-    //     // const embedding = await embedText(chunk.text);
-    //     await KbChunkModel.create({
-    //         ...chunk,
-    //         embedding,
-    //     });
-
-    //     console.log("Inserted:", chunk.topic);
-    // }
-
-    // await mongoose.disconnect();
+    console.log(`[SEEDING JSON] Inserted ${result.length} chunks.`);
 }
 
 async function seedTerms() {
@@ -52,7 +38,7 @@ async function seed() {
     await KbChunkModel.deleteMany({});
 
     try {
-        await seedAbstract();
+        await seedJsonFiles();
         await seedTerms();
     } catch (err) {
         console.error("[SEEDING] Insert failed:", err);

@@ -1,100 +1,4 @@
-const { isString } = require("../../utils/common.util");
-
-// Build Crossword prompt for generation
-function buildCrosswordPrompt({ topic, context, wordCount = 6 }) {
-    return `
-You are a crossword puzzle generator.
-
-Use the information in the CONTEXT section as a clue for words. 
-You are allowed to use appropriate outside information to reason and provide explanation where necessary.
-
-COUNT: ${wordCount}
-
-CONTEXT:
-${context}
-
-Your task:
-Generate ${wordCount} crossword entries based strictly on the context.
-
-OUTPUT STRICTLY AS VALID JSON (no markdown, no extra text).
-Return a JSON array of exactly ${wordCount} objects in this format:
-
-[
-  {
-    "answer": "WORD",
-    "clue": "crossword clue"
-  }
-]
-
-Rules:
-- "answer" must be a SINGLE WORD in uppercase.
-- Only letters A-Z (no spaces, no hyphens).
-- Word length must be between 4 and 10 letters.
-- Clues must be concise (10-30 words).
-- Each clue must be clearly answerable using the CONTEXT.
-- Avoid duplicates.
-- Avoid very obscure terms.
-- Prefer important concepts or entities from the CONTEXT.
-- Do NOT include the answer word inside the clue.
-`;
-}
-
-function buildMcqPrompt({ topic, context }) {
-    return `
-You are a quiz generator. Use ONLY the information in the CONTEXT section.
-Do NOT use outside knowledge. The question must be fully answerable from the CONTEXT.
-
-CONTEXT:
-${context}
-
-Generate ONE multiple choice question.
-
-OUTPUT STRICTLY AS VALID JSON (no markdown, no extra text).
-Return exactly ONE object in this format:
-
-{
-  "questionText": "string",
-  "options": ["A","B","C","D"],
-  "correctAnswer": "A|B|C|D",
-  "explanation": "string"
-}
-
-Rules:
-- The question must be clearly answerable from the CONTEXT.
-- Options must be plausible and distinct.
-- Only ONE option can be correct.
-- "correctAnswer" must match exactly one of the options ("A","B","C","D").
-- Write explanations in natural, human-readable language as if explaining the answer to a person (Do NOT reference CONTEXT, CHUNK numbers or internal sources).
-`;
-}
-
-function buildTrueFalsePrompt({ topic, context }) {
-    return `
-You are a quiz generator. Use ONLY the information in the CONTEXT section.
-Do NOT use outside knowledge. The statement must be fully verifiable from the CONTEXT.
-
-CONTEXT:
-${context}
-
-Generate ONE true/false statement.
-
-OUTPUT STRICTLY AS VALID JSON (no markdown, no extra text).
-Return exactly ONE object in this format:
-
-{
-  "statement": "string",
-  "answer": true,
-  "explanation": "string"
-}
-
-Rules:
-- The statement must be clearly verifiable as TRUE or FALSE from the CONTEXT.
-- Ensure a balanced mix of TRUE and FALSE across multiple generations (do not always return TRUE).
-- The statement should be concise and unambiguous.
-- "answer" must be a boolean: true or false.
-- Write explanations in natural, human-readable language as if explaining the answer to a person (Do NOT reference CONTEXT, CHUNK numbers or internal sources).
-`;
-}
+const { isString, shuffleArray } = require("../../utils/common.util");
 
 function normalizeMcqResponse(obj) {
     const entry = {};
@@ -108,12 +12,35 @@ function normalizeMcqResponse(obj) {
     }
 
     if (obj.options && Object.values(obj.options).length === 4) {
-        const optionsArr = Object.values(obj.options);
-        entry.options = optionsArr;
+        const labels = ["A", "B", "C", "D"];
+        const optionsArr = labels.map((label) => obj.options[label]);
+        if (optionsArr.every(isString)) {
+            entry.options = optionsArr;
+        }
     }
 
     if (isString(obj.explanation)) {
         entry.explanation = obj.explanation;
+    }
+
+    // Shuffle options here
+    if (entry.options && entry.correctAnswer) {
+        const labels = ["A", "B", "C", "D"];
+        const correctIndex = labels.indexOf(entry.correctAnswer);
+        const correctOptionText = entry.options[correctIndex];
+
+        const shuffled = shuffleArray(
+            entry.options.map((text, index) => ({
+                text,
+                wasCorrect: index === correctIndex,
+            }))
+        );
+
+        entry.options = shuffled.map((option) => option.text);
+        const newCorrectIndex = shuffled.findIndex(
+            (option) => option.wasCorrect
+        );
+        entry.correctAnswer = labels[newCorrectIndex];
     }
 
     return {
@@ -156,7 +83,10 @@ function normalizeCrosswordResponse(arr) {
         return true;
     });
 
-    return { isValid: filteredWords.length >= 6, entry: filteredWords };
+    return {
+        isValid: filteredWords.length >= 6,
+        entry: shuffleArray(filteredWords),
+    };
 }
 
 module.exports = {
@@ -164,8 +94,4 @@ module.exports = {
     normalizeCrosswordResponse,
     normalizeMcqResponse,
     normalizeTrueFalseResponse,
-    // Single quiz builder prompts
-    buildTrueFalsePrompt,
-    buildCrosswordPrompt,
-    buildMcqPrompt,
 };

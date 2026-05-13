@@ -10,36 +10,38 @@ const {
     addBatchInfo,
 } = require("../services/quiz.service.js");
 const InfoModel = require("../models/info.model.js");
+const { REALM_TYPE } = require("../utils/game.util.js");
 
-// async function seedInfo() {
-//     await InfoModel.deleteMany({});
-//     console.log("Cleared existing infos");
+async function seedInfo(append = false) {
+    if (!append) {
+        await InfoModel.deleteMany({});
+        console.log("Cleared existing infos");
+    }
+    await addBatchInfo({});
+}
 
-//     const allInfos = await addBatchInfo({});
-
-//     await InfoModel.insertMany(allInfos);
-//     console.log(`Inserted ${allInfos.length} info`);
-// }
-
-// async function seedQuizzes() {
-//     await QuizModel.deleteMany({});
-//     console.log("Cleared existing quizzes");
-
-//     const allQuizzes = await seedBatchQuizzes({});
-
-//     await QuizModel.insertMany(allQuizzes);
-//     console.log(`Inserted ${allQuizzes.length} quizzes`);
-// }
+async function seedQuizzes(append = false) {
+    if (!append) {
+        await QuizModel.deleteMany({});
+        console.log("Cleared existing quizzes");
+    }
+    await seedBatchQuizzes({});
+}
 
 async function seed() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to DB");
 
-    // await seedInfo();
+    await seedInfo(true);
+    await seedQuizzes(true);
 
     // const res = await generateMcq({ level: 0 });
     // const res = await generateTrueFalse({ level: 0 });
     // const res = await generateCrossword({ level: 0 });
+    // const res = await generateSummarizedInfo({
+    //     level: 2,
+    //     realm: REALM_TYPE.HEAVEN,
+    // });
     // console.log(res);
 
     await mongoose.disconnect();

@@ -4,13 +4,6 @@ const { REALM_TYPE } = require("../utils/game.util");
 
 const quizSchema = new mongoose.Schema(
     {
-        // topic: { type: String, required: true, index: true },
-        // difficulty: {
-        //     type: String,
-        //     enum: Object.values(DIFFICULTY),
-        //     required: true,
-        //     index: true,
-        // },
         type: { type: String, enum: Object.values(QUIZ_TYPE), required: true },
 
         // Content (flexible for now, handed over to service codes to make sure schema is correct)
@@ -29,6 +22,12 @@ const quizSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
+        realm: {
+            type: String,
+            enum: Object.values(REALM_TYPE),
+            default: REALM_TYPE.BOTH,
+        },
+
         status: {
             type: String,
             enum: ["NEW", "USED"],
