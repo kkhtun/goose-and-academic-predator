@@ -155,7 +155,7 @@ async function roll({ game, player }) {
             break;
         } else if (move.nextType === POSITION_TYPE.INFO) {
             const info = await QuizService.getInfo({ level });
-            move.content = { info: info.content };
+            move.content = { info: info };
             await QuizService.markInfoUsed({ infoId: info._id });
             await triggerRefillQuizzes({});
             break;

@@ -21,6 +21,11 @@ const infoSchema = new mongoose.Schema(
             enum: ["NEW", "USED"],
             default: "NEW",
         },
+
+        chunks: {
+            type: [{ type: mongoose.Schema.Types.ObjectId, ref: "KbChunk" }],
+            default: [],
+        },
     },
     {
         timestamps: true,

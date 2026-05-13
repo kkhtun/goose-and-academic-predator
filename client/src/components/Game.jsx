@@ -6,7 +6,7 @@ import * as R from "ramda";
 import Board from "./Board";
 import GameControls from "./GameControls";
 // import TransitionOverlay from "./TransitionOverlay";
-import { POSITION_DESCRIPTIONS, POSITION_TYPE } from "../constants";
+import { POPUP_TYPE, POSITION_DESCRIPTIONS, POSITION_TYPE } from "../constants";
 // import { useLocalStorage } from "@uidotdev/usehooks";
 import QuizPopup from "./popups/QuizPopup";
 import InfoPopup from "./popups/InfoPopup";
@@ -19,6 +19,7 @@ import { findPlayer, isGameOver, updatePlayerPos } from "../utils/common.utils";
 import { BoxIcon } from "./icons/BoxIcon";
 import InstructionPopup from "./popups/InstructionPopup";
 import GameOverPopup from "./popups/GameOverPopup";
+import SpecialBoxPopup from "./popups/SpecialBoxPopup";
 
 function Game() {
     const navigate = useNavigate();
@@ -191,10 +192,11 @@ function Game() {
         } else if (pos === next) {
             if (nextType === POSITION_TYPE.CHALLENGE) {
                 const { quiz } = content;
-                setPopup({ type: POSITION_TYPE.CHALLENGE, content: quiz });
+                setPopup({ type: POPUP_TYPE.QUIZ, content: quiz });
             } else if (nextType === POSITION_TYPE.INFO) {
+                const { info } = content;
                 setPopup({
-                    type: POSITION_TYPE.INFO,
+                    type: POPUP_TYPE.INFO,
                     content: {
                         title: (
                             <div>
@@ -203,7 +205,7 @@ function Game() {
                                 {toTitle(nextType)}
                             </div>
                         ),
-                        text: content.info,
+                        info,
                     },
                 });
             } else {
@@ -216,7 +218,7 @@ function Game() {
                     ),
                     text: POSITION_DESCRIPTIONS[nextType],
                 };
-                setPopup({ type: POSITION_TYPE.INFO, content });
+                setPopup({ type: POPUP_TYPE.SPECIAL, content });
             }
         }
     };
@@ -262,7 +264,6 @@ function Game() {
                     gameState={gameState}
                     setGameState={setGameState}
                 />
-
                 <GameControls
                     isCurrentTurn={true}
                     lastRoll={lastRoll}
@@ -272,19 +273,26 @@ function Game() {
                     gameState={gameState}
                     setGameState={setGameState}
                 />
-
+                {/* Interactive popups */}
                 <QuizPopup
-                    open={popup?.type === POSITION_TYPE.CHALLENGE}
+                    open={popup?.type === POPUP_TYPE.QUIZ}
                     payload={popup?.content}
                     onClose={handleCloseQuizPopup}
                     gameState={gameState}
                     setGameState={setGameState}
                 />
                 <InfoPopup
-                    open={popup?.type === POSITION_TYPE.INFO}
+                    open={popup?.type === POPUP_TYPE.INFO}
                     payload={popup?.content}
                     onClose={handleCloseInfoPopup}
                 />
+                <SpecialBoxPopup
+                    open={popup?.type === POPUP_TYPE.SPECIAL}
+                    payload={popup?.content}
+                    onClose={handleCloseInfoPopup} // Same handler reused
+                />
+
+                {/* Default popups */}
                 <InstructionPopup
                     open={openInstruct}
                     onClose={() => setOpenInstruct(false)}

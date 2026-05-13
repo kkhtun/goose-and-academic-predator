@@ -1,9 +1,16 @@
+import { useState } from "react";
 import CancelButton from "../buttons/CancelButton";
+import KnowledgeChunkCard from "../cards/KnowledgeChunkCard";
 
 export default function InfoPopup({ open, onClose, payload = {} }) {
     if (!open) return null;
+    const [showDetails, setShowDetails] = useState(false);
+
+    const { title, info } = payload || {};
+    const { content, chunks } = info || {};
 
     const handleClose = () => {
+        setShowDetails(false);
         onClose();
     };
 
@@ -41,9 +48,9 @@ export default function InfoPopup({ open, onClose, payload = {} }) {
                             fontSize: 18,
                         }}
                     >
-                        {payload.title || "Info"}
+                        {title || "Info"}
                     </div>
-                    <div style={{ fontSize: 16 }}>{payload.text}</div>
+                    <div style={{ fontSize: 16 }}>{content}</div>
                 </div>
                 <div
                     style={{
@@ -54,6 +61,53 @@ export default function InfoPopup({ open, onClose, payload = {} }) {
                     }}
                 >
                     <CancelButton text={"Close"} onClick={handleClose} />
+                </div>
+                {/* Hidden dropdown section */}
+                <div style={{ marginTop: 18 }}>
+                    <button
+                        type="button"
+                        onClick={() => setShowDetails((prev) => !prev)}
+                        aria-expanded={showDetails}
+                        style={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "10px 12px",
+                            borderRadius: 8,
+                            border: "1px solid #d1d5db",
+                            background: "#f9fafb",
+                            cursor: "pointer",
+                            fontWeight: 600,
+                        }}
+                    >
+                        <span>Source Knowledge Item</span>
+                        <span>{showDetails ? "▲" : "▼"}</span>
+                    </button>
+
+                    {showDetails && (
+                        <div
+                            style={{
+                                maxHeight: 200,
+                                overflowY: "auto",
+                                marginTop: 8,
+                                padding: 12,
+                                borderRadius: 8,
+                                border: "1px solid #e5e7eb",
+                                background: "#ffffff",
+                                color: "#374151",
+                                fontSize: 14,
+                                lineHeight: 1.5,
+                            }}
+                        >
+                            {chunks.map((chunk) => (
+                                <KnowledgeChunkCard
+                                    key={chunk._id}
+                                    chunk={chunk}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

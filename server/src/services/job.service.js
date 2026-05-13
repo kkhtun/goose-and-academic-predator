@@ -49,13 +49,13 @@ agenda.define(
         // await seedBatchQuizzes({});
         // await addBatchInfo({});
 
-        if (shouldRefillQuizzes) {
-            await seedBatchQuizzes({});
-        }
+        // if (shouldRefillQuizzes) {
+        //     await seedBatchQuizzes({});
+        // }
 
-        if (shouldRefillInfo) {
-            await addBatchInfo({});
-        }
+        // if (shouldRefillInfo) {
+        //     await addBatchInfo({});
+        // }
     }
 );
 

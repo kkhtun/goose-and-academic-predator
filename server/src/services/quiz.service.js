@@ -44,7 +44,7 @@ async function generateCrossword({ level }) {
         chunks,
     });
     const layout = generateLayout.generateLayout(wordList);
-    return layout;
+    return { content: layout, chunks };
 }
 
 async function generateMcq({ level, realm = REALM_TYPE.BOTH }) {
@@ -58,21 +58,22 @@ async function generateMcq({ level, realm = REALM_TYPE.BOTH }) {
         type: QUIZ_TYPE.MCQ,
         chunks,
     });
-    return quiz;
+    return { content: quiz, chunks };
 }
 
 async function generateTrueFalse({ level, realm = REALM_TYPE.BOTH }) {
-    const chunks = await retrieveRandomContext({
+    let chunks = await retrieveRandomContext({
         type: ["ABSTRACT", "QUESTION"],
         level,
         realm,
         count: 1,
     });
+    chunks = [await KbChunkModel.findById("6a0241cf4a1896ac64777ac6").lean()];
     const quiz = await generateQuiz({
         type: QUIZ_TYPE.TRUE_FALSE,
         chunks,
     });
-    return quiz;
+    return { content: quiz, chunks };
 }
 
 const QUIZ_GENERATORS = {
@@ -82,15 +83,15 @@ const QUIZ_GENERATORS = {
 };
 
 async function generateSummarizedInfo({ level, realm = REALM_TYPE.BOTH }) {
-    const chunk = await retrieveRandomContext({
+    const chunks = await retrieveRandomContext({
         type: ["ABSTRACT", "QUESTION"],
         realm,
         level,
         // level: Math.min(level, 1),
         count: 1,
-    }).then(R.head);
-    const res = await generateInfo({ chunk });
-    return { content: res.takeaway || "" };
+    });
+    const res = await generateInfo({ chunk: chunks[0] });
+    return { content: res.takeaway || "", chunks };
 }
 
 // These two functions fetch pre-generated quiz and info respectively from database
@@ -99,13 +100,6 @@ const NEW_VS_USED_RATIO = 1; // For now, we will just use NEW quizzes when possi
 async function getQuiz({ type, level, realm }) {
     const basePipeline = [];
     const status = Math.random() < NEW_VS_USED_RATIO ? "NEW" : "USED";
-
-    // Only in heaven?
-    // if (realm && realm === REALM_TYPE.HEAVEN) {
-    //     pipeline.push({ $match: { type: "QUESTION" } });
-    //     pipeline.push({ $sample: { size: 1 } });
-    //     return await QuizModel.aggregate(pipeline);
-    // }
 
     if (!R.isNil(level)) {
         basePipeline.push({ $match: { level } });
@@ -116,12 +110,25 @@ async function getQuiz({ type, level, realm }) {
         basePipeline.push({ $match: { type } });
     }
 
+    // We populate chunks also for reference
+    const populateChunksPipeline = [
+        {
+            $lookup: {
+                from: "kb_chunks",
+                localField: "chunks",
+                foreignField: "_id",
+                as: "chunks",
+            },
+        },
+    ];
+
     // First try with preferred status
     if (status) {
         const preferredPipeline = [
             ...basePipeline,
             { $match: { status } },
             { $sample: { size: 1 } },
+            ...populateChunksPipeline,
         ];
 
         const preferredQuiz = await QuizModel.aggregate(preferredPipeline);
@@ -129,7 +136,11 @@ async function getQuiz({ type, level, realm }) {
     }
 
     // Fallback: query without status restriction
-    const fallbackPipeline = [...basePipeline, { $sample: { size: 1 } }];
+    const fallbackPipeline = [
+        ...basePipeline,
+        { $sample: { size: 1 } },
+        ...populateChunksPipeline,
+    ];
     const randomQuiz = await QuizModel.aggregate(fallbackPipeline);
     return randomQuiz.length > 0 ? randomQuiz[0] : {};
 }
@@ -141,11 +152,25 @@ async function getInfo({ level }) {
     }
     // First try with preferred status
     const status = Math.random() < NEW_VS_USED_RATIO ? "NEW" : "USED";
+
+    // We populate chunks also for reference
+    const populateChunksPipeline = [
+        {
+            $lookup: {
+                from: "kb_chunks",
+                localField: "chunks",
+                foreignField: "_id",
+                as: "chunks",
+            },
+        },
+    ];
+
     if (status) {
         const preferredPipeline = [
             ...basePipeline,
             { $match: { status } },
             { $sample: { size: 1 } },
+            ...populateChunksPipeline,
         ];
 
         const preferredInfo = await InfoModel.aggregate(preferredPipeline);
@@ -153,7 +178,11 @@ async function getInfo({ level }) {
     }
 
     // Fallback: query without status restriction
-    const fallbackPipeline = [...basePipeline, { $sample: { size: 1 } }];
+    const fallbackPipeline = [
+        ...basePipeline,
+        { $sample: { size: 1 } },
+        ...populateChunksPipeline,
+    ];
     const randomInfo = await InfoModel.aggregate(fallbackPipeline);
     return randomInfo.length > 0 ? randomInfo[0] : {};
 }
@@ -231,12 +260,13 @@ async function seedMcq({ level, realm, count }) {
         const batchSize = Math.min(CONCURRENCY_LIMIT, count - i);
         const batch = Array.from({ length: batchSize }, async () => {
             try {
-                const content = await generateMcq({ level, realm });
+                const { content, chunks } = await generateMcq({ level, realm });
                 return {
                     type: QUIZ_TYPE.MCQ,
                     content,
                     level,
                     realm,
+                    chunks: R.map(R.prop("_id"))(chunks),
                 };
             } catch (err) {
                 console.error("Error generating MCQ:", err.message);
@@ -257,11 +287,12 @@ async function seedCrossword({ level, realm, count }) {
         const batchSize = Math.min(CONCURRENCY_LIMIT, count - i);
         const batch = Array.from({ length: batchSize }, async () => {
             try {
-                const content = await generateCrossword({ level });
+                const { content, chunks } = await generateCrossword({ level });
                 return {
                     type: QUIZ_TYPE.CROSS_WORDS,
                     content,
                     level,
+                    chunks: R.map(R.prop("_id"))(chunks),
                 };
             } catch (err) {
                 console.error("Error generating CW:", err.message);
@@ -281,12 +312,16 @@ async function seedTrueFalse({ level, realm, count }) {
         const batchSize = Math.min(CONCURRENCY_LIMIT, count - i);
         const batch = Array.from({ length: batchSize }, async () => {
             try {
-                const content = await generateTrueFalse({ level, realm });
+                const { content, chunks } = await generateTrueFalse({
+                    level,
+                    realm,
+                });
                 return {
                     type: QUIZ_TYPE.TRUE_FALSE,
                     content,
                     level,
                     realm,
+                    chunks: R.map(R.prop("_id"))(chunks),
                 };
             } catch (err) {
                 console.error("Error generating TF:", err.message);
@@ -306,7 +341,7 @@ async function seedInfo({ level, realm, count }) {
         const batchSize = Math.min(CONCURRENCY_LIMIT, count - i);
         const batch = Array.from({ length: batchSize }, async () => {
             try {
-                const { content } = await generateSummarizedInfo({
+                const { content, chunks } = await generateSummarizedInfo({
                     level,
                     realm,
                 });
@@ -314,6 +349,7 @@ async function seedInfo({ level, realm, count }) {
                     content,
                     level,
                     realm,
+                    chunks: R.map(R.prop("_id"))(chunks),
                 };
             } catch (err) {
                 console.error(`Error generating info level ${level}:`);

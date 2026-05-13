@@ -5,6 +5,7 @@ import { socket } from "../../socket";
 import CancelButton from "../buttons/CancelButton";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
+import KnowledgeChunkCard from "../cards/KnowledgeChunkCard";
 
 function TrueFalseQuiz({ content, handleSubmit, hasAnswered }) {
     const { statement } = content;
@@ -84,15 +85,17 @@ export default function QuizPopup({
 
     const [hasAnswered, setHasAnswered] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
 
     const { gameInfo, playerUniqueId } = gameState;
     const { gameId } = gameInfo;
 
-    const { type, content, _id: quizId } = payload;
+    const { type, content, _id: quizId, chunks } = payload;
 
     const handleClose = () => {
         setHasAnswered(false);
         setIsCorrect(false);
+        setShowDetails(false);
         onClose();
     };
 
@@ -220,6 +223,67 @@ export default function QuizPopup({
                         onClick={handleClose}
                         disabled={!hasAnswered}
                     />
+                </div>
+                {/* Hidden dropdown section */}
+                <div style={{ marginTop: 18 }}>
+                    <button
+                        type="button"
+                        onClick={() => setShowDetails((prev) => !prev)}
+                        aria-expanded={showDetails}
+                        style={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "10px 12px",
+                            borderRadius: 8,
+                            border: "1px solid #d1d5db",
+                            background: "#f9fafb",
+                            cursor: "pointer",
+                            fontWeight: 600,
+                        }}
+                    >
+                        <span>More information</span>
+                        <span>{showDetails ? "▲" : "▼"}</span>
+                    </button>
+
+                    {showDetails && (
+                        <div
+                            style={{
+                                maxHeight: 200,
+                                overflowY: "auto",
+                                marginTop: 8,
+                                padding: 12,
+                                borderRadius: 8,
+                                border: "1px solid #e5e7eb",
+                                background: "#ffffff",
+                                color: "#374151",
+                                fontSize: 14,
+                                lineHeight: 1.5,
+                            }}
+                        >
+                            {/* <p>
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit. Integer nec odio. Praesent
+                                libero. Sed cursus ante dapibus diam. Sed nisi.
+                                Nulla quis sem at nibh elementum imperdiet.
+                            </p>
+
+                            <p>
+                                Duis sagittis ipsum. Praesent mauris. Fusce nec
+                                tellus sed augue semper porta. Mauris massa.
+                                Vestibulum lacinia arcu eget nulla. Class aptent
+                                taciti sociosqu ad litora torquent per conubia
+                                nostra.
+                            </p> */}
+                            {chunks.map((chunk) => (
+                                <KnowledgeChunkCard
+                                    key={chunk._id}
+                                    chunk={chunk}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -12,6 +12,12 @@ export const POSITION_TYPE = {
     PENALTY: "PENALTY", // Return to previous position + pay penalty
 };
 
+export const POPUP_TYPE = {
+    QUIZ: "QUIZ",
+    INFO: "INFO",
+    SPECIAL: "SPECIAL",
+};
+
 export const POSITION_DESCRIPTIONS = {
     // STANDARD: "Nothing happens when the player lands in this square.",
     GOOSE: "A goose friend allows you to make another move based on your previous roll.",

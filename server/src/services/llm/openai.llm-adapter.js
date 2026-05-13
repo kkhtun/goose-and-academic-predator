@@ -11,7 +11,8 @@ const { CustomError } = require("../../utils/CustomError");
 const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
-const modelName = process.env.OPENAI_MODEL || "gpt-5.4-mini" || "gpt-4o";
+const modelName =
+    process.env.OPENAI_MODEL || "gpt-5.4" || "gpt-5.4-mini" || "gpt-4o";
 
 async function embedText(text) {
     const response = await client.embeddings.create({
@@ -118,8 +119,8 @@ async function callLLMMCQ({ context }) {
             {
                 role: "system",
                 content: `
-You are a quiz generator. Use only the provided context.
-Generate one high-quality multiple-choice question.
+You are a quiz generator. Use only the provided context for factual grounding.
+Generate one high-quality multiple-choice question that tests understanding of the main generalizable idea, not memorization of document-specific details.
 `,
             },
             {
@@ -158,9 +159,11 @@ Rules:
 }
 
 async function callLLMTrueFalse({ context }) {
+    const answer = Math.random() < 0.5 ? true : false;
+
     const resp = await client.chat.completions.create({
         model: modelName,
-        temperature: 0.2,
+        temperature: 0.4,
         response_format: {
             type: "json_schema",
             json_schema: {
@@ -170,21 +173,9 @@ async function callLLMTrueFalse({ context }) {
                     type: "object",
                     additionalProperties: false,
                     properties: {
-                        statement: {
-                            type: "string",
-                            description:
-                                "A concise statement that is clearly true or false based only on the provided context.",
-                        },
-                        answer: {
-                            type: "boolean",
-                            description:
-                                "Whether the statement is true or false.",
-                        },
-                        explanation: {
-                            type: "string",
-                            description:
-                                "Natural explanation of why the answer is correct, without mentioning the context or chunks.",
-                        },
+                        statement: { type: "string" },
+                        answer: { type: "boolean" },
+                        explanation: { type: "string" },
                     },
                     required: ["statement", "answer", "explanation"],
                 },
@@ -194,9 +185,11 @@ async function callLLMTrueFalse({ context }) {
             {
                 role: "system",
                 content: `
-You are a quiz generator. Use only the provided context.
-Generate one true/false question.
-`,
+You are a quiz generator for learners.
+
+Use only the provided context for factual grounding.
+Generate one high-quality true/false statement.
+`.trim(),
             },
             {
                 role: "user",
@@ -206,13 +199,32 @@ ${context}
 
 Generate ONE true/false statement.
 
+The correct answer MUST be ${answer.toString().toUpperCase()}.
+Return "answer": ${answer}.
+
 Rules:
-- The statement must be fully verifiable using only the context.
-- The statement must be concise and unambiguous.
-- Ensure a balanced mix of TRUE and FALSE across multiple generations (do not always return TRUE).
-- Explanation should explain why the answer is correct in natural language.
-- Do not mention context, chunks, papers, studies, or internal sources in either the statement or explanation.
-`,
+- Write the statement as a general learning principle, not as a description of the specific source material.
+- Avoid source-specific nouns from the input when possible.
+- Do not use exact numbers, names, titles, author groups, editorial boards, report labels, or source-specific categories unless they are essential to the learning point.
+- Avoid words such as commentary, abstract, editorial board, selected topics, report, article, paper, study, source, and authors.
+
+Rules for TRUE statements:
+- If the answer is TRUE, the statement must accurately reflect the context.
+
+Rules for FALSE statements:
+- If the answer is FALSE, the statement must clearly contradict the main general idea.
+- The contradiction must change the core meaning, conclusion, cause, limitation, or implication.
+- Do NOT make a false statement by only rephrasing a true statement.
+- Do NOT rely on tiny wording differences.
+- Do NOT make the statement obviously absurd.
+- Make the false statement a plausible misconception a learner might have.
+- Prefer a general misconception over a source-specific false detail.
+
+Explanation rules:
+- Explain why the answer is correct.
+- For FALSE statements, explicitly state what the correct idea is.
+- Do not mention context, chunks, papers, studies, reports, sources, or internal materials.
+`.trim(),
             },
         ],
     });

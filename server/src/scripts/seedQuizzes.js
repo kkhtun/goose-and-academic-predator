@@ -28,12 +28,32 @@ async function seedQuizzes(append = false) {
     await seedBatchQuizzes({});
 }
 
+async function setAllInfoToNew() {
+    const result = await InfoModel.updateMany({}, { $set: { status: "NEW" } });
+    console.log(`Matched ${result.matchedCount} info`);
+    console.log(`Updated ${result.modifiedCount} info`);
+    return result;
+}
+
+async function setAllQuizzesToNew() {
+    const result = await QuizModel.updateMany({}, { $set: { status: "NEW" } });
+    console.log(`Matched ${result.matchedCount} quizzes`);
+    console.log(`Updated ${result.modifiedCount} quizzes`);
+    return result;
+}
+
+async function setAllEntriesToNew() {
+    await setAllQuizzesToNew();
+    await setAllInfoToNew();
+}
+
 async function seed() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to DB");
 
-    await seedInfo(true);
-    await seedQuizzes(true);
+    await setAllEntriesToNew();
+    // await seedInfo(false);
+    // await seedQuizzes(false);
 
     // const res = await generateMcq({ level: 0 });
     // const res = await generateTrueFalse({ level: 0 });
