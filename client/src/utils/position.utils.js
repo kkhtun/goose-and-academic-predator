@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { LEVEL_MARKER } from "../constants";
+import { LEVEL_MARKER, REALM_TYPE, SCORE_FOR_HEAVEN } from "../constants";
 import { DogIcon } from "../components/piece/DogIcon";
 import { DogGradIcon } from "../components/piece/DogGradIcon";
 import { CatIcon } from "../components/piece/CatIcon";
@@ -41,16 +41,6 @@ export const getOrderedSquares = (boardSize) => {
     return result;
 };
 
-export const getLevel = (pos) => {
-    if (pos <= LEVEL_MARKER.LEVEL_0_END) {
-        return 0;
-    } else if (pos <= LEVEL_MARKER.LEVEL_1_END) {
-        return 1;
-    } else {
-        return 2;
-    }
-};
-
 export const getPlayerPieceInfo = (avatar, level) => {
     let Icon;
     let tint;
@@ -78,6 +68,30 @@ export const getPlayerPieceInfo = (avatar, level) => {
             break;
     }
     return { Icon, tint };
+};
+
+export const getLevel = (pos) => {
+    if (pos <= LEVEL_MARKER.LEVEL_0_END) {
+        return 0;
+    } else if (pos <= LEVEL_MARKER.LEVEL_1_END) {
+        return 1;
+    } else {
+        return 2;
+    }
+};
+
+export const getRealm = (playerPos, playerScore) => {
+    const level = getLevel(playerPos);
+    let realm;
+    if (level >= 2) {
+        realm =
+            playerScore >= SCORE_FOR_HEAVEN
+                ? REALM_TYPE.HEAVEN
+                : REALM_TYPE.HELL;
+    } else {
+        realm = REALM_TYPE.BOTH; // Realm only applies in Level 2
+    }
+    return { realm, level };
 };
 
 // Temporary (to remove later)

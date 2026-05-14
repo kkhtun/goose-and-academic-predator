@@ -1,4 +1,9 @@
-import { POSITION_INSTRUCTIONS } from "../../constants";
+import {
+    SCORE_FOR_HEAVEN,
+    POSITION_INSTRUCTIONS,
+    REALM_COLOR,
+    REALM_TYPE,
+} from "../../constants";
 import CancelButton from "../buttons/CancelButton";
 import { BoxIcon } from "../icons/BoxIcon";
 
@@ -67,11 +72,11 @@ export default function InstructionPopup({ open, onClose }) {
                         <span style={{ color: "rgb(86, 164, 216)" }}>blue</span>{" "}
                         (hard). At the end of the journey, your score will
                         reveal your destiny. Will you reach{" "}
-                        <span style={{ color: "rgb(86, 164, 216)" }}>
+                        <span style={{ color: REALM_COLOR[REALM_TYPE.HEAVEN] }}>
                             Publishing Heaven
                         </span>{" "}
                         with a flawless record, or find yourself in{" "}
-                        <span style={{ color: "rgb(196, 106, 100)" }}>
+                        <span style={{ color: REALM_COLOR[REALM_TYPE.HELL] }}>
                             Publishing Hell
                         </span>{" "}
                         needing more practice to avoid the industry's most
@@ -89,6 +94,14 @@ export default function InstructionPopup({ open, onClose }) {
                             type.
                         </li>
                         <li>Earn points by answering the quizzes correctly.</li>
+                        <li>
+                            With each level, you earn more points for answering
+                            correctly.
+                        </li>
+                        <li>
+                            Earn more than {SCORE_FOR_HEAVEN} points to reach
+                            the publishing heaven.
+                        </li>
                         <li>
                             Before starting, share your <b>Game ID</b> so
                             friends can join and play with you.

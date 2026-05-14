@@ -165,6 +165,17 @@ export const LEVEL_MARKER = {
 export const REALM_TYPE = {
     HEAVEN: "HEAVEN",
     HELL: "HELL",
+    BOTH: "BOTH",
+};
+
+export const SCORE_FOR_HEAVEN = 12;
+
+// export const HELL_COLOR = "rgb(196, 106, 100)";
+// export const HEAVEN_COLOR = "rgb(86, 164, 216)";
+
+export const REALM_COLOR = {
+    [REALM_TYPE.HEAVEN]: "rgb(86, 164, 216)",
+    [REALM_TYPE.HELL]: "rgb(196, 106, 100)",
 };
 
 export const BOARD_SIZE = Object.keys(BOARD_POSITIONS).length;

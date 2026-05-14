@@ -4,7 +4,8 @@ import { findPlayer } from "../utils/common.utils";
 import SecondaryButton from "./buttons/SecondaryButton";
 import CallToActionButton from "./buttons/CallToActionButton";
 import ConfirmPopup from "./popups/ConfirmPopup";
-import { getLevel } from "../utils/position.utils";
+import { getLevel, getRealm } from "../utils/position.utils";
+import { REALM_COLOR, REALM_TYPE, SCORE_FOR_HEAVEN } from "../constants";
 
 export default function GameControls({
     lastRoll,
@@ -101,14 +102,23 @@ export default function GameControls({
                                 p.playerUniqueId ===
                                 nextTurnPlayer(gameInfo).playerUniqueId;
 
+                            let { level, realm } = getRealm(
+                                p.playerPos,
+                                p.score,
+                            );
+                            // realm = REALM_TYPE.HELL;
+
+                            const realmHeading =
+                                p.score < SCORE_FOR_HEAVEN
+                                    ? REALM_TYPE.HELL
+                                    : REALM_TYPE.HEAVEN;
+
                             return (
                                 <div
                                     key={p.playerUniqueId}
                                     style={{
                                         ...styles.scoreItem,
-                                        ...(isCurrentTurn
-                                            ? styles.activePlayer
-                                            : {}),
+                                        border: `2px solid ${REALM_COLOR[realm]}`,
                                     }}
                                 >
                                     <div style={styles.scoreRow}>
@@ -117,7 +127,31 @@ export default function GameControls({
                                     </div>
 
                                     <div style={styles.levelText}>
-                                        Level {getLevel(p.playerPos)}
+                                        Level {level}{" "}
+                                        <span
+                                            style={{
+                                                color: REALM_COLOR[realm],
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            {realm === REALM_TYPE.BOTH
+                                                ? ""
+                                                : realm}
+                                        </span>
+                                    </div>
+
+                                    <div style={styles.levelText}>
+                                        Heading for{" "}
+                                        <span
+                                            style={{
+                                                color: REALM_COLOR[
+                                                    realmHeading
+                                                ],
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            {realmHeading}
+                                        </span>
                                     </div>
                                 </div>
                             );
@@ -199,22 +233,6 @@ const styles = {
         background: "#e74c3c",
         color: "white",
     },
-    // scoreList: {
-    //     marginTop: 6,
-    //     display: "flex",
-    //     flexDirection: "column",
-    //     gap: 6,
-    // },
-
-    // scoreItem: {
-    //     padding: "6px 8px",
-    //     borderRadius: 8,
-    //     background: "#273444", // slightly lighter than panel
-    //     fontSize: 14,
-    //     display: "flex",
-    //     justifyContent: "space-between",
-    //     alignItems: "center",
-    // },
 
     scoreList: {
         marginTop: 8,
@@ -227,7 +245,7 @@ const styles = {
         padding: "8px 10px",
         borderRadius: 8,
         background: "#1e2a38",
-        border: "1px solid #3b82f6",
+        // border: "1px solid #3b82f6",
         fontSize: 14,
         display: "flex",
         flexDirection: "column",
@@ -247,7 +265,7 @@ const styles = {
     },
 
     activePlayer: {
-        border: "2px solid #60a5fa",
+        // border: "2px solid #60a5fa",
         background: "#243447",
     },
 };

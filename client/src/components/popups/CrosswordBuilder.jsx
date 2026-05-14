@@ -45,25 +45,82 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
         return true;
     };
 
+    // const styles = {
+    //     app: {
+    //         display: "flex",
+    //         flexDirection: "column",
+    //         alignItems: "center",
+    //         fontFamily: "Arial, sans-serif",
+    //         background: "#f0f4f8",
+    //         padding: 20,
+    //     },
+    //     puzzle: {
+    //         display: "flex",
+    //         marginBottom: 16,
+    //     },
+    //     crossword: {
+    //         display: "grid",
+    //         gridTemplateColumns: `repeat(${crosswordData.cols}, 30px)`,
+    //         gridTemplateRows: `repeat(${crosswordData.rows}, 30px)`,
+    //         gap: "1px",
+    //     },
+    //     cell: {
+    //         width: "30px",
+    //         height: "30px",
+    //         textAlign: "center",
+    //         fontSize: "15px",
+    //         fontWeight: "bold",
+    //         textTransform: "uppercase",
+    //         border: "1px solid #ccc",
+    //         background: "white",
+    //         outline: "none",
+    //     },
+    //     blocked: { background: "#333" },
+    //     cluesContainer: {
+    //         display: "flex",
+    //         flexDirection: "column",
+    //         marginLeft: 20,
+    //     },
+    //     clueSection: { fontSize: 14 },
+    //     clueTitle: { fontWeight: "bold", marginBottom: "10px" },
+    //     clue: { marginBottom: "4px" },
+    //     status: { marginTop: "20px", fontSize: "18px" },
+    //     solved: { color: "green", fontWeight: "bold" },
+    // };
+
     const styles = {
         app: {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             fontFamily: "Arial, sans-serif",
-            background: "#f0f4f8",
+            background: "#f4f9fd",
             padding: 20,
+            borderRadius: 14,
+            color: "#2c3e50",
         },
+
         puzzle: {
             display: "flex",
             marginBottom: 16,
+            padding: 18,
+            borderRadius: 14,
+            background: "#ffffff",
+            border: "1px solid #d7e8f7",
+            boxShadow: "0 6px 18px rgba(52, 152, 219, 0.12)",
         },
+
         crossword: {
             display: "grid",
             gridTemplateColumns: `repeat(${crosswordData.cols}, 30px)`,
             gridTemplateRows: `repeat(${crosswordData.rows}, 30px)`,
             gap: "1px",
+            padding: 6,
+            borderRadius: 8,
+            background: "#d7e8f7",
+            border: "1px solid #b9d8ef",
         },
+
         cell: {
             width: "30px",
             height: "30px",
@@ -71,21 +128,69 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
             fontSize: "15px",
             fontWeight: "bold",
             textTransform: "uppercase",
-            border: "1px solid #ccc",
-            background: "white",
+            border: "1px solid #b9d8ef",
+            background: "#ffffff",
+            color: "#2c3e50",
             outline: "none",
+            borderRadius: 3,
+            boxSizing: "border-box",
         },
-        blocked: { background: "#333" },
+
+        blocked: {
+            background: "#2c3e50",
+            borderColor: "#2c3e50",
+        },
+
         cluesContainer: {
             display: "flex",
             flexDirection: "column",
             marginLeft: 20,
+            padding: 14,
+            borderRadius: 14,
+            background: "#f9fcff",
+            border: "1px solid #d7e8f7",
+            boxShadow: "0 4px 12px rgba(52, 152, 219, 0.08)",
+            color: "#2c3e50",
         },
-        clueSection: { fontSize: 14 },
-        clueTitle: { fontWeight: "bold", marginBottom: "10px" },
-        clue: { marginBottom: "4px" },
-        status: { marginTop: "20px", fontSize: "18px" },
-        solved: { color: "green", fontWeight: "bold" },
+
+        clueSection: {
+            fontSize: 14,
+            padding: "10px 12px",
+            borderRadius: 10,
+            background: "#ffffff",
+            border: "1px solid #e3f1fb",
+            marginBottom: 12,
+        },
+
+        clueTitle: {
+            fontWeight: "bold",
+            marginBottom: "10px",
+            color: "#2c80b4",
+            fontSize: 14,
+            paddingBottom: 6,
+            borderBottom: "1px solid #d7e8f7",
+        },
+
+        clue: {
+            marginBottom: "6px",
+            padding: "6px 8px",
+            borderRadius: 6,
+            lineHeight: 1.35,
+            color: "#34495e",
+            background: "#f4f9fd",
+            borderLeft: "3px solid #3498db",
+        },
+
+        status: {
+            marginTop: "20px",
+            fontSize: "18px",
+            color: "#2c3e50",
+        },
+
+        solved: {
+            color: "#4CAF50",
+            fontWeight: "bold",
+        },
     };
 
     return (
@@ -167,7 +272,7 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                         style={{
                             width: "100%",
                             border: "none",
-                            borderTop: "1px solid #ccc",
+                            borderTop: "1px solid #d7e8f7",
                             margin: "16px 0",
                         }}
                     />
@@ -180,7 +285,17 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                                 text={"Submit"}
                             />
                         ) : (
-                            <div style={{ fontSize: 14, color: "orange" }}>
+                            <div
+                                style={{
+                                    fontSize: 14,
+                                    color: "#8a6500",
+                                    background: "#fff8dc",
+                                    border: "1px solid #f5d98b",
+                                    padding: "10px 12px",
+                                    borderRadius: 8,
+                                    lineHeight: 1.4,
+                                }}
+                            >
                                 Please fill the missing letters to solve the
                                 puzzle.
                             </div>
@@ -192,14 +307,14 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                             style={{
                                 marginTop: 12,
                                 padding: 12,
-                                borderRadius: 8,
-                                background: isCorrect ? "#f0f9ff" : "#fef2f2",
-                                border: `1px solid ${isCorrect ? "#0ea5e9" : "#f87171"}`,
+                                borderRadius: 10,
+                                background: isCorrect ? "#eef8ee" : "#fdecea",
+                                border: `1px solid ${isCorrect ? "#a5d6a7" : "#f1a9a0"}`,
                             }}
                         >
                             <div
                                 style={{
-                                    color: isCorrect ? "#0369a1" : "#dc2626",
+                                    color: isCorrect ? "#43a047" : "#c0392b",
                                     fontWeight: 600,
                                 }}
                             >
@@ -207,18 +322,6 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                                     ? "✓ Your answer is correct!"
                                     : "✗ Your answer is incorrect."}
                             </div>
-                            {/* {content.explanation && (
-                                <div
-                                    style={{
-                                        color: isCorrect
-                                            ? "#0369a1"
-                                            : "#dc2626",
-                                        fontSize: 14,
-                                    }}
-                                >
-                                    {content.explanation}
-                                </div>
-                            )} */}
                         </div>
                     )}
                 </div>

@@ -135,7 +135,7 @@ const BOARD_POSITIONS = {
 };
 
 // These constants need to be in sync with frontend
-const SCORE_FOR_HEAVEN = 10;
+const SCORE_FOR_HEAVEN = 12;
 
 const REALM_TYPE = {
     HEAVEN: "HEAVEN",
@@ -167,7 +167,7 @@ function throwDie(pos = 0) {
     let die2 = Math.floor(Math.random() * 6) + 1;
     let total = die1 + die2;
 
-    // return { die1: 1, die2: 1, total: 2 };
+    // return { die1: 1, die2: 2, total: 3 };
 
     if (pos > 85 && total > 6) {
         // 100% chance to re-roll high values

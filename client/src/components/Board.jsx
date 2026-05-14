@@ -1,6 +1,11 @@
 import Square from "./Square";
 import PlayerPiece from "./PlayerPiece";
-import { BOARD_SIZE, LEVEL_MARKER, REALM_TYPE } from "../constants";
+import {
+    BOARD_SIZE,
+    SCORE_FOR_HEAVEN,
+    LEVEL_MARKER,
+    REALM_TYPE,
+} from "../constants";
 import {
     GAP_BETWEEN_SQUARES,
     getOrderedSquares,
@@ -16,7 +21,8 @@ export default function Board({ onPieceArrive, gameState, setGameState }) {
     const clientPlayerPos = clientPlayer.playerPos;
     // If client player pos is after LEVEL 1 and still not enough score, change to HELL
     const heavenOrHell =
-        clientPlayerPos > LEVEL_MARKER.LEVEL_1_END && clientPlayer.score < 10
+        clientPlayerPos > LEVEL_MARKER.LEVEL_1_END &&
+        clientPlayer.score < SCORE_FOR_HEAVEN
             ? REALM_TYPE.HELL
             : REALM_TYPE.HEAVEN;
 

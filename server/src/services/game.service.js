@@ -148,7 +148,11 @@ async function roll({ game, player }) {
         const { level, realm } = getRealm(move.next, score);
 
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
-            const quiz = await QuizService.getQuiz({ level, realm });
+            const quiz = await QuizService.getQuiz({
+                // type: QUIZ_TYPE.CROSS_WORDS,
+                level,
+                realm,
+            });
             move.content = { quiz };
             await QuizService.markQuizUsed({ quizId: quiz._id });
             await triggerRefillQuizzes({});

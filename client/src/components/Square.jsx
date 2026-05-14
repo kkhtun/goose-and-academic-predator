@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
     BOARD_POSITIONS,
     POSITION_INSTRUCTIONS,
+    REALM_COLOR,
     REALM_TYPE,
 } from "../constants";
 import { getLevel, SQUARE_SIZE } from "../utils/position.utils";
@@ -20,9 +21,9 @@ export default function Square({ number, heavenOrHell }) {
     } else if (level === 2 || number === null) {
         // Further determine heaven or hell
         if (heavenOrHell === REALM_TYPE.HELL) {
-            dynamicStyles.background = "rgb(196, 106, 100)";
+            dynamicStyles.background = REALM_COLOR[REALM_TYPE.HELL];
         } else {
-            dynamicStyles.background = "rgb(86, 164, 216)";
+            dynamicStyles.background = REALM_COLOR[REALM_TYPE.HEAVEN];
         }
         dynamicStyles.color = "#ecf0f1";
     }
