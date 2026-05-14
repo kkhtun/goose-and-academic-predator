@@ -76,6 +76,9 @@ async function addPlayer({ gameId, playerName, avatar }) {
     if (game.moves.length !== 0)
         throw new CustomError("Cannot join already started games.");
 
+    if (game.players.length > 3)
+        throw new CustomError("Cannot join more than 3 players.");
+
     game.players.push(player);
     if (!game.turnPlayerId) game.turnPlayerId = playerUniqueId;
     const updatedGame = await game.save();
