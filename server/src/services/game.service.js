@@ -149,7 +149,7 @@ async function roll({ game, player }) {
 
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
             const quiz = await QuizService.getQuiz({
-                // type: QUIZ_TYPE.CROSS_WORDS,
+                // type: QUIZ_TYPE.MCQ,
                 level,
                 realm,
             });

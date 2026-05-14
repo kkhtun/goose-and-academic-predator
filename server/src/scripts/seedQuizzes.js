@@ -51,7 +51,7 @@ async function seed() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to DB");
 
-    await setAllEntriesToNew();
+    // await setAllEntriesToNew();
     await seedInfo(true);
     await seedQuizzes(true);
 

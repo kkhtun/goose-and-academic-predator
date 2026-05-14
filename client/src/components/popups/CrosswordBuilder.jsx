@@ -17,15 +17,18 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
     const crosswordData = content;
     const startPosLookup = createStartingPosLookupObj(crosswordData.result);
 
-    // Pre-fill letters randomly based on crosswordData.table
-    const [grid, setGrid] = useState(() => {
-        return crosswordData.table.map((row) =>
+    const fillCrossword = (data, fillRatio) => {
+        return data.map((row) =>
             row.map((cell) => {
                 if (cell === "-") return ""; // blocked cells
-                // randomly prefill ~20% of the letters
-                return Math.random() < CROSSWORD_FILL_RATIO ? cell : "";
+                return Math.random() < fillRatio ? cell : "";
             }),
         );
+    };
+
+    // Pre-fill letters randomly based on crosswordData.table
+    const [grid, setGrid] = useState(() => {
+        return fillCrossword(crosswordData.table, CROSSWORD_FILL_RATIO);
     });
 
     const handleChange = (row, col, value) => {
@@ -45,48 +48,10 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
         return true;
     };
 
-    // const styles = {
-    //     app: {
-    //         display: "flex",
-    //         flexDirection: "column",
-    //         alignItems: "center",
-    //         fontFamily: "Arial, sans-serif",
-    //         background: "#f0f4f8",
-    //         padding: 20,
-    //     },
-    //     puzzle: {
-    //         display: "flex",
-    //         marginBottom: 16,
-    //     },
-    //     crossword: {
-    //         display: "grid",
-    //         gridTemplateColumns: `repeat(${crosswordData.cols}, 30px)`,
-    //         gridTemplateRows: `repeat(${crosswordData.rows}, 30px)`,
-    //         gap: "1px",
-    //     },
-    //     cell: {
-    //         width: "30px",
-    //         height: "30px",
-    //         textAlign: "center",
-    //         fontSize: "15px",
-    //         fontWeight: "bold",
-    //         textTransform: "uppercase",
-    //         border: "1px solid #ccc",
-    //         background: "white",
-    //         outline: "none",
-    //     },
-    //     blocked: { background: "#333" },
-    //     cluesContainer: {
-    //         display: "flex",
-    //         flexDirection: "column",
-    //         marginLeft: 20,
-    //     },
-    //     clueSection: { fontSize: 14 },
-    //     clueTitle: { fontWeight: "bold", marginBottom: "10px" },
-    //     clue: { marginBottom: "4px" },
-    //     status: { marginTop: "20px", fontSize: "18px" },
-    //     solved: { color: "green", fontWeight: "bold" },
-    // };
+    const onSubmit = () => {
+        handleSubmit(grid);
+        setGrid(fillCrossword(crosswordData.table, 1));
+    };
 
     const styles = {
         app: {
@@ -134,6 +99,10 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
             outline: "none",
             borderRadius: 3,
             boxSizing: "border-box",
+        },
+
+        cellAnswered: {
+            color: "#3498db",
         },
 
         blocked: {
@@ -213,8 +182,11 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                                         ...(cell === "-" ? styles.blocked : {}),
                                         width: "100%",
                                         height: "100%",
+                                        ...(hasAnswered
+                                            ? styles.cellAnswered
+                                            : {}),
                                     }}
-                                    disabled={cell === "-"}
+                                    disabled={cell === "-" || hasAnswered}
                                     value={grid[rIdx][cIdx]}
                                     onChange={(e) =>
                                         handleChange(rIdx, cIdx, e.target.value)
@@ -278,7 +250,31 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                     />
 
                     <div style={{ marginTop: 10 }}>
-                        {isSolved() ? (
+                        <PrimaryButton
+                            onClick={() => onSubmit()}
+                            disabled={hasAnswered || !isSolved()}
+                            text={"Submit"}
+                        />
+                        {!hasAnswered ? (
+                            <div
+                                style={{
+                                    fontSize: 14,
+                                    color: "#8a6500",
+                                    background: "#fff8dc",
+                                    border: "1px solid #f5d98b",
+                                    lineHeight: 1.4,
+                                    marginTop: 12,
+                                    padding: 12,
+                                    borderRadius: 10,
+                                }}
+                            >
+                                Please fill the missing letters to solve the
+                                puzzle.
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                        {/* {isSolved() ? (
                             <PrimaryButton
                                 onClick={() => handleSubmit(grid)}
                                 disabled={hasAnswered}
@@ -299,7 +295,7 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                                 Please fill the missing letters to solve the
                                 puzzle.
                             </div>
-                        )}
+                        )} */}
                     </div>
 
                     {hasAnswered && (
