@@ -143,6 +143,7 @@ Rules:
 - There must be exactly one correct answer.
 - Explanation should briefly explain why the correct answer is right.
 - Do not mention context, chunks, papers, studies, or internal sources in either the questionText, options or in explanation.
+- Assume that the quiz taker will not have access to the context provided.
 `,
             },
         ],
@@ -207,6 +208,7 @@ Rules:
 - Avoid source-specific nouns from the input when possible.
 - Do not use exact numbers, names, titles, author groups, editorial boards, report labels, or source-specific categories unless they are essential to the learning point.
 - Avoid words such as commentary, abstract, editorial board, selected topics, report, article, paper, study, source, and authors.
+- Assume that the quiz taker will not have access to the context provided.
 
 Rules for TRUE statements:
 - If the answer is TRUE, the statement must accurately reflect the context.
