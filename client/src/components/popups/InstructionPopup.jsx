@@ -46,12 +46,40 @@ export default function InstructionPopup({ open, onClose }) {
                         Instructions
                     </div>
 
+                    <div>
+                        Welcome to the Goose and Academic Predator game! Test
+                        your ability to identify predatory journals and uphold
+                        research integrity. You will play on 3 levels:{" "}
+                        <span
+                            style={{
+                                color: "#ffffff",
+                                textShadow: "0 1px 3px rgba(0, 0, 0, 0.45)",
+                                fontWeight: 600,
+                            }}
+                        >
+                            white
+                        </span>{" "}
+                        (easy),{" "}
+                        <span style={{ color: "rgb(161, 93, 190)" }}>
+                            purple
+                        </span>{" "}
+                        (medium), and{" "}
+                        <span style={{ color: "rgb(86, 164, 216)" }}>blue</span>{" "}
+                        (hard). At the end of the journey, your score will
+                        reveal your destiny. Will you reach{" "}
+                        <span style={{ color: "rgb(86, 164, 216)" }}>
+                            Publishing Heaven
+                        </span>{" "}
+                        with a flawless record, or find yourself in{" "}
+                        <span style={{ color: "rgb(196, 106, 100)" }}>
+                            Publishing Hell
+                        </span>{" "}
+                        needing more practice to avoid the industry's most
+                        dangerous traps?
+                    </div>
+
                     {/* 👇 Added instructions here */}
                     <ul style={{ paddingLeft: 20, lineHeight: 1.6 }}>
-                        <li>
-                            Learn how to avoid predatory journals and discover
-                            best practices for ethical research.
-                        </li>
                         <li>
                             Click on <b>🎲 Roll</b> button to move your piece.
                         </li>
@@ -69,7 +97,7 @@ export default function InstructionPopup({ open, onClose }) {
                             ⚠️ Once the game begins, no new players can join.
                         </li>
                         <li>
-                            Land on the <b>square 90</b> to win the game! 🎉
+                            Land on the square <b>90</b> to finish the game! 🎉
                         </li>
                     </ul>
 
@@ -80,7 +108,7 @@ export default function InstructionPopup({ open, onClose }) {
                             fontSize: 18,
                         }}
                     >
-                        Position Guide
+                        Icons Meaning
                     </div>
 
                     {/* 👇 Added instructions here */}
@@ -106,7 +134,7 @@ export default function InstructionPopup({ open, onClose }) {
                         <li>
                             <BoxIcon number={90} type={""} onSquare={false} />
                             <span style={{ marginLeft: 8 }}>
-                                Land on this square to win the game! 🎉
+                                Land on this square to finish the game! 🎉
                             </span>
                         </li>
                     </ul>

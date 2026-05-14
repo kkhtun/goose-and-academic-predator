@@ -3,7 +3,7 @@ export const POSITION_TYPE = {
     GOOSE: "GOOSE", // continue with previous number
     CHALLENGE: "CHALLENGE", // pop-up quiz
     INFO: "INFO", // pop-up information
-    JUMP_TURN: "JUMP_TURN", // Skip turn
+    // JUMP_TURN: "JUMP_TURN", // Skip turn
     DICE_TWICE: "DICE_TWICE", // Pull the dice again
     BACK_TO_START: "BACK_TO_START",
     LUCKY: "LUCKY", // Double score
@@ -18,31 +18,33 @@ export const POPUP_TYPE = {
     SPECIAL: "SPECIAL",
 };
 
+// Used in popup (when player lands)
 export const POSITION_DESCRIPTIONS = {
     // STANDARD: "Nothing happens when the player lands in this square.",
     GOOSE: "A goose friend allows you to make another move based on your previous roll.",
     CHALLENGE: "Face a quiz challenge. Answer correctly to earn points.",
     INFO: "Discover a quick tip about the goose and academic predators.",
-    JUMP_TURN: "Oh no! your next turn is skipped.",
+    // JUMP_TURN: "Oh no! your next turn is skipped.",
     DICE_TWICE: "Lucky! You get another chance to roll the dice.",
     BACK_TO_START: "Tough break! you must return to the start.",
-    LUCKY: "Jackpot! You stepped on a lucky box. Your current score has been doubled!",
+    LUCKY: "Jackpot! You stepped on a lucky box. Your current score has been increased by 2 points!",
     // RETURN_PREV: "RETURN_PREV", // Return to previous position
     // PURCHASE: "PURCHASE", // Purchase the corresponding product
     PENALTY:
         "You have been attacked by deadly predators! Move back to your last position and pay a penalty of 2 points.",
 };
 
+// Used in instructions and hover over square
 export const POSITION_INSTRUCTIONS = {
     // STANDARD: "Nothing happens when the player lands in this square.",
     GOOSE: "A goose friend allows you to make another move based on your previous roll.",
     CHALLENGE: "A quiz challenge position. Answer correctly to earn a score.",
-    INFO: "A small tip to educate about goose and academic predator.",
-    JUMP_TURN: "Your turn will be skipped upon landing this square.",
+    INFO: "A small tip on predatory publishing.",
+    // JUMP_TURN: "Your turn will be skipped upon landing this square.",
     DICE_TWICE: "You get another chance to roll the dice on this square.",
     BACK_TO_START:
         "You will go back to start again if you step on this square!",
-    LUCKY: "Your current score will be doubled upon landing on this lucky square!",
+    LUCKY: "Your current score will increase by 2 points on this lucky square!",
     // RETURN_PREV: "RETURN_PREV", // Return to previous position
     // PURCHASE: "PURCHASE", // Purchase the corresponding product
     PENALTY:
@@ -69,18 +71,21 @@ export const BOARD_POSITIONS = {
     16: POSITION_TYPE.CHALLENGE,
     17: POSITION_TYPE.LUCKY,
     18: POSITION_TYPE.CHALLENGE,
-    19: POSITION_TYPE.JUMP_TURN,
+    // 19: POSITION_TYPE.JUMP_TURN,
+    19: POSITION_TYPE.CHALLENGE,
     20: POSITION_TYPE.CHALLENGE,
     21: POSITION_TYPE.CHALLENGE,
     22: POSITION_TYPE.CHALLENGE,
     23: POSITION_TYPE.DICE_TWICE,
-    24: POSITION_TYPE.JUMP_TURN,
+    24: POSITION_TYPE.CHALLENGE,
+    // 24: POSITION_TYPE.JUMP_TURN,
     25: POSITION_TYPE.GOOSE,
     26: POSITION_TYPE.CHALLENGE,
     27: POSITION_TYPE.INFO, // Arbitrary
     28: POSITION_TYPE.CHALLENGE,
     29: POSITION_TYPE.CHALLENGE,
-    30: POSITION_TYPE.JUMP_TURN,
+    // 30: POSITION_TYPE.JUMP_TURN,
+    30: POSITION_TYPE.CHALLENGE,
     31: POSITION_TYPE.CHALLENGE,
     32: POSITION_TYPE.INFO, // Arbitrary
     33: POSITION_TYPE.CHALLENGE,
@@ -103,7 +108,8 @@ export const BOARD_POSITIONS = {
     50: POSITION_TYPE.LUCKY,
     51: POSITION_TYPE.CHALLENGE,
     52: POSITION_TYPE.GOOSE,
-    53: POSITION_TYPE.JUMP_TURN,
+    // 53: POSITION_TYPE.JUMP_TURN,
+    53: POSITION_TYPE.CHALLENGE,
     54: POSITION_TYPE.CHALLENGE,
     55: POSITION_TYPE.CHALLENGE,
     56: POSITION_TYPE.CHALLENGE,
@@ -121,13 +127,15 @@ export const BOARD_POSITIONS = {
     68: POSITION_TYPE.CHALLENGE,
     69: POSITION_TYPE.CHALLENGE,
     70: POSITION_TYPE.CHALLENGE,
-    71: POSITION_TYPE.JUMP_TURN,
+    // 71: POSITION_TYPE.JUMP_TURN,
+    71: POSITION_TYPE.CHALLENGE,
     72: POSITION_TYPE.CHALLENGE,
     73: POSITION_TYPE.CHALLENGE,
     74: POSITION_TYPE.CHALLENGE,
     75: POSITION_TYPE.INFO, // Arbitrary
     76: POSITION_TYPE.CHALLENGE,
-    77: POSITION_TYPE.JUMP_TURN,
+    // 77: POSITION_TYPE.JUMP_TURN,
+    77: POSITION_TYPE.CHALLENGE,
     78: POSITION_TYPE.CHALLENGE,
     79: POSITION_TYPE.CHALLENGE,
     80: POSITION_TYPE.PENALTY,

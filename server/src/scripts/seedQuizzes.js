@@ -52,8 +52,8 @@ async function seed() {
     console.log("Connected to DB");
 
     await setAllEntriesToNew();
-    await seedInfo(false);
-    await seedQuizzes(false);
+    await seedInfo(true);
+    await seedQuizzes(true);
 
     // const res = await generateMcq({ level: 0 });
     // const res = await generateTrueFalse({ level: 0 });

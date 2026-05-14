@@ -192,7 +192,7 @@ async function roll({ game, player }) {
         } else if (move.nextType === POSITION_TYPE.LUCKY) {
             game.players = game.players.map((p) => {
                 if (p.playerUniqueId === playerUniqueId) {
-                    return { ...p, score: p.score > 0 ? p.score * 2 : 1 }; // Double or if 0, then make 1
+                    return { ...p, score: p.score + 2 }; // +2 score
                 } else {
                     return p;
                 }
