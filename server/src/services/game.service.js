@@ -1,10 +1,6 @@
 const { v4: uuid } = require("uuid");
 const R = require("ramda");
 
-const {
-    // callGenerateMcqBatchFromContext,
-    embedText,
-} = require("./llm/openai.llm-adapter");
 const KbChunkModel = require("../models/kb-chunk.model");
 const GameModel = require("../models/game.model");
 const QuizService = require("../services/quiz.service");

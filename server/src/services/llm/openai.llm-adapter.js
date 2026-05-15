@@ -14,14 +14,31 @@ const client = new OpenAI({
 const modelName =
     process.env.OPENAI_MODEL || "gpt-5.4" || "gpt-5.4-mini" || "gpt-4o";
 
-async function embedText(text) {
-    const response = await client.embeddings.create({
-        model: "text-embedding-3-small",
-        input: text,
-    });
-    return response.data[0].embedding;
+// Embedding Utils
+const EMBEDDING_MODEL = "text-embedding-3-small";
+
+function normalizeText(text) {
+    return String(text || "")
+        .replace(/\s+/g, " ")
+        .trim();
 }
 
+async function embedText(text) {
+    const input = normalizeText(text);
+
+    if (!input) {
+        throw new Error("Cannot embed empty text");
+    }
+
+    const resp = await client.embeddings.create({
+        model: EMBEDDING_MODEL,
+        input,
+    });
+
+    return resp.data[0].embedding;
+}
+
+// OpenAI Quiz Generation
 function formatChunkIntoContextString(chunks) {
     return chunks.map((c, i) => `${c.text}`).join("\n\n");
 }
@@ -148,14 +165,6 @@ Rules:
             },
         ],
     });
-    // Rules:
-    // - The question must be answerable only from the context.
-    // - Options A-D must contain full answer text, not just letters.
-    // - Exactly one option must be correct.
-    // - Distractors must be plausible but clearly wrong.
-    // - Explanation should explain why the correct answer is right.
-    // - Do not mention context, chunks, papers, studies, or internal sources in either the questionText, options or in explanation.
-
     return JSON.parse(resp.choices[0].message.content);
 }
 
@@ -352,6 +361,7 @@ async function generateQuiz({ type, chunks }) {
 
 module.exports = {
     embedText,
+    EMBEDDING_MODEL,
     formatChunkIntoContextString,
     generateQuiz,
     generateInfo,

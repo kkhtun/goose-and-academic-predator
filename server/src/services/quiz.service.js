@@ -6,33 +6,117 @@ const InfoModel = require("../models/info.model.js"); // Not the best practice t
 const generateLayout = require("crossword-layout-generator");
 const KbChunkModel = require("../models/kb-chunk.model");
 const { QUIZ_TYPE } = require("../utils/quiz.util");
-const { generateQuiz, generateInfo } = require("./llm/openai.llm-adapter");
+const {
+    generateQuiz,
+    generateInfo,
+    embedText,
+} = require("./llm/openai.llm-adapter");
 const { REALM_TYPE } = require("../utils/game.util");
+const { getAnchor, getRandomAnchor } = require("../models/anchors.js");
+
 const CONCURRENCY_LIMIT = 2;
+
+async function getRandomAnchorEmbedding() {
+    const anchor = getRandomAnchor();
+    const queryEmbedding = await embedText(anchor.text);
+    return { anchor, queryEmbedding };
+}
+
+async function getAnchorEmbedding(level, realm) {
+    const anchor = R.isNil(level) ? getRandomAnchor() : getAnchor(level, realm);
+    const queryEmbedding = await embedText(anchor.text);
+    return { anchor, queryEmbedding };
+}
 
 async function retrieveRandomContext({
     type = "ABSTRACT", // can be single or array
     level,
     realm,
     count = 1,
+
+    queryEmbedding = null,
+    vectorIndex = "kb_chunks_vector_index",
+    candidatePoolSize = 100,
 }) {
     const typeMatch = Array.isArray(type) ? { type: { $in: type } } : { type };
 
-    const pipeline = [{ $match: typeMatch }];
+    const shouldUseNormalRandomRetrieval =
+        !queryEmbedding ||
+        type === "TERM" ||
+        (Array.isArray(type) && type.includes("TERM"));
+
+    // Existing behavior: random MongoDB sample
+    if (shouldUseNormalRandomRetrieval) {
+        const pipeline = [{ $match: typeMatch }];
+
+        if (!R.isNil(level)) {
+            pipeline.push({ $match: { level } });
+        }
+
+        if (realm) {
+            pipeline.push({ $match: { realm } });
+        }
+
+        pipeline.push({ $sample: { size: count } });
+
+        return await KbChunkModel.aggregate(pipeline);
+    }
+
+    // Vector behavior: top relevant chunks, then random sample
+    const filter = { ...typeMatch };
 
     if (!R.isNil(level)) {
-        pipeline.push({ $match: { level } });
+        filter.level = level;
     }
 
     if (realm) {
-        pipeline.push({ $match: { realm } });
+        filter.realm = realm;
     }
 
-    pipeline.push({ $sample: { size: count } });
-    const results = await KbChunkModel.aggregate(pipeline);
-    return results;
+    const pipeline = [
+        {
+            $vectorSearch: {
+                index: vectorIndex,
+                path: "embedding",
+                queryVector: queryEmbedding,
+                numCandidates: Math.max(candidatePoolSize * 2, 100),
+                limit: candidatePoolSize,
+                filter,
+            },
+        },
+        {
+            $project: {
+                level: 1,
+                realm: 1,
+                text: 1,
+                sourceTitle: 1,
+                type: 1,
+                embeddingModel: 1,
+                vectorScore: { $meta: "vectorSearchScore" },
+            },
+        },
+        {
+            $sample: { size: count },
+        },
+    ];
+    return await KbChunkModel.aggregate(pipeline);
+
+    // const pipeline = [{ $match: typeMatch }];
+
+    // if (!R.isNil(level)) {
+    //     pipeline.push({ $match: { level } });
+    // }
+
+    // if (realm) {
+    //     pipeline.push({ $match: { realm } });
+    // }
+
+    // pipeline.push({ $sample: { size: count } });
+    // const results = await KbChunkModel.aggregate(pipeline);
+    // return results;
 }
 
+// Generators
 async function generateCrossword({ level }) {
     const chunks = await retrieveRandomContext({
         type: "TERM",
@@ -48,11 +132,13 @@ async function generateCrossword({ level }) {
 }
 
 async function generateMcq({ level, realm = REALM_TYPE.BOTH }) {
+    const { queryEmbedding } = await getAnchorEmbedding(level, realm);
     const chunks = await retrieveRandomContext({
         type: ["ABSTRACT", "QUESTION"],
         level,
         realm,
         count: 1,
+        queryEmbedding,
     });
     const quiz = await generateQuiz({
         type: QUIZ_TYPE.MCQ,
@@ -62,13 +148,14 @@ async function generateMcq({ level, realm = REALM_TYPE.BOTH }) {
 }
 
 async function generateTrueFalse({ level, realm = REALM_TYPE.BOTH }) {
-    let chunks = await retrieveRandomContext({
+    const { queryEmbedding } = await getAnchorEmbedding(level, realm);
+    const chunks = await retrieveRandomContext({
         type: ["ABSTRACT", "QUESTION"],
         level,
         realm,
         count: 1,
+        queryEmbedding,
     });
-    chunks = [await KbChunkModel.findById("6a0241cf4a1896ac64777ac6").lean()];
     const quiz = await generateQuiz({
         type: QUIZ_TYPE.TRUE_FALSE,
         chunks,
@@ -83,12 +170,14 @@ const QUIZ_GENERATORS = {
 };
 
 async function generateSummarizedInfo({ level, realm = REALM_TYPE.BOTH }) {
+    const { queryEmbedding } = await getAnchorEmbedding(level, realm);
     const chunks = await retrieveRandomContext({
         type: ["ABSTRACT", "QUESTION"],
         realm,
         level,
         // level: Math.min(level, 1),
         count: 1,
+        queryEmbedding,
     });
     const res = await generateInfo({ chunk: chunks[0] });
     return { content: res.takeaway || "", chunks };
@@ -408,6 +497,7 @@ async function addBatchInfo({}) {
 }
 
 module.exports = {
+    retrieveRandomContext,
     generateCrossword,
     generateMcq,
     generateTrueFalse,
