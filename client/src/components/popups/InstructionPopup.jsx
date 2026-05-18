@@ -34,7 +34,9 @@ export default function InstructionPopup({ open, onClose }) {
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     width: "60%",
-                    background: "#ffffff",
+                    // background: "#ffffff",
+                    background: "rgba(44, 62, 80, 1)",
+                    color: "white",
                     borderRadius: 8,
                     padding: 30,
                     boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
@@ -58,25 +60,51 @@ export default function InstructionPopup({ open, onClose }) {
                         <span
                             style={{
                                 color: "#ffffff",
-                                textShadow: "0 1px 3px rgba(0, 0, 0, 0.45)",
-                                fontWeight: 600,
+                                textShadow: "0 2px 3px rgba(0, 0, 0, 0.5)",
+                                fontWeight: 500,
                             }}
                         >
                             white
                         </span>{" "}
                         (easy),{" "}
-                        <span style={{ color: "rgb(161, 93, 190)" }}>
+                        <span
+                            style={{
+                                color: "rgb(161, 93, 190)",
+                                textShadow: "0 2px 3px rgba(0, 0, 0, 0.5)",
+                                fontWeight: 500,
+                            }}
+                        >
                             purple
                         </span>{" "}
                         (medium), and{" "}
-                        <span style={{ color: "rgb(86, 164, 216)" }}>blue</span>{" "}
+                        <span
+                            style={{
+                                color: "rgb(86, 164, 216)",
+                                textShadow: "0 2px 3px rgba(0, 0, 0, 0.5)",
+                                fontWeight: 500,
+                            }}
+                        >
+                            blue
+                        </span>{" "}
                         (hard). At the end of the journey, your score will
                         reveal your destiny. Will you reach{" "}
-                        <span style={{ color: REALM_COLOR[REALM_TYPE.HEAVEN] }}>
+                        <span
+                            style={{
+                                color: REALM_COLOR[REALM_TYPE.HEAVEN],
+                                textShadow: "0 2px 3px rgba(0, 0, 0, 0.5)",
+                                fontWeight: 500,
+                            }}
+                        >
                             Publishing Heaven
                         </span>{" "}
                         with a flawless record, or find yourself in{" "}
-                        <span style={{ color: REALM_COLOR[REALM_TYPE.HELL] }}>
+                        <span
+                            style={{
+                                color: REALM_COLOR[REALM_TYPE.HELL],
+                                textShadow: "0 2px 3px rgba(0, 0, 0, 0.5)",
+                                fontWeight: 500,
+                            }}
+                        >
                             Publishing Hell
                         </span>{" "}
                         needing more practice to avoid the industry's most
@@ -127,7 +155,16 @@ export default function InstructionPopup({ open, onClose }) {
                     {/* 👇 Added instructions here */}
                     <ul style={{ paddingLeft: 20, lineHeight: 1.6 }}>
                         <li>
-                            <BoxIcon number={0} type={""} onSquare={false} />
+                            <BoxIcon
+                                number={0}
+                                type={""}
+                                onSquare={false}
+                                style={{
+                                    background: "white",
+                                    borderRadius: 4,
+                                    padding: 2,
+                                }}
+                            />
                             <span style={{ marginLeft: 8 }}>
                                 This is the start square.
                             </span>
@@ -138,6 +175,11 @@ export default function InstructionPopup({ open, onClose }) {
                                     number={22} // arbitrary
                                     type={type}
                                     onSquare={false}
+                                    style={{
+                                        background: "white",
+                                        borderRadius: 4,
+                                        padding: 2,
+                                    }}
                                 />
                                 <span style={{ marginLeft: 8 }}>
                                     {POSITION_INSTRUCTIONS[type]}
@@ -145,7 +187,16 @@ export default function InstructionPopup({ open, onClose }) {
                             </li>
                         ))}
                         <li>
-                            <BoxIcon number={90} type={""} onSquare={false} />
+                            <BoxIcon
+                                number={90}
+                                type={""}
+                                onSquare={false}
+                                style={{
+                                    background: "white",
+                                    borderRadius: 4,
+                                    padding: 2,
+                                }}
+                            />
                             <span style={{ marginLeft: 8 }}>
                                 Land on this square to finish the game! 🎉
                             </span>

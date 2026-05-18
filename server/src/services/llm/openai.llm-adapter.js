@@ -432,9 +432,9 @@ async function callLLMCrossword({ context }) {
                                 properties: {
                                     answer: {
                                         type: "string",
-                                        pattern: "^[A-Z]{4,10}$",
+                                        pattern: "^[A-Z]{4,12}$",
                                         description:
-                                            "Single uppercase word, A-Z only, 4-10 letters. No spaces, punctuation, hyphens, apostrophes, or numbers.",
+                                            "Single uppercase word, A-Z only, 4-12 letters. No spaces, punctuation, hyphens, apostrophes, or numbers.",
                                     },
                                     clue: {
                                         type: "string",
@@ -457,16 +457,14 @@ async function callLLMCrossword({ context }) {
                 role: "system",
                 content: `
 You are a crossword puzzle generator for researchers, graduate students, and early-career academics.
-
 Generate clean, meaningful crossword entries about academic publishing, research integrity, open access, predatory publishing, peer review, journal evaluation, and scholarly communication.
-
 Prioritize natural single-word answers that are suitable for a crossword puzzle.
 `.trim(),
             },
             {
                 role: "user",
                 content: `
-TERMS:
+PROVIDED TERMS:
 ${context}
 
 Generate 6-8 crossword entries.
@@ -474,26 +472,16 @@ Generate 6-8 crossword entries.
 Answer rules:
 - Each answer must be exactly ONE natural English word.
 - Each answer must use uppercase A-Z letters only.
-- Each answer must be 4-10 letters long.
+- Each answer must be 4-12 letters long.
 - Do not use spaces, punctuation, hyphens, apostrophes, numbers, or symbols.
 - Do not force multiword terms into one artificial word.
 - If the source term is multiword, select one meaningful single word from it or a closely related single-word concept.
 - Avoid acronyms and abbreviations unless they are widely meaningful in academic publishing.
 - Avoid obscure names, organizations, brands, databases, payment services, or proper nouns.
 - Avoid malformed or noisy terms.
+- Use natural, commonly used terms. Avoid awkward truncations, rare variants, or shortened forms such as "transpare" when the standard term is "transparency".
 - Avoid duplicate answers or near-duplicate concepts.
-
-Good answer examples:
-- REVIEW
-- ETHICS
-- METRICS
-- INDEXING
-- INTEGRITY
-- RETRACTION
-- PLAGIARISM
-- TRANSPARENCY
-- PUBLISHER
-- PREDATORY
+- Choose answers from the provided terms or from direct single-word concepts strongly implied by them. Do not treat instructions or examples as a word bank.
 
 Bad answer examples:
 - OPENACCESS
@@ -503,7 +491,6 @@ Bad answer examples:
 - WESTERN
 - OMICS
 - KSCIENS
-- EMAIL
 
 Clue rules:
 - Intended audience: researchers.

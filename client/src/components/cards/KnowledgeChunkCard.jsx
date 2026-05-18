@@ -1,6 +1,14 @@
 export default function KnowledgeChunkCard({ chunk }) {
     if (!chunk) return null;
 
+    const { metadata } = chunk || {};
+    const { author, doi } = metadata || {};
+    const doiUrl = doi
+        ? doi.startsWith("http")
+            ? metadata.doi
+            : `https://doi.org/${metadata.doi}`
+        : null;
+
     return (
         <div
             style={{
@@ -28,6 +36,37 @@ export default function KnowledgeChunkCard({ chunk }) {
                     >
                         {chunk.sourceTitle || "Untitled source"}
                     </div>
+
+                    {author && (
+                        <div
+                            style={{
+                                color: "#6b7280",
+                                fontSize: 12,
+                                marginTop: 2,
+                            }}
+                        >
+                            {author}
+                        </div>
+                    )}
+
+                    {doi && (
+                        <div
+                            style={{
+                                color: "#6b7280",
+                                fontSize: 12,
+                                marginTop: 2,
+                            }}
+                        >
+                            DOI:{" "}
+                            <a
+                                href={doiUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {doi}
+                            </a>
+                        </div>
+                    )}
 
                     <div
                         style={{
