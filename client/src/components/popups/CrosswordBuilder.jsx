@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 
 const CROSSWORD_FILL_RATIO = 0.65; // 20% letters prefilled
@@ -14,6 +14,47 @@ function createStartingPosLookupObj(wordResults) {
 }
 
 function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
+    const inputRefs = useRef({});
+
+    const moveFocus = (row, col, direction) => {
+        const moves = {
+            ArrowUp: [-1, 0],
+            ArrowDown: [1, 0],
+            ArrowLeft: [0, -1],
+            ArrowRight: [0, 1],
+        };
+
+        const [rowMove, colMove] = moves[direction];
+
+        const nextRow = row + rowMove;
+        const nextCol = col + colMove;
+
+        const isOutOfBounds =
+            nextRow < 0 ||
+            nextRow >= crosswordData.rows ||
+            nextCol < 0 ||
+            nextCol >= crosswordData.cols;
+
+        if (isOutOfBounds) return;
+
+        // Do not move into blocked / blank crossword cells
+        if (crosswordData.table[nextRow][nextCol] === "-") return;
+
+        inputRefs.current[`${nextRow}-${nextCol}`]?.focus();
+    };
+
+    const handleKeyDown = (e, row, col) => {
+        if (
+            e.key === "ArrowUp" ||
+            e.key === "ArrowDown" ||
+            e.key === "ArrowLeft" ||
+            e.key === "ArrowRight"
+        ) {
+            e.preventDefault();
+            moveFocus(row, col, e.key);
+        }
+    };
+
     const crosswordData = content;
     const startPosLookup = createStartingPosLookupObj(crosswordData.result);
 
@@ -30,6 +71,7 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
     const [grid, setGrid] = useState(() => {
         return fillCrossword(crosswordData.table, CROSSWORD_FILL_RATIO);
     });
+    const [submittedGrid, setSubmittedGrid] = useState([[]]);
 
     const handleChange = (row, col, value) => {
         if (value.length > 1) return;
@@ -50,6 +92,7 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
 
     const onSubmit = () => {
         handleSubmit(grid);
+        setSubmittedGrid(grid);
         setGrid(fillCrossword(crosswordData.table, 1));
     };
 
@@ -177,6 +220,13 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                                 }}
                             >
                                 <input
+                                    ref={(el) => {
+                                        inputRefs.current[`${rIdx}-${cIdx}`] =
+                                            el;
+                                    }}
+                                    onKeyDown={(e) =>
+                                        handleKeyDown(e, rIdx, cIdx)
+                                    }
                                     style={{
                                         ...styles.cell,
                                         ...(cell === "-" ? styles.blocked : {}),
@@ -184,6 +234,13 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                                         height: "100%",
                                         ...(hasAnswered
                                             ? styles.cellAnswered
+                                            : {}),
+                                        // Showing red
+                                        ...(hasAnswered &&
+                                        cell !== "-" &&
+                                        grid[rIdx][cIdx] !==
+                                            submittedGrid[rIdx][cIdx]
+                                            ? { color: "red" }
                                             : {}),
                                     }}
                                     disabled={cell === "-" || hasAnswered}
