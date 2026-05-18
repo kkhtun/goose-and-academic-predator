@@ -241,7 +241,7 @@ async function callLLMMCQ({ context }) {
             {
                 role: "system",
                 content: `
-You are a quiz generator for reseaerchers. Use only the provided context for factual grounding.
+You are a quiz generator for researchers. Use only the provided context for factual grounding.
 Generate one high-quality multiple-choice question that tests understanding of the main generalizable idea, not memorization of document-specific details.
 The goal is not to test whether they can recognize a sentence, but whether they can make a publishing judgment.
 
