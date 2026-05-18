@@ -7,6 +7,7 @@ const {
 } = require("./prompt-builder.llm");
 const { DIFFICULTY, QUIZ_TYPE } = require("../../utils/quiz.util");
 const { CustomError } = require("../../utils/CustomError");
+const { shuffleArray } = require("../../utils/common.util");
 
 const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -39,6 +40,18 @@ async function embedText(text) {
 }
 
 // OpenAI Quiz Generation
+function shuffleAndTakeTerms(termString, limit = 100) {
+    if (typeof termString !== "string") return "";
+
+    const terms = termString
+        .split("|")
+        .map((term) => term.trim())
+        .filter(Boolean);
+
+    // Fisher-Yates shuffle
+    return shuffleArray(terms).slice(0, limit).join(" | ");
+}
+
 function formatChunkIntoContextString(chunks) {
     return chunks.map((c, i) => {
         return `CHUNK ${i}\n
@@ -88,54 +101,6 @@ Question style:
 }
 
 // Functions that call Open AI API
-// async function callLLMSummarizeContent({ content }) {
-//     const resp = await client.chat.completions.create({
-//         model: modelName,
-//         temperature: 0.2,
-//         response_format: {
-//             type: "json_schema",
-//             json_schema: {
-//                 name: "note_summary",
-//                 strict: true,
-//                 schema: {
-//                     type: "object",
-//                     properties: {
-//                         takeaway: {
-//                             type: "string",
-//                             description: "2-3 line general knowledge summary",
-//                         },
-//                     },
-//                     required: ["takeaway"],
-//                     additionalProperties: false,
-//                 },
-//             },
-//         },
-//         messages: [
-//             {
-//                 role: "system",
-//                 content: `You convert research notes into concise, general knowledge takeaways.`,
-//             },
-//             {
-//                 role: "user",
-//                 content: `
-// Summarize the note into 2-3 lines.
-
-// Rules:
-// - Do NOT mention "the paper", "the study", "researchers", or any source.
-// - Write as general knowledge or practical insight.
-// - Preserve nuance and core argument.
-// - Avoid meta-language like "this shows", "this suggests"
-// - Keep it concise.
-
-// Note:
-// ${content}
-// `,
-//             },
-//         ],
-//     });
-//     return JSON.parse(resp.choices[0].message.content);
-// }
-
 async function callLLMSummarizeContent({ content }) {
     const resp = await client.chat.completions.create({
         model: modelName,
@@ -432,9 +397,9 @@ async function callLLMCrossword({ context }) {
                                 properties: {
                                     answer: {
                                         type: "string",
-                                        pattern: "^[A-Z]{4,12}$",
+                                        pattern: "^[A-Z]{4,14}$",
                                         description:
-                                            "Single uppercase word, A-Z only, 4-12 letters. No spaces, punctuation, hyphens, apostrophes, or numbers.",
+                                            "Single uppercase word, A-Z only, 4-14 letters. No spaces, punctuation, hyphens, apostrophes, or numbers.",
                                     },
                                     clue: {
                                         type: "string",
@@ -458,7 +423,9 @@ async function callLLMCrossword({ context }) {
                 content: `
 You are a crossword puzzle generator for researchers, graduate students, and early-career academics.
 Generate clean, meaningful crossword entries about academic publishing, research integrity, open access, predatory publishing, peer review, journal evaluation, and scholarly communication.
+Use the provided terms or their derivatives.
 Prioritize natural single-word answers that are suitable for a crossword puzzle.
+
 `.trim(),
             },
             {
@@ -472,12 +439,11 @@ Generate 6-8 crossword entries.
 Answer rules:
 - Each answer must be exactly ONE natural English word.
 - Each answer must use uppercase A-Z letters only.
-- Each answer must be 4-12 letters long.
+- Each answer must be 4-14 letters long.
 - Do not use spaces, punctuation, hyphens, apostrophes, numbers, or symbols.
 - Do not force multiword terms into one artificial word.
 - If the source term is multiword, select one meaningful single word from it or a closely related single-word concept.
 - Avoid acronyms and abbreviations unless they are widely meaningful in academic publishing.
-- Avoid obscure names, organizations, brands, databases, payment services, or proper nouns.
 - Avoid malformed or noisy terms.
 - Use natural, commonly used terms. Avoid awkward truncations, rare variants, or shortened forms such as "transpare" when the standard term is "transparency".
 - Avoid duplicate answers or near-duplicate concepts.
@@ -509,87 +475,6 @@ Clue rules:
     return parsed.entries;
 }
 
-// async function callLLMCrossword({ context }) {
-//     const resp = await client.chat.completions.create({
-//         model: modelName,
-//         temperature: 0.3,
-//         response_format: {
-//             type: "json_schema",
-//             json_schema: {
-//                 name: "crossword_entries",
-//                 strict: true,
-//                 schema: {
-//                     type: "object",
-//                     additionalProperties: false,
-//                     properties: {
-//                         entries: {
-//                             type: "array",
-//                             minItems: 6,
-//                             maxItems: 8,
-//                             items: {
-//                                 type: "object",
-//                                 additionalProperties: false,
-//                                 properties: {
-//                                     answer: {
-//                                         type: "string",
-//                                         pattern: "^[A-Z]{4,10}$",
-//                                         description:
-//                                             "Single uppercase word, A-Z only, 4-10 letters",
-//                                     },
-//                                     clue: {
-//                                         type: "string",
-//                                         minLength: 20,
-//                                         maxLength: 300,
-//                                         description:
-//                                             "Concise crossword clue, 10-30 words",
-//                                     },
-//                                 },
-//                                 required: ["answer", "clue"],
-//                             },
-//                         },
-//                     },
-//                     required: ["entries"],
-//                 },
-//             },
-//         },
-//         messages: [
-//             {
-//                 role: "system",
-//                 content: `
-// You are a crossword puzzle generator.
-// Use the provided context to generate high-quality crossword entries.
-// `,
-//             },
-//             {
-//                 role: "user",
-//                 content: `
-// CONTEXT:
-// ${context}
-
-// Generate 6-8 crossword entries.
-
-// Rules:
-// - Each answer must be a SINGLE WORD in uppercase (A-Z only).
-// - Length must be between 4 and 10 letters.
-// - Each clue must be 10-30 words and clearly point to the answer.
-// - Do NOT include the answer word inside the clue.
-// - Avoid duplicates.
-// - Avoid very obscure terms.
-// - Prefer important and meaningful terms from the context.
-// - Clues should be natural and human-readable.
-// - Do not mention context, chunks, papers, studies, or internal sources in the clues.
-
-// `,
-//             },
-//         ],
-//     });
-
-//     const parsed = JSON.parse(resp.choices[0].message.content);
-//     return parsed.entries;
-// }
-
-// Wrapper functions
-
 async function generateInfo({ chunk }) {
     const { text } = chunk;
     const response = await callLLMSummarizeContent({ content: text });
@@ -597,20 +482,22 @@ async function generateInfo({ chunk }) {
 }
 
 async function generateQuiz({ type, chunks }) {
-    const context = formatChunkIntoContextString(chunks);
-
     let prompt = "";
     let response = {};
     let normalizedRes = {};
 
     if (type === QUIZ_TYPE.CROSS_WORDS) {
+        const { text } = chunks[0];
+        const context = shuffleAndTakeTerms(text, 30);
         response = await callLLMCrossword({ context });
         normalizedRes = normalizeCrosswordResponse(response);
     } else if (type === QUIZ_TYPE.TRUE_FALSE) {
+        const context = formatChunkIntoContextString(chunks);
         response = await callLLMTrueFalse({ context });
         normalizedRes = normalizeTrueFalseResponse(response);
     } else {
         // By default MCQ
+        const context = formatChunkIntoContextString(chunks);
         response = await callLLMMCQ({ context });
         normalizedRes = normalizeMcqResponse(response);
     }
