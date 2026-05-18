@@ -1,8 +1,23 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 const { getRandomAnchor } = require("../models/anchors");
-const { embedText } = require("../services/llm/openai.llm-adapter");
+const {
+    embedText,
+    EMBEDDING_MODEL,
+} = require("../services/llm/openai.llm-adapter");
 const { retrieveRandomContext } = require("../services/quiz.service");
+const KbChunkModel = require("../models/kb-chunk.model");
+
+// async function buildEmbeddings() {
+//     await mongoose.connect(process.env.MONGO_URI);
+//     console.log("Connected to DB");
+
+//     // use KbChunkModel attribute embedding and embeddingModel
+//     // extract only type where ABSTRACT
+
+//     await mongoose.disconnect();
+//     console.log("Disconnected");
+// }
 
 async function testVectorSearch() {
     await mongoose.connect(process.env.MONGO_URI);

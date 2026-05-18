@@ -453,43 +453,37 @@ async function seedInfo({ level, realm, count }) {
 }
 
 // These function will add in batch new info and quizzes (relies on above functions)
-async function seedBatchQuizzes({}) {
+async function seedBatchQuizzes({ countPerRealmLevel: count = 2 }) {
     const all = [];
 
-    all.push(await seedMcq({ level: 0, realm: REALM_TYPE.BOTH, count: 2 }));
-    all.push(await seedMcq({ level: 1, realm: REALM_TYPE.BOTH, count: 2 }));
-    all.push(await seedMcq({ level: 2, realm: REALM_TYPE.HEAVEN, count: 2 }));
-    all.push(await seedMcq({ level: 2, realm: REALM_TYPE.HELL, count: 2 }));
+    all.push(await seedMcq({ level: 0, realm: REALM_TYPE.BOTH, count }));
+    all.push(await seedMcq({ level: 1, realm: REALM_TYPE.BOTH, count }));
+    all.push(await seedMcq({ level: 2, realm: REALM_TYPE.HEAVEN, count }));
+    all.push(await seedMcq({ level: 2, realm: REALM_TYPE.HELL, count }));
 
-    all.push(await seedCrossword({ level: 0, count: 2 }));
-    all.push(await seedCrossword({ level: 1, count: 2 }));
-    all.push(await seedCrossword({ level: 2, count: 2 }));
+    all.push(await seedCrossword({ level: 0, count }));
+    all.push(await seedCrossword({ level: 1, count }));
+    all.push(await seedCrossword({ level: 2, count }));
 
+    all.push(await seedTrueFalse({ level: 0, realm: REALM_TYPE.BOTH, count }));
+    all.push(await seedTrueFalse({ level: 1, realm: REALM_TYPE.BOTH, count }));
     all.push(
-        await seedTrueFalse({ level: 0, realm: REALM_TYPE.BOTH, count: 2 })
+        await seedTrueFalse({ level: 2, realm: REALM_TYPE.HEAVEN, count })
     );
-    all.push(
-        await seedTrueFalse({ level: 1, realm: REALM_TYPE.BOTH, count: 2 })
-    );
-    all.push(
-        await seedTrueFalse({ level: 2, realm: REALM_TYPE.HEAVEN, count: 2 })
-    );
-    all.push(
-        await seedTrueFalse({ level: 2, realm: REALM_TYPE.HELL, count: 2 })
-    );
+    all.push(await seedTrueFalse({ level: 2, realm: REALM_TYPE.HELL, count }));
     const flattened = all.flat();
 
     await QuizModel.insertMany(flattened);
     console.log(`Inserted ${flattened.length} quizzes`);
 }
 
-async function addBatchInfo({}) {
+async function addBatchInfo({ countPerRealmLevel: count = 2 }) {
     const all = [];
 
-    all.push(await seedInfo({ level: 0, realm: REALM_TYPE.BOTH, count: 2 }));
-    all.push(await seedInfo({ level: 1, realm: REALM_TYPE.BOTH, count: 2 }));
-    all.push(await seedInfo({ level: 2, realm: REALM_TYPE.HEAVEN, count: 2 }));
-    all.push(await seedInfo({ level: 2, realm: REALM_TYPE.HELL, count: 2 }));
+    all.push(await seedInfo({ level: 0, realm: REALM_TYPE.BOTH, count }));
+    all.push(await seedInfo({ level: 1, realm: REALM_TYPE.BOTH, count }));
+    all.push(await seedInfo({ level: 2, realm: REALM_TYPE.HEAVEN, count }));
+    all.push(await seedInfo({ level: 2, realm: REALM_TYPE.HELL, count }));
 
     const flattened = all.flat();
     await InfoModel.insertMany(flattened);

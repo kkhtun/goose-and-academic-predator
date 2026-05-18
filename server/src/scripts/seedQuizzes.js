@@ -63,6 +63,7 @@ async function seed() {
     //     realm: REALM_TYPE.HEAVEN,
     // });
     // console.log(res);
+
     await mongoose.disconnect();
     console.log("Disconnected");
 }

@@ -29,6 +29,12 @@ const kbChunkSchema = new mongoose.Schema(
             enum: ["TERM", "ABSTRACT", "QUESTION"],
             required: true,
         },
+
+        metadata: {
+            type: Object, // Author | DOI etc
+            default: {},
+        },
+
         embedding: {
             // Vector embedding for query
             type: [Number],
