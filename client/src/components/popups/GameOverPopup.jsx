@@ -1,8 +1,13 @@
 import { motion } from "framer-motion";
 
 import { findPlayer } from "../../utils/common.utils";
-import { getLevel, getPlayerPieceInfo } from "../../utils/position.utils";
+import {
+    getLevel,
+    getPlayerPieceInfo,
+    getRealm,
+} from "../../utils/position.utils";
 import CancelButton from "../buttons/CancelButton";
+import { REALM_COLOR, REALM_TYPE } from "../../constants";
 
 export default function GameOverPopup({ open, onClose, gameState }) {
     if (!open) return null;
@@ -14,6 +19,10 @@ export default function GameOverPopup({ open, onClose, gameState }) {
     if (!winningPlayer) return null;
 
     const currentPlayer = findPlayer(gameInfo, playerUniqueId);
+    const { level, realm } = getRealm(
+        currentPlayer.playerPos,
+        currentPlayer.score,
+    );
     const isWinner = currentPlayer.playerPos === 90;
     const { Icon, tint } = getPlayerPieceInfo(
         currentPlayer.avatar,
@@ -103,9 +112,30 @@ export default function GameOverPopup({ open, onClose, gameState }) {
 
                     {isWinner ? (
                         <div style={{ textAlign: "center" }}>
-                            Congratulations! You have graduated the game 🎓!
-                            Keep learning and you will be on your way to
-                            spotting academic predators more confidently.
+                            <span style={{ display: "block" }}>
+                                Congratulations on your Graduation 🎓!
+                            </span>
+
+                            <span style={{ display: "block" }}>
+                                You have reached the{" "}
+                                <span style={{ color: REALM_COLOR[realm] }}>
+                                    {realm === REALM_TYPE.HEAVEN
+                                        ? "Heaven"
+                                        : "Hell"}
+                                </span>{" "}
+                                level.
+                            </span>
+
+                            <span style={{ display: "block" }}>
+                                {realm === REALM_TYPE.HEAVEN
+                                    ? "Your awareness is remarkable."
+                                    : "Improve your awareness by playing more."}
+                            </span>
+
+                            <span style={{ display: "block" }}>
+                                Keep learning, and you'll be able to spot
+                                predatory publishing with greater confidence.
+                            </span>
                         </div>
                     ) : (
                         <div style={{ textAlign: "center" }}>
