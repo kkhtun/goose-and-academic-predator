@@ -160,6 +160,23 @@ function findPlayer(game, playerUniqueId) {
 }
 
 function throwDie(pos = 0) {
+    // return { die1: 1, die2: 2, total: 3 };
+
+    const rollToWin = 90 - pos;
+    if (rollToWin === 2) {
+        if (Math.random() < 0.3) {
+            // If the player is too close, there is a 30% chance to win
+            return { die1: 1, die2: 1, total: 2 };
+        }
+    }
+
+    if (rollToWin === 3) {
+        if (Math.random() < 0.3) {
+            // If the player is too close, there is a 30% chance to win
+            return { die1: 1, die2: 2, total: 3 };
+        }
+    }
+
     // Instead of giving only 1 dice
     // We can artificially nudge the probability of dice towards the end of the game to allow for easier winning conditions
     // This prevents remodelling entire pipeline (including UI)
@@ -167,9 +184,7 @@ function throwDie(pos = 0) {
     let die2 = Math.floor(Math.random() * 6) + 1;
     let total = die1 + die2;
 
-    // return { die1: 1, die2: 2, total: 3 };
-
-    if (pos > 85 && total > 6) {
+    if (pos > 83 && total > 6) {
         // 100% chance to re-roll high values
         if (Math.random() < 1) {
             die1 = Math.floor(Math.random() * 3) + 1; // bias lower
