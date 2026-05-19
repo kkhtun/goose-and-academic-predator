@@ -164,15 +164,15 @@ function throwDie(pos = 0) {
 
     const rollToWin = 90 - pos;
     if (rollToWin === 2) {
-        if (Math.random() < 0.3) {
-            // If the player is too close, there is a 30% chance to win
+        if (Math.random() < 0.4) {
+            // If the player is too close, there is a 40% chance to win
             return { die1: 1, die2: 1, total: 2 };
         }
     }
 
     if (rollToWin === 3) {
-        if (Math.random() < 0.3) {
-            // If the player is too close, there is a 30% chance to win
+        if (Math.random() < 0.4) {
+            // If the player is too close, there is a 40% chance to win
             return { die1: 1, die2: 2, total: 3 };
         }
     }
