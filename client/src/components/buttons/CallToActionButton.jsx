@@ -10,15 +10,15 @@ const CallToActionButton = ({
 
     const styles = {
         main: {
-            base: "#3B82F6",
-            hover: "#2563EB",
-            disabled: "#93C5FD",
+            base: "#3498db",
+            hover: "#2c80b4",
+            disabled: "#a7c7e7",
             color: "#fff",
         },
         quit: {
-            base: "#EF4444",
-            hover: "#DC2626",
-            disabled: "#FCA5A5",
+            base: "#e74c3c",
+            hover: "#c0392b",
+            disabled: "#f1a9a0",
             color: "#fff",
         },
     };
@@ -46,7 +46,7 @@ const CallToActionButton = ({
                 cursor: disabled ? "not-allowed" : "pointer",
                 opacity: disabled ? 0.7 : 1,
                 transition: "background 0.15s ease",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
             }}
             onMouseEnter={() => !disabled && setHovered(true)}
             onMouseLeave={() => setHovered(false)}

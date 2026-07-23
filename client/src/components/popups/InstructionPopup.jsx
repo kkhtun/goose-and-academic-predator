@@ -34,12 +34,12 @@ export default function InstructionPopup({ open, onClose }) {
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     width: "60%",
-                    background: "#FFFFFF",
-                    border: "2px solid #93C5FD",
-                    color: "#23405A",
-                    borderRadius: 16,
+                    // background: "#ffffff",
+                    background: "rgba(44, 62, 80, 1)",
+                    color: "white",
+                    borderRadius: 8,
                     padding: 30,
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
                 }}
             >
                 <div>
@@ -170,7 +170,7 @@ export default function InstructionPopup({ open, onClose }) {
                             </span>
                         </li>
                         {Object.keys(POSITION_INSTRUCTIONS).map((type) => (
-                            <li key={type}>
+                            <li>
                                 <BoxIcon
                                     number={22} // arbitrary
                                     type={type}

@@ -31,15 +31,10 @@ export default function DiceRoller({
             );
             setRolling(true);
             setShowDice(true);
-            const rollingPlayer = gameInfo?.players?.find(p => p.playerUniqueId === rollingPlayerId);
-            if (rollingPlayer && rollingPlayer.playerPos >= 80) {
-                setDice([Math.ceil(Math.random() * 6)]);
-            } else {
-                setDice([
-                    Math.ceil(Math.random() * 6),
-                    Math.ceil(Math.random() * 6),
-                ]);
-            }
+            setDice([
+                Math.ceil(Math.random() * 6),
+                Math.ceil(Math.random() * 6),
+            ]);
             setGameState({ playerUniqueId, gameInfo });
         };
 
@@ -47,7 +42,7 @@ export default function DiceRoller({
             console.log("Roll result event received");
             const { roll } = data;
             const { die1, die2 } = roll;
-            setDice(die2 > 0 ? [die1, die2] : [die1]);
+            setDice([die1, die2]);
 
             setTimeout(() => setRolling(false), 500);
             setTimeout(() => {
@@ -114,35 +109,33 @@ export default function DiceRoller({
                             {dice[0]}
                         </motion.div>
 
-                        {dice.length > 1 && dice[1] > 0 && (
-                            <motion.div
-                                animate={
-                                    rolling
-                                        ? {
-                                              x: [200, -200, 150, -150, 0],
-                                              rotate: [0, -360, -720],
-                                          }
-                                        : {
-                                              x: 0,
-                                              rotate: 0,
-                                          }
-                                }
-                                transition={
-                                    rolling
-                                        ? {
-                                              duration: 1,
-                                              repeat: Infinity,
-                                              ease: "linear",
-                                          }
-                                        : {
-                                              duration: 0.3,
-                                          }
-                                }
-                                style={styles.die}
-                            >
-                                {dice[1]}
-                            </motion.div>
-                        )}
+                        <motion.div
+                            animate={
+                                rolling
+                                    ? {
+                                          x: [200, -200, 150, -150, 0],
+                                          rotate: [0, -360, -720],
+                                      }
+                                    : {
+                                          x: 0,
+                                          rotate: 0,
+                                      }
+                            }
+                            transition={
+                                rolling
+                                    ? {
+                                          duration: 1,
+                                          repeat: Infinity,
+                                          ease: "linear",
+                                      }
+                                    : {
+                                          duration: 0.3,
+                                      }
+                            }
+                            style={styles.die}
+                        >
+                            {dice[1]}
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -175,15 +168,14 @@ const styles = {
         width: 80,
         height: 80,
         borderRadius: 16,
-        backgroundColor: "#F59E0B",
-        color: "#FFFFFF",
+        backgroundColor: "#ffffff",
+        color: "#111", // ensure contrast
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         fontSize: 36,
         fontWeight: "bold",
-        boxShadow: "0 8px 24px rgba(245, 158, 11, 0.45)",
-        border: "2px solid #FFFFFF",
+        boxShadow: "0 10px 25px rgba(0,0,0,0.25)",
         userSelect: "none",
     },
 };

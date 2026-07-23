@@ -2,7 +2,6 @@ const QUIZ_TYPE = {
     MCQ: "MCQ",
     TRUE_FALSE: "TRUE_FALSE",
     CROSS_WORDS: "CROSS_WORDS",
-    FAKE_EMAIL: "FAKE_EMAIL",
 };
 
 const DIFFICULTY = {

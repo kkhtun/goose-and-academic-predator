@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
     BOARD_POSITIONS,
     POSITION_INSTRUCTIONS,
-    POSITION_TYPE,
     REALM_COLOR,
     REALM_TYPE,
 } from "../constants";
@@ -12,24 +11,21 @@ import { BoxIcon } from "./icons/BoxIcon";
 export default function Square({ number, heavenOrHell }) {
     const [hovered, setHovered] = useState(false);
 
-    // Unified Light Academic Tabletop Palette
+    // Some UI logic to change board colors
     const level = getLevel(number);
-    let dynamicStyles = {
-        background: "#E2E8F0",
-        color: "#23405A",
-    };
-
+    let dynamicStyles = { background: "#ecf0f1" };
     if (level === 1) {
-        dynamicStyles.background = "#BFDBFE";
-        dynamicStyles.color = "#23405A";
-    } else if (level === 2) {
-        dynamicStyles.background = "#60A5FA";
-        dynamicStyles.color = "#FFFFFF";
-    }
-
-    const isChallenge = BOARD_POSITIONS[number] === POSITION_TYPE.CHALLENGE;
-    if (isChallenge) {
-        dynamicStyles.border = "2px solid #F97316";
+        dynamicStyles.background = "rgb(161, 93, 190)";
+        // dynamicStyles.background = "rgba(142, 68, 173, 1)";
+        dynamicStyles.color = "#ecf0f1";
+    } else if (level === 2 || number === null) {
+        // Further determine heaven or hell
+        if (heavenOrHell === REALM_TYPE.HELL) {
+            dynamicStyles.background = REALM_COLOR[REALM_TYPE.HELL];
+        } else {
+            dynamicStyles.background = REALM_COLOR[REALM_TYPE.HEAVEN];
+        }
+        dynamicStyles.color = "#ecf0f1";
     }
 
     const getDescription = (number) => {
@@ -50,7 +46,7 @@ export default function Square({ number, heavenOrHell }) {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
-            <span style={number === 90 ? { color: "#F59E0B", fontWeight: "900" } : {}}>
+            <span style={number === 90 ? { color: "#FFD700" } : {}}>
                 {number}
             </span>
             <BoxIcon
@@ -75,15 +71,14 @@ const styles = {
         fontWeight: "bold",
         fontSize: 18,
         position: "relative",
-        background: "#E2E8F0",
-        border: "1px solid #D6E4F0",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.06)",
+        background: "#ecf0f1",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.15)",
         transition: "transform 0.15s ease, box-shadow 0.15s ease",
         cursor: "pointer",
     },
     squareHovered: {
         transform: "translateY(-2px) scale(1.04)",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+        boxShadow: "0 8px 18px rgba(0,0,0,0.25)",
         zIndex: 20,
     },
     tooltip: {
@@ -91,14 +86,13 @@ const styles = {
         top: "110%",
         left: "50%",
         transform: "translateX(-50%)",
-        background: "#FFFFFF",
-        color: "#23405A",
-        border: "1px solid #D6E4F0",
+        background: "#2c3e50",
+        color: "#fff",
         padding: "6px 10px",
         borderRadius: 6,
         fontSize: 12,
         whiteSpace: "nowrap",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+        boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
         pointerEvents: "none",
         zIndex: 10,
     },

@@ -29,105 +29,152 @@ export default function JoinGame() {
     };
 
     return (
-        <div className="menu-wrapper">
-            <div className="menu-card">
-                <h3>Choose Your Avatar</h3>
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        gap: "20px",
-                        marginBottom: "25px",
-                    }}
-                >
-                    {avatars.map((av) => (
-                        <div
-                            key={av.id}
-                            onClick={() => setAvatar(av.id)}
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                padding: "16px",
-                                background: avatar === av.id ? "#2563eb" : "#111827",
-                                border: avatar === av.id ? "2px solid #60a5fa" : "1px solid #374151",
-                                borderRadius: "16px",
-                                cursor: "pointer",
-                                transition: "all 0.2s ease",
-                                width: "110px",
-                                color: "#f8fafc",
-                            }}
-                        >
-                            <div style={{ color: av.color }}>{av.icon}</div>
-                            <span
+        <div
+            className="menu-wrapper"
+            style={{
+                height: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+            }}
+        >
+            <div
+                className="menu-card"
+                style={{ width: "90%", maxWidth: "600px" }}
+            >
+                <>
+                    <h3 style={{}}>Choose Your Avatar</h3>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            gap: "20px",
+                            marginBottom: "30px",
+                        }}
+                    >
+                        {avatars.map((av) => (
+                            <div
+                                key={av.id}
+                                onClick={() => setAvatar(av.id)}
                                 style={{
-                                    marginTop: "8px",
-                                    fontWeight: "bold",
-                                    fontSize: "16px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    padding: "20px",
+                                    background: "#f0f2f5",
+                                    borderRadius: "12px",
+                                    cursor: "pointer",
+                                    transition:
+                                        "transform 0.2s, boxShadow 0.2s",
+                                    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                                    width: "120px",
+                                    ...(avatar === av.id
+                                        ? {
+                                              background: "rgba(0,0,0,0.2)",
+                                          }
+                                        : {}),
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform =
+                                        "scale(1.05)";
+                                    e.currentTarget.style.boxShadow =
+                                        "0 6px 12px rgba(0,0,0,0.15)";
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform =
+                                        "scale(1)";
+                                    e.currentTarget.style.boxShadow =
+                                        "0 4px 6px rgba(0,0,0,0.1)";
                                 }}
                             >
-                                {av.name}
-                            </span>
-                        </div>
-                    ))}
-                </div>
+                                <div style={{ color: av.color }}>{av.icon}</div>
+                                <span
+                                    style={{
+                                        marginTop: "10px",
+                                        fontWeight: "bold",
+                                        fontSize: "18px",
+                                    }}
+                                >
+                                    {av.name}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
 
-                {/* Player Name Text */}
-                <div style={{ marginBottom: "15px", textAlign: "left" }}>
-                    <h3 style={{ marginBottom: "6px" }}>Player Name</h3>
-                    <input
-                        type="text"
-                        required
-                        placeholder="Enter Player Name"
-                        onChange={(e) => setName(e.target.value)}
-                        autoFocus={true}
+                    {/* Player Name Text */}
+                    <div style={{}}>
+                        <h3 style={{}}>Player Name</h3>
+                        <input
+                            type="text"
+                            required
+                            placeholder="Set Player Name"
+                            onChange={(e) => setName(e.target.value)}
+                            // onKeyDown={handleKeyDown}
+                            autoFocus={true}
+                            style={{
+                                width: "100%",
+                                padding: "12px",
+                                border: "1px solid #ddd",
+                                borderRadius: 6,
+                                fontSize: 14,
+                                boxSizing: "border-box",
+                            }}
+                            value={name}
+                        />
+                    </div>
+
+                    {/* Game ID Text */}
+                    <div style={{}}>
+                        <h3 style={{}}>Game ID</h3>
+                        <input
+                            type="text"
+                            required
+                            placeholder="Game ID"
+                            onChange={(e) => setGameId(e.target.value)}
+                            // onKeyDown={handleKeyDown}
+                            autoFocus={true}
+                            style={{
+                                width: "100%",
+                                padding: "12px",
+                                border: "1px solid #ddd",
+                                borderRadius: 6,
+                                fontSize: 14,
+                                boxSizing: "border-box",
+                            }}
+                            value={gameId}
+                        />
+                    </div>
+
+                    <button
+                        onClick={handleJoinGame}
                         style={{
-                            width: "100%",
-                            padding: "12px 14px",
-                            background: "#111827",
-                            border: "1px solid #374151",
-                            borderRadius: 10,
-                            fontSize: 15,
-                            color: "#f8fafc",
-                            boxSizing: "border-box",
-                            outline: "none",
+                            padding: "12px 30px",
+                            fontSize: "18px",
+                            marginTop: 30,
+                            backgroundColor: "#4CAF50",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
                         }}
-                        value={name}
-                    />
-                </div>
-
-                {/* Game ID Text */}
-                <div style={{ marginBottom: "25px", textAlign: "left" }}>
-                    <h3 style={{ marginBottom: "6px" }}>Game ID</h3>
-                    <input
-                        type="text"
-                        required
-                        placeholder="Enter Game ID"
-                        onChange={(e) => setGameId(e.target.value)}
+                    >
+                        Join Game
+                    </button>
+                    <button
+                        onClick={() => navigate("/")}
                         style={{
-                            width: "100%",
-                            padding: "12px 14px",
-                            background: "#111827",
-                            border: "1px solid #374151",
-                            borderRadius: 10,
-                            fontSize: 15,
-                            color: "#f8fafc",
-                            boxSizing: "border-box",
-                            outline: "none",
+                            padding: "12px 30px",
+                            fontSize: "18px",
+                            backgroundColor: "#FEBE10",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
                         }}
-                        value={gameId}
-                    />
-                </div>
-
-                <button onClick={handleJoinGame}>
-                    Join Game
-                </button>
-                <button
-                    className="btn-secondary"
-                    onClick={() => navigate("/")}
-                >
-                    Back
-                </button>
+                    >
+                        Back
+                    </button>
+                </>
             </div>
         </div>
     );

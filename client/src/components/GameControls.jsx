@@ -69,8 +69,7 @@ export default function GameControls({
                     <strong>Turn</strong>{" "}
                     <span
                         style={{
-                            color: isYourTurn(gameInfo) ? "#22C55E" : "#EF4444",
-                            fontWeight: "bold",
+                            color: isYourTurn(gameInfo) ? "#27ae60" : "#c0392b",
                         }}
                     >
                         {nextTurnPlayer(gameInfo).playerName}
@@ -94,7 +93,7 @@ export default function GameControls({
                     }
                 />
 
-                <div style={{ marginTop: 15 }}>
+                <div style={{ marginTop: 20 }}>
                     <strong>Scoreboard</strong>
 
                     <div style={styles.scoreList}>
@@ -107,6 +106,7 @@ export default function GameControls({
                                 p.playerPos,
                                 p.score,
                             );
+                            // realm = REALM_TYPE.HELL;
 
                             const realmHeading =
                                 p.score < SCORE_FOR_HEAVEN
@@ -118,9 +118,7 @@ export default function GameControls({
                                     key={p.playerUniqueId}
                                     style={{
                                         ...styles.scoreItem,
-                                        border: isCurrentTurn
-                                            ? "2px solid #22C55E"
-                                            : `1px solid #BFDBFE`,
+                                        border: `2px solid ${REALM_COLOR[realm]}`,
                                     }}
                                 >
                                     <div style={styles.scoreRow}>
@@ -161,24 +159,20 @@ export default function GameControls({
                     </div>
                 </div>
 
-                {players.length > 1 && (
-                    <SecondaryButton
-                        onClick={handleCopy}
-                        text={copied ? "✅ Copied" : "📋 Game ID"}
-                        disabled={copied}
-                        style={{ marginTop: 10 }}
-                    />
-                )}
+                <SecondaryButton
+                    onClick={handleCopy}
+                    text={copied ? "✅ Copied" : "📋 Game ID"}
+                    disabled={gameHasBegun(gameInfo) || copied}
+                    style={{ marginTop: 20 }}
+                />
                 <SecondaryButton
                     onClick={() => setOpenInstruct(true)}
                     text={"Help"}
-                    style={{ marginTop: 8 }}
                 />
                 <CallToActionButton
                     onClick={() => setShowConfirmQuit(true)}
                     text={"Quit"}
                     action="quit"
-                    style={{ marginTop: 8 }}
                 />
             </div>
 
@@ -198,13 +192,15 @@ export default function GameControls({
 
 const styles = {
     panel: {
-        width: 240,
+        // position: "fixed",
+        // right: 20,
+        // top: 20,
+        // width: 120,
         padding: 20,
-        background: "#FFFDF8",
-        color: "#23405A",
-        borderRadius: 16,
-        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-        border: "1px solid #D6E4F0",
+        background: "#1f2933",
+        color: "white",
+        borderRadius: 12,
+        boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
         display: "flex",
         flexDirection: "column",
         gap: 10,
@@ -212,15 +208,32 @@ const styles = {
     title: {
         margin: 0,
         textAlign: "center",
-        color: "#23405A",
     },
     section: {
         fontSize: 15,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        color: "#23405A",
     },
+    button: {
+        marginTop: 10,
+        padding: "10px 14px",
+        borderRadius: 8,
+        border: "none",
+        fontSize: 16,
+        background: "#3498db",
+        color: "white",
+    },
+    quitButton: {
+        marginTop: 6,
+        padding: "8px 12px",
+        borderRadius: 8,
+        border: "none",
+        fontSize: 14,
+        background: "#e74c3c",
+        color: "white",
+    },
+
     scoreList: {
         marginTop: 8,
         display: "flex",
@@ -231,8 +244,8 @@ const styles = {
     scoreItem: {
         padding: "8px 10px",
         borderRadius: 8,
-        background: "#EFF6FF",
-        border: "1px solid #BFDBFE",
+        background: "#1e2a38",
+        // border: "1px solid #3b82f6",
         fontSize: 14,
         display: "flex",
         flexDirection: "column",
@@ -243,12 +256,16 @@ const styles = {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        color: "#23405A",
-        fontWeight: "600",
     },
 
     levelText: {
         fontSize: 12,
-        color: "#64748B",
+        opacity: 0.75,
+        color: "#93c5fd",
+    },
+
+    activePlayer: {
+        // border: "2px solid #60a5fa",
+        background: "#243447",
     },
 };
