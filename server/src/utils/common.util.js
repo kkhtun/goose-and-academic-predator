@@ -36,9 +36,14 @@ function shuffleArray(array) {
     return copy;
 }
 
+function isDev() {
+    return process.env.NODE_ENV === "development";
+}
+
 module.exports = {
     isString,
     haveSameEntries,
     isArrayOfArrays,
     shuffleArray,
+    isDev,
 };
