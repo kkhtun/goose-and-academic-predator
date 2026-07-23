@@ -1,3 +1,5 @@
+const R = require("ramda");
+
 const QUIZ_TYPE = {
     MCQ: "MCQ",
     TRUE_FALSE: "TRUE_FALSE",
@@ -29,7 +31,25 @@ function checkCrosswordGrid(answerGrid, actualGrid) {
     return true;
 }
 
-function sampleQuizType(allowedTypes) {
+function getAllowedQuizTypes(level) {
+    const quizTypes = Object.values(QUIZ_TYPE);
+
+    if (level === 0) {
+        return quizTypes.filter(
+            (t) => t !== QUIZ_TYPE.CROSS_WORDS && t !== QUIZ_TYPE.FAKE_EMAIL
+        );
+    }
+    if (level === 1) {
+        return quizTypes.filter((t) => t !== QUIZ_TYPE.FAKE_EMAIL);
+    }
+
+    // Level 2 all types for now
+    return quizTypes;
+}
+
+function sampleQuizType(level) {
+    const allowedTypes = getAllowedQuizTypes(level);
+
     const types = allowedTypes ?? Object.values(QUIZ_TYPE);
 
     const totalProb = types.reduce(
