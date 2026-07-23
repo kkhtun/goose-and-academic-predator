@@ -1,7 +1,7 @@
 import { BOARD_SIZE } from "../constants";
 
 export const getPlayerMovementPath = (currentPos, nextPos, steps) => {
-    const finalPos = BOARD_SIZE - 1; // We have 91 positions including start
+    const finalPos = 90; // We have 90 positions including start
     const path = [];
 
     let pos = currentPos;
@@ -17,8 +17,8 @@ export const getPlayerMovementPath = (currentPos, nextPos, steps) => {
         }
 
         // Bounce at start
-        if (pos < 0) {
-            pos = 1;
+        if (pos < 1) {
+            pos = 2;
             direction = 1;
         }
 

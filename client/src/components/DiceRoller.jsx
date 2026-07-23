@@ -18,6 +18,10 @@ export default function DiceRoller({
     const [dice, setDice] = useState([1, 1]);
     const [showDice, setShowDice] = useState(false);
 
+    const clientPlayer = gameInfo?.players?.find(p => p.playerUniqueId === playerUniqueId);
+    const pos = clientPlayer?.playerPos || 1;
+    const isSingleDie = pos >= 85;
+
     useEffect(() => {
         if (!socket) return;
 
@@ -33,7 +37,7 @@ export default function DiceRoller({
             setShowDice(true);
             setDice([
                 Math.ceil(Math.random() * 6),
-                Math.ceil(Math.random() * 6),
+                isSingleDie ? 0 : Math.ceil(Math.random() * 6),
             ]);
             setGameState({ playerUniqueId, gameInfo });
         };
@@ -109,33 +113,35 @@ export default function DiceRoller({
                             {dice[0]}
                         </motion.div>
 
-                        <motion.div
-                            animate={
-                                rolling
-                                    ? {
-                                          x: [200, -200, 150, -150, 0],
-                                          rotate: [0, -360, -720],
-                                      }
-                                    : {
-                                          x: 0,
-                                          rotate: 0,
-                                      }
-                            }
-                            transition={
-                                rolling
-                                    ? {
-                                          duration: 1,
-                                          repeat: Infinity,
-                                          ease: "linear",
-                                      }
-                                    : {
-                                          duration: 0.3,
-                                      }
-                            }
-                            style={styles.die}
-                        >
-                            {dice[1]}
-                        </motion.div>
+                        {(!isSingleDie || dice[1] > 0) && (
+                            <motion.div
+                                animate={
+                                    rolling
+                                        ? {
+                                              x: [200, -200, 150, -150, 0],
+                                              rotate: [0, -360, -720],
+                                          }
+                                        : {
+                                              x: 0,
+                                              rotate: 0,
+                                          }
+                                }
+                                transition={
+                                    rolling
+                                        ? {
+                                              duration: 1,
+                                              repeat: Infinity,
+                                              ease: "linear",
+                                          }
+                                        : {
+                                              duration: 0.3,
+                                          }
+                                }
+                                style={styles.die}
+                            >
+                                {dice[1]}
+                            </motion.div>
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>

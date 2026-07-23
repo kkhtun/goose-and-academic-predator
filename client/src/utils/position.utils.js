@@ -20,7 +20,7 @@ export const getRow = (pos) => Math.floor(pos / POS_PER_ROW);
 export const getOrderedSquares = (boardSize) => {
     const result = [];
 
-    const squares = Array.from({ length: boardSize }, (_, i) => i);
+    const squares = Array.from({ length: boardSize }, (_, i) => i + 1);
     for (let row = 0; row < Math.ceil(squares.length / POS_PER_ROW); row++) {
         const rowSquares = squares.slice(
             row * POS_PER_ROW,

@@ -210,7 +210,7 @@ function Game() {
         }
 
         // For level intro popup
-        const prevPos = currentMoves[0]?.current || 0;
+        const prevPos = currentMoves[0]?.current || 1;
         let isTransition = false;
         if (
             prevPos <= LEVEL_MARKER.LEVEL_0_END &&
@@ -237,7 +237,7 @@ function Game() {
         }
 
         // Next stage (quiz popup or next move)
-        if (pos == 0 || isActive === false) {
+        if (pos == 1 || isActive === false) {
             queueNextMove();
         } else if (pos === next) {
             let nextPopupData = null;
