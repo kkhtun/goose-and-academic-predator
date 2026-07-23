@@ -25,6 +25,7 @@ const {
     isString,
     haveSameEntries,
     isArrayOfArrays,
+    isDev,
 } = require("../utils/common.util");
 const { triggerRefillQuizzes } = require("./job.service");
 
@@ -148,7 +149,7 @@ async function roll({ game, player }) {
 
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
             const quiz = await QuizService.getQuiz({
-                // type: QUIZ_TYPE.MCQ,
+                type: isDev() ? QUIZ_TYPE.TRUE_FALSE : null,
                 level,
                 realm,
             });
