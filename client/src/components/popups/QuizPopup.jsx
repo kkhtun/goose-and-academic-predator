@@ -6,6 +6,26 @@ import CancelButton from "../buttons/CancelButton";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
 import KnowledgeChunkCard from "../cards/KnowledgeChunkCard";
+import FakeEmailChallenge from "./FakeEmailChallenge";
+
+function getCorrectAnswerText(type, content) {
+    if (!content) return "";
+    if (type === QUIZ_TYPE.FAKE_EMAIL) {
+        const isFake = content.isFake ?? content.answer;
+        return isFake ? "Predatory (Fake Email)" : "Legitimate Email";
+    }
+    if (type === QUIZ_TYPE.TRUE_FALSE) {
+        const ans = content.answer ?? content.correctAnswer;
+        return ans === true || ans === "True" ? "True" : "False";
+    }
+    if (content.correctAnswer !== undefined) {
+        return String(content.correctAnswer);
+    }
+    if (content.answer !== undefined) {
+        return String(content.answer);
+    }
+    return "";
+}
 
 function TrueFalseQuiz({ content, handleSubmit, hasAnswered }) {
     const { statement } = content;
@@ -185,6 +205,13 @@ export default function QuizPopup({
                                 isCorrect={isCorrect}
                             />
                         )}
+                        {type === QUIZ_TYPE.FAKE_EMAIL && (
+                            <FakeEmailChallenge
+                                content={content}
+                                handleSubmit={onSubmit}
+                                hasAnswered={hasAnswered}
+                            />
+                        )}
 
                         {type !== QUIZ_TYPE.CROSS_WORDS && hasAnswered && (
                             <div
@@ -209,7 +236,7 @@ export default function QuizPopup({
                                 >
                                     {isCorrect
                                         ? "✓ Your answer is correct!"
-                                        : `✗ Your answer is incorrect. The correct answer should be ${content.correctAnswer || content.answer.toString()}.`}
+                                        : `✗ Your answer is incorrect. The correct answer should be: ${getCorrectAnswerText(type, content)}.`}
                                 </div>
                                 {content.explanation && (
                                     <div
@@ -241,54 +268,57 @@ export default function QuizPopup({
                         />
                     </div>
                     {/* Hidden dropdown section */}
-                    {type !== QUIZ_TYPE.CROSS_WORDS && (
-                        <div style={{ marginTop: 18 }}>
-                            <button
-                                type="button"
-                                onClick={() => setShowDetails((prev) => !prev)}
-                                aria-expanded={showDetails}
-                                style={{
-                                    width: "100%",
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    padding: "10px 12px",
-                                    borderRadius: 8,
-                                    border: "1px solid #d1d5db",
-                                    background: "#f9fafb",
-                                    cursor: "pointer",
-                                    fontWeight: 600,
-                                }}
-                            >
-                                <span>More information</span>
-                                <span>{showDetails ? "▲" : "▼"}</span>
-                            </button>
-
-                            {showDetails && (
-                                <div
+                    {type !== QUIZ_TYPE.CROSS_WORDS &&
+                        type !== QUIZ_TYPE.FAKE_EMAIL && (
+                            <div style={{ marginTop: 18 }}>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowDetails((prev) => !prev)
+                                    }
+                                    aria-expanded={showDetails}
                                     style={{
-                                        maxHeight: 200,
-                                        overflowY: "auto",
-                                        marginTop: 8,
-                                        padding: 12,
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "10px 12px",
                                         borderRadius: 8,
-                                        border: "1px solid #e5e7eb",
-                                        background: "#ffffff",
-                                        color: "#374151",
-                                        fontSize: 14,
-                                        lineHeight: 1.5,
+                                        border: "1px solid #d1d5db",
+                                        background: "#f9fafb",
+                                        cursor: "pointer",
+                                        fontWeight: 600,
                                     }}
                                 >
-                                    {chunks.map((chunk) => (
-                                        <KnowledgeChunkCard
-                                            key={chunk._id}
-                                            chunk={chunk}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
+                                    <span>More information</span>
+                                    <span>{showDetails ? "▲" : "▼"}</span>
+                                </button>
+
+                                {showDetails && (
+                                    <div
+                                        style={{
+                                            maxHeight: 200,
+                                            overflowY: "auto",
+                                            marginTop: 8,
+                                            padding: 12,
+                                            borderRadius: 8,
+                                            border: "1px solid #e5e7eb",
+                                            background: "#ffffff",
+                                            color: "#374151",
+                                            fontSize: 14,
+                                            lineHeight: 1.5,
+                                        }}
+                                    >
+                                        {chunks.map((chunk) => (
+                                            <KnowledgeChunkCard
+                                                key={chunk._id}
+                                                chunk={chunk}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                 </div>
             </div>
         </div>

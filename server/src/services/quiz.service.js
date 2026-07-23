@@ -194,7 +194,8 @@ async function getQuiz({ type, level, realm }) {
         basePipeline.push({ $match: { level } });
     }
 
-    // If there is no type, then will get a random quiz
+    // If there is no type, then will get a random quiz,
+    // we will sample from prob to get a single type but will keep this code in case
     if (type) {
         const allowedTypes = Array.isArray(type) ? type : [type];
         const allTypes = Object.values(QUIZ_TYPE);
@@ -479,6 +480,59 @@ async function seedBatchQuizzes({ countPerRealmLevel: count = 2 }) {
         await seedTrueFalse({ level: 2, realm: REALM_TYPE.HEAVEN, count })
     );
     all.push(await seedTrueFalse({ level: 2, realm: REALM_TYPE.HELL, count }));
+
+    // Level 2 Fake Email challenges
+    const fakeEmails = [
+        {
+            level: 2,
+            realm: REALM_TYPE.BOTH,
+            type: QUIZ_TYPE.FAKE_EMAIL,
+            status: "NEW",
+            content: {
+                subject:
+                    "Urgent: Direct Invitation to Publish Manuscript - 24 Hours Acceptance!",
+                sender: "editor@academic-scam-journal-online.org",
+                recipient: "Dear Esteemed Scholar",
+                body: "We are amazed by your recent research achievements. We invite you to submit your manuscript for our upcoming issue. We offer guaranteed peer review completion in 24 hours and publication within 48 hours for a small processing fee of $300 (Western Union). Reply immediately with your manuscript attached.",
+                isFake: true,
+                explanation:
+                    "Red flags: Guaranteed publication within 24-48 hours, non-academic domain name, request for payment via Western Union, aggressive urgent tone, lack of actual peer review.",
+            },
+        },
+        {
+            level: 2,
+            realm: REALM_TYPE.BOTH,
+            type: QUIZ_TYPE.FAKE_EMAIL,
+            status: "NEW",
+            content: {
+                subject: "Reviewer Invitation: Manuscript #JAE-2026-0841",
+                sender: "eic@journal-of-academic-ethics.org",
+                recipient: "Dear Dr. Researcher",
+                body: "Given your expertise in scholarly publishing ethics, we invite you to review manuscript #JAE-2026-0841 titled 'Evaluating Transparency in Open Access Monographs'. Standard review timeline is 3 weeks. Please click the link to accept or decline.",
+                isFake: false,
+                explanation:
+                    "This email is legitimate: Specific manuscript title, reasonable review timeframe (3 weeks), official journal domain, no solicitation of money or guaranteed fast publishing.",
+            },
+        },
+        {
+            level: 2,
+            realm: REALM_TYPE.BOTH,
+            type: QUIZ_TYPE.FAKE_EMAIL,
+            status: "NEW",
+            content: {
+                subject:
+                    "Keynote Speaker Invitation & Fast-Track Paper Publication",
+                sender: "conference-chair@international-mega-summit-2026.net",
+                recipient: "Dear Distinguished Professor",
+                body: "Greetings! You have been selected as an Honorary Keynote Speaker for the 15th Global Multidisciplinary Science Conference in Hawaii next month. Registration fee of $1200 covers publication in Scopus-indexed (pending) journal. No full paper peer review required.",
+                isFake: true,
+                explanation:
+                    "Red flags: Unsolicited keynote invitation, fake index claims ('Scopus-indexed pending'), high registration fee without full paper peer review.",
+            },
+        },
+    ];
+    all.push(fakeEmails);
+
     const flattened = all.flat();
 
     await QuizModel.insertMany(flattened);

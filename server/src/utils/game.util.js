@@ -161,7 +161,7 @@ function findPlayer(game, playerUniqueId) {
 }
 
 function throwDie(pos = 0) {
-    if (isDev()) return { die1: 1, die2: 2, total: 3 };
+    // if (isDev()) return { die1: 1, die2: 2, total: 3 };
 
     const rollToWin = 90 - pos;
     if (rollToWin === 2) {

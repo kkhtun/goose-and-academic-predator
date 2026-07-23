@@ -20,6 +20,7 @@ const {
     DIFFICULTY,
     QUIZ_TYPE,
     checkCrosswordGrid,
+    sampleQuizType,
 } = require("../utils/quiz.util");
 const {
     isString,
@@ -158,7 +159,8 @@ async function roll({ game, player }) {
                     : null;
 
             const quiz = await QuizService.getQuiz({
-                type: allowedTypes,
+                type: [sampleQuizType(allowedTypes)],
+                // type: [QUIZ_TYPE.FAKE_EMAIL],
                 level,
                 realm,
             });
@@ -375,6 +377,9 @@ async function answerQuiz({ game, quiz, player, answer, move }) {
             isArrayOfArrays(answer) && checkCrosswordGrid(answer, actualGrid);
     } else if (quiz.type === QUIZ_TYPE.TRUE_FALSE) {
         isCorrect = quizContent.answer === answer;
+    } else if (quiz.type === QUIZ_TYPE.FAKE_EMAIL) {
+        isCorrect =
+            quizContent.isFake === answer || quizContent.answer === answer;
     } else {
         isCorrect = quizContent.correctAnswer === answer;
     }

@@ -31,6 +31,8 @@ agenda.define(
     "refill-quizzes",
     { concurrency: 1, lockLifetime: 5 * 60 * 1000 },
     async (job) => {
+        return;
+
         // Do your threshold check here
         const quizCounts = await getQuizCounts();
         const infoCounts = await getInfoCounts();
