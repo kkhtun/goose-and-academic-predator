@@ -196,7 +196,15 @@ async function getQuiz({ type, level, realm }) {
 
     // If there is no type, then will get a random quiz
     if (type) {
-        basePipeline.push({ $match: { type } });
+        const allowedTypes = Array.isArray(type) ? type : [type];
+        const allTypes = Object.values(QUIZ_TYPE);
+        basePipeline.push({
+            $match: {
+                type: {
+                    $in: allowedTypes.length === 0 ? allTypes : allowedTypes,
+                },
+            },
+        });
     }
 
     // We populate chunks also for reference
@@ -461,7 +469,7 @@ async function seedBatchQuizzes({ countPerRealmLevel: count = 2 }) {
     all.push(await seedMcq({ level: 2, realm: REALM_TYPE.HEAVEN, count }));
     all.push(await seedMcq({ level: 2, realm: REALM_TYPE.HELL, count }));
 
-    all.push(await seedCrossword({ level: 0, count }));
+    // all.push(await seedCrossword({ level: 0, count }));
     all.push(await seedCrossword({ level: 1, count }));
     all.push(await seedCrossword({ level: 2, count }));
 
