@@ -13,8 +13,49 @@ function createStartingPosLookupObj(wordResults) {
     return obj;
 }
 
+function buildWordsList(result) {
+    if (!result) return [];
+    const sorted = [...result].sort((a, b) => (a.position || 0) - (b.position || 0));
+    return sorted.map((w) => {
+        const r0 = w.starty - 1;
+        const c0 = w.startx - 1;
+        const isAcross = w.orientation === "across";
+        const cells = [];
+        for (let i = 0; i < w.word.length; i++) {
+            cells.push({
+                r: isAcross ? r0 : r0 + i,
+                c: isAcross ? c0 + i : c0,
+            });
+        }
+        return {
+            ...w,
+            cells,
+        };
+    });
+}
+
 function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
+    const crosswordData = content || { rows: 0, cols: 0, table: [], result: [] };
+    const startPosLookup = createStartingPosLookupObj(crosswordData.result || []);
     const inputRefs = useRef({});
+
+    const words = buildWordsList(crosswordData.result);
+    const [activeWordIdx, setActiveWordIdx] = useState(0);
+
+    const fillCrossword = (data, fillRatio) => {
+        if (!data) return [[]];
+        return data.map((row) =>
+            row.map((cell) => {
+                if (cell === "-") return ""; // blocked cells
+                return Math.random() < fillRatio ? cell : "";
+            }),
+        );
+    };
+
+    const [grid, setGrid] = useState(() => {
+        return fillCrossword(crosswordData.table, CROSSWORD_FILL_RATIO);
+    });
+    const [submittedGrid, setSubmittedGrid] = useState([[]]);
 
     const moveFocus = (row, col, direction) => {
         const moves = {
@@ -43,6 +84,17 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
         inputRefs.current[`${nextRow}-${nextCol}`]?.focus();
     };
 
+    const handleCellFocus = (r, c) => {
+        const currentWord = words[activeWordIdx];
+        const belongsToCurrent = currentWord?.cells.some((cell) => cell.r === r && cell.c === c);
+        if (!belongsToCurrent) {
+            const foundIdx = words.findIndex((w) => w.cells.some((cell) => cell.r === r && cell.c === c));
+            if (foundIdx !== -1) {
+                setActiveWordIdx(foundIdx);
+            }
+        }
+    };
+
     const handleKeyDown = (e, row, col) => {
         if (
             e.key === "ArrowUp" ||
@@ -52,32 +104,104 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
         ) {
             e.preventDefault();
             moveFocus(row, col, e.key);
+        } else if (e.key === "Backspace" && !grid[row][col]) {
+            let wordIdx = activeWordIdx;
+            let currentWord = words[wordIdx];
+            let cellInWordIdx = currentWord?.cells.findIndex((cell) => cell.r === row && cell.c === col);
+
+            if (!currentWord || cellInWordIdx === -1) {
+                wordIdx = words.findIndex((w) => w.cells.some((cell) => cell.r === row && cell.c === col));
+                if (wordIdx !== -1) {
+                    currentWord = words[wordIdx];
+                    cellInWordIdx = currentWord.cells.findIndex((cell) => cell.r === row && cell.c === col);
+                }
+            }
+
+            if (currentWord && cellInWordIdx !== -1) {
+                e.preventDefault();
+                let prevCell = null;
+                if (cellInWordIdx > 0) {
+                    prevCell = currentWord.cells[cellInWordIdx - 1];
+                } else {
+                    const prevWordIdx = (wordIdx - 1 + words.length) % words.length;
+                    const prevWord = words[prevWordIdx];
+                    if (prevWord && prevWord.cells.length > 0) {
+                        prevCell = prevWord.cells[prevWord.cells.length - 1];
+                        setActiveWordIdx(prevWordIdx);
+                    }
+                }
+                if (prevCell) {
+                    const key = `${prevCell.r}-${prevCell.c}`;
+                    inputRefs.current[key]?.focus();
+                    inputRefs.current[key]?.select();
+                }
+            }
         }
     };
 
-    const crosswordData = content;
-    const startPosLookup = createStartingPosLookupObj(crosswordData.result);
-
-    const fillCrossword = (data, fillRatio) => {
-        return data.map((row) =>
-            row.map((cell) => {
-                if (cell === "-") return ""; // blocked cells
-                return Math.random() < fillRatio ? cell : "";
-            }),
-        );
-    };
-
-    // Pre-fill letters randomly based on crosswordData.table
-    const [grid, setGrid] = useState(() => {
-        return fillCrossword(crosswordData.table, CROSSWORD_FILL_RATIO);
-    });
-    const [submittedGrid, setSubmittedGrid] = useState([[]]);
-
     const handleChange = (row, col, value) => {
-        if (value.length > 1) return;
+        if (hasAnswered) return;
+
+        const char = value.length > 0 ? value[value.length - 1].toUpperCase() : "";
         const newGrid = grid.map((r) => [...r]);
-        newGrid[row][col] = value.toUpperCase();
+        newGrid[row][col] = char;
         setGrid(newGrid);
+
+        if (char === "") return;
+
+        let wordIdx = activeWordIdx;
+        let currentWord = words[wordIdx];
+        let cellInWordIdx = currentWord?.cells.findIndex((cell) => cell.r === row && cell.c === col);
+
+        if (!currentWord || cellInWordIdx === -1) {
+            wordIdx = words.findIndex((w) => w.cells.some((cell) => cell.r === row && cell.c === col));
+            if (wordIdx !== -1) {
+                currentWord = words[wordIdx];
+                cellInWordIdx = currentWord.cells.findIndex((cell) => cell.r === row && cell.c === col);
+                setActiveWordIdx(wordIdx);
+            }
+        }
+
+        if (!currentWord || cellInWordIdx === -1) return;
+
+        let targetCell = null;
+
+        // 1. Search ahead in current word for the next blank cell
+        for (let i = cellInWordIdx + 1; i < currentWord.cells.length; i++) {
+            const { r, c } = currentWord.cells[i];
+            if (newGrid[r][c] === "") {
+                targetCell = currentWord.cells[i];
+                break;
+            }
+        }
+
+        // 2. If no blank cell ahead in current word, but current word has next cell, use next cell
+        if (!targetCell && cellInWordIdx + 1 < currentWord.cells.length) {
+            targetCell = currentWord.cells[cellInWordIdx + 1];
+        }
+
+        // 3. If current word completed, move to the NEXT word in sequence that has missing/blank cells
+        if (!targetCell) {
+            for (let offset = 1; offset < words.length; offset++) {
+                const nextIdx = (wordIdx + offset) % words.length;
+                const nextWord = words[nextIdx];
+                const firstBlank = nextWord.cells.find(({ r, c }) => newGrid[r][c] === "");
+                if (firstBlank) {
+                    targetCell = firstBlank;
+                    setActiveWordIdx(nextIdx);
+                    break;
+                }
+            }
+        }
+
+        // 4. Focus target cell if found
+        if (targetCell) {
+            const key = `${targetCell.r}-${targetCell.c}`;
+            setTimeout(() => {
+                inputRefs.current[key]?.focus();
+                inputRefs.current[key]?.select();
+            }, 0);
+        }
     };
 
     const isSolved = () => {
@@ -248,6 +372,10 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                                     onChange={(e) =>
                                         handleChange(rIdx, cIdx, e.target.value)
                                     }
+                                    onFocus={(e) => {
+                                        handleCellFocus(rIdx, cIdx);
+                                        e.target.select();
+                                    }}
                                     maxLength={1}
                                 />
                                 {/* for some reason, rIdx is actually column value so we put it after comma */}

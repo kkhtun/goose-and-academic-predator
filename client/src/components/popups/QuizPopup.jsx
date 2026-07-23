@@ -1,11 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { QUIZ_TYPE } from "../../constants";
 import CrosswordBuilder from "./CrosswordBuilder";
+import FakeEmailChallenge from "./FakeEmailChallenge";
 import { socket } from "../../socket";
 import CancelButton from "../buttons/CancelButton";
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../buttons/SecondaryButton";
 import KnowledgeChunkCard from "../cards/KnowledgeChunkCard";
+
+function getCorrectAnswerText(type, content) {
+    if (!content) return "";
+    if (type === QUIZ_TYPE.FAKE_EMAIL) {
+        const isFake = content.isFake ?? content.answer;
+        return isFake ? "Predatory (Fake Email)" : "Legitimate Email";
+    }
+    if (type === QUIZ_TYPE.TRUE_FALSE) {
+        const ans = content.answer ?? content.correctAnswer;
+        return ans === true || ans === "True" ? "True" : "False";
+    }
+    if (content.correctAnswer !== undefined) {
+        return String(content.correctAnswer);
+    }
+    if (content.answer !== undefined) {
+        return String(content.answer);
+    }
+    return "";
+}
 
 function TrueFalseQuiz({ content, handleSubmit, hasAnswered }) {
     const { statement } = content;
@@ -185,6 +205,13 @@ export default function QuizPopup({
                                 isCorrect={isCorrect}
                             />
                         )}
+                        {type === QUIZ_TYPE.FAKE_EMAIL && (
+                            <FakeEmailChallenge
+                                content={content}
+                                handleSubmit={onSubmit}
+                                hasAnswered={hasAnswered}
+                            />
+                        )}
 
                         {type !== QUIZ_TYPE.CROSS_WORDS && hasAnswered && (
                             <div
@@ -193,30 +220,30 @@ export default function QuizPopup({
                                     padding: 12,
                                     borderRadius: 8,
                                     background: isCorrect
-                                        ? "#f0f9ff"
-                                        : "#fef2f2",
-                                    border: `1px solid ${isCorrect ? "#0ea5e9" : "#f87171"}`,
+                                        ? "#EFF6FF"
+                                        : "#FEF2F2",
+                                    border: `1px solid ${isCorrect ? "#3B82F6" : "#EF4444"}`,
                                 }}
                             >
                                 <div
                                     style={{
                                         color: isCorrect
-                                            ? "#0369a1"
-                                            : "#dc2626",
+                                            ? "#1D4ED8"
+                                            : "#DC2626",
                                         fontWeight: 600,
                                         marginBottom: 6,
                                     }}
                                 >
                                     {isCorrect
                                         ? "✓ Your answer is correct!"
-                                        : `✗ Your answer is incorrect. The correct answer should be ${content.correctAnswer || content.answer.toString()}.`}
+                                        : `✗ Your answer is incorrect. The correct answer should be: ${getCorrectAnswerText(type, content)}.`}
                                 </div>
-                                {content.explanation && (
+                                {content && content.explanation && (
                                     <div
                                         style={{
                                             color: isCorrect
-                                                ? "#0369a1"
-                                                : "#dc2626",
+                                                ? "#1E40AF"
+                                                : "#B91C1C",
                                             fontSize: 14,
                                         }}
                                     >

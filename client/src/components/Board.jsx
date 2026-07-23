@@ -66,8 +66,10 @@ const styles = {
         display: "grid",
         gridTemplateColumns: `repeat(10, ${SQUARE_SIZE}px)`,
         gap: `${GAP_BETWEEN_SQUARES}px`,
-        padding: "12px",
-        background: "#2c3e50",
-        borderRadius: "12px",
+        padding: "16px",
+        background: "#FFFDF8",
+        borderRadius: "16px",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.12)",
+        border: "1px solid #D6E4F0",
     },
 };

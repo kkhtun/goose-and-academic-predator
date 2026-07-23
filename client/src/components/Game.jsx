@@ -6,10 +6,11 @@ import * as R from "ramda";
 import Board from "./Board";
 import GameControls from "./GameControls";
 // import TransitionOverlay from "./TransitionOverlay";
-import { POPUP_TYPE, POSITION_DESCRIPTIONS, POSITION_TYPE } from "../constants";
+import { POPUP_TYPE, POSITION_DESCRIPTIONS, POSITION_TYPE, LEVEL_MESSAGES, LEVEL_MARKER } from "../constants";
 // import { useLocalStorage } from "@uidotdev/usehooks";
 import QuizPopup from "./popups/QuizPopup";
 import InfoPopup from "./popups/InfoPopup";
+import LevelIntroPopup from "./popups/LevelIntroPopup";
 import { toTitle } from "../utils";
 import Celebration from "./popups/Celebration";
 import { socket } from "../socket";
@@ -43,6 +44,21 @@ function Game() {
     const [popup, setPopup] = useState(null);
     const [openInstruct, setOpenInstruct] = useState(true);
     const [gameOver, setGameOver] = useState(false);
+
+    // Level Intro Popups State
+    const [shownLevelIntros, setShownLevelIntros] = useState([]);
+    const [levelIntroPopup, setLevelIntroPopup] = useState(null);
+    const [pendingTilePopup, setPendingTilePopup] = useState(null);
+
+    useEffect(() => {
+        if (gameState && !openInstruct && !shownLevelIntros.includes(0)) {
+            setLevelIntroPopup({
+                level: 0,
+                message: LEVEL_MESSAGES[0],
+            });
+            setShownLevelIntros((prev) => [...prev, 0]);
+        }
+    }, [gameState, openInstruct]);
 
     // SocketIO
     useEffect(() => {
@@ -187,15 +203,34 @@ function Game() {
             return queueNextMove();
         }
 
+        const prevPos = currentMoves[0]?.current || 0;
+        let isTransition = false;
+        if (prevPos <= LEVEL_MARKER.LEVEL_0_END && pos > LEVEL_MARKER.LEVEL_0_END && !shownLevelIntros.includes(1)) {
+            setLevelIntroPopup({
+                level: 1,
+                message: LEVEL_MESSAGES[1],
+            });
+            setShownLevelIntros((prev) => [...prev, 1]);
+            isTransition = true;
+        } else if (prevPos <= LEVEL_MARKER.LEVEL_1_END && pos > LEVEL_MARKER.LEVEL_1_END && !shownLevelIntros.includes(2)) {
+            setLevelIntroPopup({
+                level: 2,
+                message: LEVEL_MESSAGES[2],
+            });
+            setShownLevelIntros((prev) => [...prev, 2]);
+            isTransition = true;
+        }
+
         if (pos == 0 || isActive === false) {
             queueNextMove();
         } else if (pos === next) {
+            let nextPopupData = null;
             if (nextType === POSITION_TYPE.CHALLENGE) {
                 const { quiz } = content;
-                setPopup({ type: POPUP_TYPE.QUIZ, content: quiz });
+                nextPopupData = { type: POPUP_TYPE.QUIZ, content: quiz };
             } else if (nextType === POSITION_TYPE.INFO) {
                 const { info } = content;
-                setPopup({
+                nextPopupData = {
                     type: POPUP_TYPE.INFO,
                     content: {
                         title: (
@@ -207,9 +242,9 @@ function Game() {
                         ),
                         info,
                     },
-                });
+                };
             } else {
-                const content = {
+                const contentData = {
                     title: (
                         <div>
                             Special Box <BoxIcon number={pos} type={nextType} />{" "}
@@ -218,7 +253,13 @@ function Game() {
                     ),
                     text: POSITION_DESCRIPTIONS[nextType],
                 };
-                setPopup({ type: POPUP_TYPE.SPECIAL, content });
+                nextPopupData = { type: POPUP_TYPE.SPECIAL, content: contentData };
+            }
+
+            if (isTransition) {
+                setPendingTilePopup(nextPopupData);
+            } else {
+                setPopup(nextPopupData);
             }
         }
     };
@@ -293,6 +334,18 @@ function Game() {
                 />
 
                 {/* Default popups */}
+                <LevelIntroPopup
+                    open={Boolean(levelIntroPopup)}
+                    level={levelIntroPopup?.level}
+                    message={levelIntroPopup?.message}
+                    onClose={() => {
+                        setLevelIntroPopup(null);
+                        if (pendingTilePopup) {
+                            setPopup(pendingTilePopup);
+                            setPendingTilePopup(null);
+                        }
+                    }}
+                />
                 <InstructionPopup
                     open={openInstruct}
                     onClose={() => setOpenInstruct(false)}

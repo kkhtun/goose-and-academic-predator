@@ -160,7 +160,11 @@ function findPlayer(game, playerUniqueId) {
 }
 
 function throwDie(pos = 0) {
-    // return { die1: 1, die2: 2, total: 3 };
+    // Last row (positions 80-90): player rolls only 1 die (1 to 6)
+    if (pos >= 80) {
+        const die1 = Math.floor(Math.random() * 6) + 1;
+        return { die1, die2: 0, total: die1 };
+    }
 
     const rollToWin = 90 - pos;
     if (rollToWin === 2) {
@@ -177,21 +181,10 @@ function throwDie(pos = 0) {
         }
     }
 
-    // Instead of giving only 1 dice
-    // We can artificially nudge the probability of dice towards the end of the game to allow for easier winning conditions
-    // This prevents remodelling entire pipeline (including UI)
     let die1 = Math.floor(Math.random() * 6) + 1;
     let die2 = Math.floor(Math.random() * 6) + 1;
     let total = die1 + die2;
 
-    if (pos > 83 && total > 6) {
-        // 100% chance to re-roll high values
-        if (Math.random() < 1) {
-            die1 = Math.floor(Math.random() * 3) + 1; // bias lower
-            die2 = Math.floor(Math.random() * 3) + 1;
-            total = die1 + die2;
-        }
-    }
     return { die1, die2, total };
 }
 

@@ -155,6 +155,13 @@ export const QUIZ_TYPE = {
     MCQ: "MCQ",
     TRUE_FALSE: "TRUE_FALSE",
     CROSS_WORDS: "CROSS_WORDS",
+    FAKE_EMAIL: "FAKE_EMAIL",
+};
+
+export const LEVEL_MESSAGES = {
+    0: "Let's discover the academic publishing system and the main Open Access models, develop the skills to navigate scholarly communication, and understand the pitfalls of the academic publishing landscape.",
+    1: "Predatory journals and publishers are individuals or entities who follow their interests, harmful to scholarships, without achieving promised quality checks for issues such as plagiarism or ethical consent. They produce false information, alteration from good editorial and publication practices, show low transparency, and use illegal and aggressive solicitation practices. (Cukier, S. et al., 2020)",
+    2: "The best way to avoid predatory publishing is to stay informed and learn to spot the warning signs.",
 };
 
 export const LEVEL_MARKER = {

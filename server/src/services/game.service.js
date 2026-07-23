@@ -147,11 +147,14 @@ async function roll({ game, player }) {
         const { level, realm } = getRealm(move.next, score);
 
         if (move.nextType === POSITION_TYPE.CHALLENGE) {
-            const quiz = await QuizService.getQuiz({
+            let quiz = await QuizService.getQuiz({
                 // type: QUIZ_TYPE.MCQ,
                 level,
                 realm,
             });
+            if (level === 0 && quiz.type === QUIZ_TYPE.CROSS_WORDS) {
+                quiz = await QuizService.getQuiz({ type: QUIZ_TYPE.MCQ, level, realm });
+            }
             move.content = { quiz };
             await QuizService.markQuizUsed({ quizId: quiz._id });
             await triggerRefillQuizzes({});
@@ -364,6 +367,8 @@ async function answerQuiz({ game, quiz, player, answer, move }) {
             isArrayOfArrays(answer) && checkCrosswordGrid(answer, actualGrid);
     } else if (quiz.type === QUIZ_TYPE.TRUE_FALSE) {
         isCorrect = quizContent.answer === answer;
+    } else if (quiz.type === QUIZ_TYPE.FAKE_EMAIL) {
+        isCorrect = quizContent.isFake === answer || quizContent.answer === answer;
     } else {
         isCorrect = quizContent.correctAnswer === answer;
     }
