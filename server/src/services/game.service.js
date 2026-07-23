@@ -157,6 +157,7 @@ async function roll({ game, player }) {
                 level,
                 realm,
             });
+
             move.content = { quiz };
             await QuizService.markQuizUsed({ quizId: quiz._id });
             await triggerRefillQuizzes({});
