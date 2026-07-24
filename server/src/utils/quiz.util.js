@@ -11,7 +11,7 @@ const QUIZ_TYPE = {
 const QUIZ_PROBS = {
     MCQ: 0.25,
     TRUE_FALSE: 0.3,
-    CROSS_WORDS: 0.15,
+    CROSS_WORDS: 0.2,
     FAKE_EMAIL: 0.3,
 };
 

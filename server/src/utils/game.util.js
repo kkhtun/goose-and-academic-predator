@@ -36,7 +36,6 @@ const POSITION_TYPE = {
 };
 
 const BOARD_POSITIONS = {
-    0: POSITION_TYPE.STANDARD,
     1: POSITION_TYPE.CHALLENGE,
     2: POSITION_TYPE.CHALLENGE,
     3: POSITION_TYPE.CHALLENGE,
@@ -160,10 +159,25 @@ function findPlayer(game, playerUniqueId) {
     return game.players.find((p) => p.playerUniqueId === playerUniqueId);
 }
 
-function throwDie(pos = 0) {
+function throwDie(pos = 1) {
     // if (isDev()) return { die1: 1, die2: 2, total: 3 };
 
     const rollToWin = 90 - pos;
+
+    // Single die logic for the final row
+    if (pos >= 85) {
+        let die1 = Math.floor(Math.random() * 6) + 1;
+        
+        // Artificial bias (if 2 steps left, try to land it maybe)
+        if (rollToWin === 2 && Math.random() < 0.4) {
+            die1 = 2;
+        } else if (rollToWin === 3 && Math.random() < 0.4) {
+            die1 = 3;
+        }
+
+        return { die1, die2: 0, total: die1 };
+    }
+
     if (rollToWin === 2) {
         if (Math.random() < 0.4) {
             // If the player is too close, there is a 40% chance to win
@@ -202,7 +216,7 @@ function getPlayerPos({ playerUniqueId, moves }) {
             return moves[i].next;
         }
     }
-    return 0; // Default to start if no moves found
+    return 1; // Default to start if no moves found
 }
 
 function getLevel(pos) {

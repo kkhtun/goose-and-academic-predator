@@ -125,7 +125,7 @@ async function roll({ game, player }) {
         (move) => move.playerUniqueId === playerUniqueId
     );
     const lastMove = playerMoves[playerMoves.length - 1];
-    const current = lastMove ? lastMove.next : 0;
+    const current = lastMove ? lastMove.next : 1;
 
     // const dieCount = current >= 85 ? 1 : 2;
     const throwResult = throwDie(current); // ADJUST here if you want particular die throw for testing
@@ -192,10 +192,10 @@ async function roll({ game, player }) {
             moves.push({
                 playerUniqueId,
                 current: move.next,
-                next: 0,
-                nextType: BOARD_POSITIONS[0],
+                next: 1,
+                nextType: BOARD_POSITIONS[1],
                 isActive: true,
-                steps: -move.next,
+                steps: -(move.next - 1),
             });
             break;
         } else if (move.nextType === POSITION_TYPE.LUCKY) {
