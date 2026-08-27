@@ -4,7 +4,6 @@ import {
     GAP_BETWEEN_SQUARES,
     getLevel,
     getPlayerPieceInfo,
-    getRow,
     POS_PER_ROW,
     SQUARE_SIZE,
 } from "../utils/position.utils";
@@ -24,15 +23,17 @@ export default function PlayerPiece({
     const prevPosRef = useRef(position);
 
     const posToXY = (pos) => {
-        // const col = pos % 10;
-        const row = getRow(pos);
+        // [IMPORTANT] since rows and cols start from 0 (not 1)
+        // we denote index to represent board calculations
+        const index = pos - 1;
+        const row = Math.floor(index / POS_PER_ROW);
 
         // Even rows will be left to right
         // Odd rows will go from right to left
         const col =
             row % 2 === 1
-                ? POS_PER_ROW - (pos % POS_PER_ROW) - 1
-                : pos % POS_PER_ROW;
+                ? POS_PER_ROW - (index % POS_PER_ROW) - 1
+                : index % POS_PER_ROW;
 
         return {
             x: col * squareSize + centerOffset,

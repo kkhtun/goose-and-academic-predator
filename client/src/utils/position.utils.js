@@ -15,12 +15,10 @@ export const POS_PER_ROW = 10;
 export const SQUARE_SIZE = window.innerHeight < 900 ? 80 : 84; // Some arbitrary UI adjustments for testing
 export const GAP_BETWEEN_SQUARES = 6;
 
-export const getRow = (pos) => Math.floor(pos / POS_PER_ROW);
-
 export const getOrderedSquares = (boardSize) => {
     const result = [];
 
-    const squares = Array.from({ length: boardSize }, (_, i) => i);
+    const squares = Array.from({ length: boardSize }, (_, i) => i + 1); // + 1 since we start from 1
     for (let row = 0; row < Math.ceil(squares.length / POS_PER_ROW); row++) {
         const rowSquares = squares.slice(
             row * POS_PER_ROW,

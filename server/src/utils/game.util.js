@@ -36,8 +36,8 @@ const POSITION_TYPE = {
 };
 
 const BOARD_POSITIONS = {
-    0: POSITION_TYPE.STANDARD,
-    1: POSITION_TYPE.CHALLENGE,
+    // 0: POSITION_TYPE.STANDARD,
+    1: POSITION_TYPE.STANDARD,
     2: POSITION_TYPE.CHALLENGE,
     3: POSITION_TYPE.CHALLENGE,
     4: POSITION_TYPE.GOOSE,
@@ -151,8 +151,8 @@ const LEVEL_MARKER = {
 
 // Check < 1 and also reverses if position > 90
 function adjustPosition(pos) {
-    if (pos < 1) throw new CustomError("Error position < 1");
     if (pos > 90) return 90 - (pos - 90);
+    if (pos < 1) return 1 + (1 - pos);
     return pos;
 }
 
@@ -160,8 +160,8 @@ function findPlayer(game, playerUniqueId) {
     return game.players.find((p) => p.playerUniqueId === playerUniqueId);
 }
 
-function throwDie(pos = 0) {
-    // if (isDev()) return { die1: 1, die2: 2, total: 3 };
+function throwDie(pos = 1) {
+    // if (isDev()) return { die1: 5, die2: 4, total: 9 };
 
     const rollToWin = 90 - pos;
     if (rollToWin === 2) {
@@ -202,7 +202,7 @@ function getPlayerPos({ playerUniqueId, moves }) {
             return moves[i].next;
         }
     }
-    return 0; // Default to start if no moves found
+    return 1; // Default to start if no moves found
 }
 
 function getLevel(pos) {

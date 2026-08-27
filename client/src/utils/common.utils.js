@@ -1,7 +1,7 @@
 import { BOARD_SIZE } from "../constants";
 
-export const getPlayerMovementPath = (currentPos, nextPos, steps) => {
-    const finalPos = BOARD_SIZE - 1; // We have 91 positions including start
+export const getPlayerMovementPath = (currentPos, steps) => {
+    const finalPos = BOARD_SIZE; // We have 90 positions from 1 to 90
     const path = [];
 
     let pos = currentPos;
@@ -17,8 +17,8 @@ export const getPlayerMovementPath = (currentPos, nextPos, steps) => {
         }
 
         // Bounce at start
-        if (pos < 0) {
-            pos = 1;
+        if (pos < 1) {
+            pos = 2;
             direction = 1;
         }
 
@@ -47,11 +47,7 @@ export const updatePlayerPos = (
                     playerPos: newPos,
                     // Only this player gets path
                     // This is to solve rewind issues near the end (pos 90)
-                    playerPath: getPlayerMovementPath(
-                        currentPos,
-                        newPos,
-                        steps,
-                    ),
+                    playerPath: getPlayerMovementPath(currentPos, steps),
                 };
             }
 

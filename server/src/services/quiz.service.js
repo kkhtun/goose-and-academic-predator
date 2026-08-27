@@ -218,6 +218,12 @@ async function getQuiz({ type, level, realm }) {
                 as: "chunks",
             },
         },
+        {
+            $project: {
+                // [IMPORTANT] since large embs can hang
+                "chunks.embedding": 0,
+            },
+        },
     ];
 
     // First try with preferred status
@@ -259,6 +265,11 @@ async function getInfo({ level }) {
                 localField: "chunks",
                 foreignField: "_id",
                 as: "chunks",
+            },
+        },
+        {
+            $project: {
+                "chunks.embedding": 0,
             },
         },
     ];

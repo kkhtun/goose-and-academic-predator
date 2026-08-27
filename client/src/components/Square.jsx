@@ -29,7 +29,7 @@ export default function Square({ number, heavenOrHell }) {
     }
 
     const getDescription = (number) => {
-        if (number === 0) return "This is the start square.";
+        if (number === 1) return "This is the start square.";
         if (number === 90) return "Land on this square to win the game! 🎉";
         const type = BOARD_POSITIONS[number];
         return POSITION_INSTRUCTIONS[type] || "";
