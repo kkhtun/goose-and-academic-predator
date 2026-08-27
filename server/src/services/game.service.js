@@ -26,7 +26,7 @@ const {
     isString,
     haveSameEntries,
     isArrayOfArrays,
-    isDev,
+    isLocal,
 } = require("../utils/common.util");
 const { triggerRefillQuizzes } = require("./job.service");
 
@@ -152,7 +152,7 @@ async function roll({ game, player }) {
             const type = sampleQuizType(level);
             const quiz = await QuizService.getQuiz({
                 type: [type],
-                // type: [QUIZ_TYPE.FAKE_EMAIL],
+                // type: [QUIZ_TYPE.CROSS_WORDS],
                 level,
                 realm,
             });

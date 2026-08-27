@@ -1,7 +1,8 @@
 import { useState, useRef } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
+import SecondaryButton from "../buttons/SecondaryButton";
 
-const CROSSWORD_FILL_RATIO = 0.55; // 20% letters prefilled
+const CROSSWORD_FILL_RATIO = 0.65; // % letters prefilled
 
 function createStartingPosLookupObj(wordResults) {
     const obj = {};
@@ -68,12 +69,19 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
     };
 
     // Pre-fill letters randomly based on crosswordData.table
-    const [grid, setGrid] = useState(() => {
-        return fillCrossword(crosswordData.table, CROSSWORD_FILL_RATIO);
-    });
+    const [initialGrid] = useState(() =>
+        fillCrossword(crosswordData.table, CROSSWORD_FILL_RATIO),
+    );
+    const [grid, setGrid] = useState(initialGrid);
     const [submittedGrid, setSubmittedGrid] = useState([[]]);
 
+    // Local state
+    const [wasSkipped, setWasSkipped] = useState(false);
+
     const handleChange = (row, col, value) => {
+        // Don't allow changes to initially prefilled cells
+        if (initialGrid[row][col] !== "") return;
+
         if (value.length > 1) return;
         const newGrid = grid.map((r) => [...r]);
         newGrid[row][col] = value.toUpperCase();
@@ -94,6 +102,14 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
         handleSubmit(grid);
         setSubmittedGrid(grid);
         setGrid(fillCrossword(crosswordData.table, 1));
+    };
+
+    const onSkip = () => {
+        setWasSkipped(true);
+        const correctGrid = fillCrossword(crosswordData.table, 1);
+        setGrid(correctGrid);
+        setSubmittedGrid(correctGrid);
+        handleSubmit([]); // This will be handled as false on backend (actual answer contains a grid)
     };
 
     const styles = {
@@ -205,6 +221,26 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
         },
     };
 
+    // color change logic
+    const getCellColor = (row, col, cell) => {
+        if (!hasAnswered || cell === "-") {
+            return "#2c3e50"; // normal black
+        }
+
+        // Originally prefilled letter
+        if (initialGrid[row][col] !== "") {
+            return "#2c3e50";
+        }
+
+        // User's submitted answer was correct
+        if (submittedGrid[row][col] === crosswordData.table[row][col]) {
+            return "#3498db";
+        }
+
+        // User's submitted answer was wrong
+        return "red";
+    };
+
     return (
         <div style={styles.app}>
             <div style={styles.puzzle}>
@@ -232,18 +268,10 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                                         ...(cell === "-" ? styles.blocked : {}),
                                         width: "100%",
                                         height: "100%",
-                                        ...(hasAnswered
-                                            ? styles.cellAnswered
-                                            : {}),
-                                        // Showing red
-                                        ...(hasAnswered &&
-                                        cell !== "-" &&
-                                        grid[rIdx][cIdx] !==
-                                            submittedGrid[rIdx][cIdx]
-                                            ? { color: "red" }
-                                            : {}),
+                                        color: getCellColor(rIdx, cIdx, cell),
                                     }}
                                     disabled={cell === "-" || hasAnswered}
+                                    readOnly={initialGrid[rIdx][cIdx] !== ""} // extra check to prevent removing prefilled cells
                                     value={grid[rIdx][cIdx]}
                                     onChange={(e) =>
                                         handleChange(rIdx, cIdx, e.target.value)
@@ -312,14 +340,21 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                             disabled={hasAnswered || !isSolved()}
                             text={"Submit"}
                         />
+                        <SecondaryButton
+                            style={{ marginLeft: 10 }}
+                            onClick={onSkip}
+                            disabled={hasAnswered}
+                            text="Skip"
+                        />
                         {!hasAnswered ? (
                             <div
                                 style={{
-                                    fontSize: 14,
+                                    fontSize: 16,
+                                    fontWeight: 600,
+                                    lineHeight: 1.4,
                                     color: "#8a6500",
                                     background: "#fff8dc",
                                     border: "1px solid #f5d98b",
-                                    lineHeight: 1.4,
                                     marginTop: 12,
                                     padding: 12,
                                     borderRadius: 10,
@@ -331,28 +366,6 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                         ) : (
                             <></>
                         )}
-                        {/* {isSolved() ? (
-                            <PrimaryButton
-                                onClick={() => handleSubmit(grid)}
-                                disabled={hasAnswered}
-                                text={"Submit"}
-                            />
-                        ) : (
-                            <div
-                                style={{
-                                    fontSize: 14,
-                                    color: "#8a6500",
-                                    background: "#fff8dc",
-                                    border: "1px solid #f5d98b",
-                                    padding: "10px 12px",
-                                    borderRadius: 8,
-                                    lineHeight: 1.4,
-                                }}
-                            >
-                                Please fill the missing letters to solve the
-                                puzzle.
-                            </div>
-                        )} */}
                     </div>
 
                     {hasAnswered && (
@@ -361,19 +374,37 @@ function CrosswordBuilder({ content, handleSubmit, hasAnswered, isCorrect }) {
                                 marginTop: 12,
                                 padding: 12,
                                 borderRadius: 10,
-                                background: isCorrect ? "#eef8ee" : "#fdecea",
-                                border: `1px solid ${isCorrect ? "#a5d6a7" : "#f1a9a0"}`,
+                                background: wasSkipped
+                                    ? "#fff8dc"
+                                    : isCorrect
+                                      ? "#eef8ee"
+                                      : "#fdecea",
+                                border: `1px solid ${
+                                    wasSkipped
+                                        ? "#f5d98b"
+                                        : isCorrect
+                                          ? "#a5d6a7"
+                                          : "#f1a9a0"
+                                }`,
                             }}
                         >
                             <div
                                 style={{
-                                    color: isCorrect ? "#43a047" : "#c0392b",
+                                    fontSize: 16,
+                                    lineHeight: 1.4,
                                     fontWeight: 600,
+                                    color: wasSkipped
+                                        ? "#8a6500"
+                                        : isCorrect
+                                          ? "#43a047"
+                                          : "#c0392b",
                                 }}
                             >
-                                {isCorrect
-                                    ? "✓ Your answer is correct!"
-                                    : "✗ Your answer is incorrect."}
+                                {wasSkipped
+                                    ? "You forfeited this crossword. The correct answers are shown above."
+                                    : isCorrect
+                                      ? "✓ Your answer is correct!"
+                                      : "✗ Your answer is incorrect."}
                             </div>
                         </div>
                     )}

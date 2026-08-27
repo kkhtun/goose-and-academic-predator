@@ -1,4 +1,4 @@
-const { isDev } = require("./common.util");
+const { isLocal } = require("./common.util");
 const { CustomError } = require("./CustomError");
 
 const PLAYER_STATUS = {
@@ -161,7 +161,7 @@ function findPlayer(game, playerUniqueId) {
 }
 
 function throwDie(pos = 1) {
-    // if (isDev()) return { die1: 5, die2: 4, total: 9 };
+    // if (isLocal()) return { die1: 1, die2: 1, total: 2 };
 
     const rollToWin = 90 - pos;
     if (rollToWin === 2) {

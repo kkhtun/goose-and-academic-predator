@@ -20,8 +20,9 @@ function haveSameEntries(arr1, arr2) {
 }
 
 function isArrayOfArrays(obj) {
-    if (!Array.isArray(obj)) return false;
-    const nonArrays = obj.filter((entry) => !Array.isArray(entry));
+    if (!Array.isArray(obj)) return false; // not an array
+    if (obj.length === 0) return false; // just a flat empty array
+    const nonArrays = obj.filter((entry) => !Array.isArray(entry)); // contains non-array entries
     return nonArrays.length === 0;
 }
 
@@ -36,8 +37,8 @@ function shuffleArray(array) {
     return copy;
 }
 
-function isDev() {
-    return process.env.NODE_ENV === "development";
+function isLocal() {
+    return process.env.NODE_ENV === "local";
 }
 
 module.exports = {
@@ -45,5 +46,5 @@ module.exports = {
     haveSameEntries,
     isArrayOfArrays,
     shuffleArray,
-    isDev,
+    isLocal,
 };
