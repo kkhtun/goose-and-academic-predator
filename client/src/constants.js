@@ -174,6 +174,13 @@ export const REALM_TYPE = {
     BOTH: "BOTH",
 };
 
+// Keep the realm values stable for saved games and the API while presenting
+// clearer, user-facing outcome names throughout the game.
+export const REALM_LABEL = {
+    [REALM_TYPE.HEAVEN]: "Savelist",
+    [REALM_TYPE.HELL]: "Watchlist",
+};
+
 export const SCORE_FOR_HEAVEN = 12;
 
 // export const HELL_COLOR = "rgb(196, 106, 100)";

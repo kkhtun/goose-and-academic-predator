@@ -2,6 +2,7 @@ import {
     SCORE_FOR_HEAVEN,
     POSITION_INSTRUCTIONS,
     REALM_COLOR,
+    REALM_LABEL,
     REALM_TYPE,
 } from "../../constants";
 import CancelButton from "../buttons/CancelButton";
@@ -95,7 +96,7 @@ export default function InstructionPopup({ open, onClose }) {
                                 fontWeight: 500,
                             }}
                         >
-                            Publishing Heaven
+                            {REALM_LABEL[REALM_TYPE.HEAVEN]}
                         </span>{" "}
                         with a flawless record, or find yourself in{" "}
                         <span
@@ -105,7 +106,7 @@ export default function InstructionPopup({ open, onClose }) {
                                 fontWeight: 500,
                             }}
                         >
-                            Publishing Hell
+                            {REALM_LABEL[REALM_TYPE.HELL]}
                         </span>{" "}
                         needing more practice to avoid the industry's most
                         dangerous traps?
@@ -128,7 +129,7 @@ export default function InstructionPopup({ open, onClose }) {
                         </li>
                         <li>
                             Earn more than {SCORE_FOR_HEAVEN} points to reach
-                            the publishing heaven.
+                            the {REALM_LABEL[REALM_TYPE.HEAVEN]}.
                         </li>
                         <li>
                             Before starting, share your <b>Game ID</b> so

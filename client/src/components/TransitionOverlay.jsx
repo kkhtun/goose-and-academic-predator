@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { REALM_LABEL, REALM_TYPE } from "../constants";
 
 export default function TransitionOverlay({ type }) {
     if (!type) return null;
@@ -13,15 +14,15 @@ export default function TransitionOverlay({ type }) {
         text = "Publishing House Elevator";
         subtext = "Going up to Level 1...";
         icon = "🏢";
-    } else if (type === "HEAVEN") {
+    } else if (type === REALM_TYPE.HEAVEN) {
         bg = "#00a8ff";
-        text = "Heaven";
-        subtext = "Congratulations! You earned your spot in Heaven!";
+        text = REALM_LABEL[REALM_TYPE.HEAVEN];
+        subtext = "Congratulations! You earned your spot on the Savelist!";
         icon = "👼";
-    } else if (type === "HELL") {
+    } else if (type === REALM_TYPE.HELL) {
         bg = "#c23616";
-        text = "Hell";
-        subtext = "Not enough points... Welcome to Hell!";
+        text = REALM_LABEL[REALM_TYPE.HELL];
+        subtext = "Keep learning to move from the Watchlist to the Savelist!";
         icon = "🔥";
     }
 

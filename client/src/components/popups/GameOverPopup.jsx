@@ -7,7 +7,11 @@ import {
     getRealm,
 } from "../../utils/position.utils";
 import CancelButton from "../buttons/CancelButton";
-import { REALM_COLOR, REALM_TYPE } from "../../constants";
+import {
+    REALM_COLOR,
+    REALM_LABEL,
+    REALM_TYPE,
+} from "../../constants";
 
 export default function GameOverPopup({ open, onClose, gameState }) {
     if (!open) return null;
@@ -119,9 +123,7 @@ export default function GameOverPopup({ open, onClose, gameState }) {
                             <span style={{ display: "block" }}>
                                 You have reached the{" "}
                                 <span style={{ color: REALM_COLOR[realm] }}>
-                                    {realm === REALM_TYPE.HEAVEN
-                                        ? "Heaven"
-                                        : "Hell"}
+                                    {REALM_LABEL[realm]}
                                 </span>{" "}
                                 level.
                             </span>
@@ -181,6 +183,14 @@ export default function GameOverPopup({ open, onClose, gameState }) {
                             })}
                         </div>
                     </div>
+
+                    <a
+                        href={`${import.meta.env.BASE_URL}the-green-wave.docx`}
+                        download="The Green Wave.docx"
+                        style={styles.downloadLink}
+                    >
+                        Download The Green Wave
+                    </a>
                 </div>
                 <div
                     style={{
@@ -231,5 +241,18 @@ const styles = {
     activePlayer: {
         border: "2px solid #60a5fa",
         // background: "#243447",
+    },
+
+    downloadLink: {
+        display: "inline-block",
+        marginTop: 20,
+        padding: "10px 16px",
+        borderRadius: 8,
+        background: "#4CAF50",
+        color: "white",
+        fontSize: 14,
+        fontWeight: 600,
+        textDecoration: "none",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
     },
 };
