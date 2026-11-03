@@ -14,14 +14,14 @@ export default function TransitionOverlay({ type }) {
         text = "Publishing House Elevator";
         subtext = "Going up to Level 1...";
         icon = "🏢";
-    } else if (type === REALM_TYPE.HEAVEN) {
+    } else if (type === REALM_TYPE.SAVELIST) {
         bg = "#00a8ff";
-        text = REALM_LABEL[REALM_TYPE.HEAVEN];
+        text = REALM_LABEL[REALM_TYPE.SAVELIST];
         subtext = "Congratulations! You earned your spot on the Savelist!";
         icon = "👼";
-    } else if (type === REALM_TYPE.HELL) {
+    } else if (type === REALM_TYPE.WATCHLIST) {
         bg = "#c23616";
-        text = REALM_LABEL[REALM_TYPE.HELL];
+        text = REALM_LABEL[REALM_TYPE.WATCHLIST];
         subtext = "Keep learning to move from the Watchlist to the Savelist!";
         icon = "🔥";
     }

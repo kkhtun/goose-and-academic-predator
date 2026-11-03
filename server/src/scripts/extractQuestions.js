@@ -22,14 +22,14 @@ const files = [
         realm: REALM_TYPE.BOTH,
     },
     {
-        fileName: "LEVEL 2 Heaven Questions.txt",
+        fileName: "LEVEL 2 Savelist Questions.txt",
         level: 2,
-        realm: REALM_TYPE.HEAVEN,
+        realm: REALM_TYPE.SAVELIST,
     },
     {
-        fileName: "LEVEL 2 Hell Questions.txt",
+        fileName: "LEVEL 2 Watchlist Questions.txt",
         level: 2,
-        realm: REALM_TYPE.HELL,
+        realm: REALM_TYPE.WATCHLIST,
     },
 ];
 

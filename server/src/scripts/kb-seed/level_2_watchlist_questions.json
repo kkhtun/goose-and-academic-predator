@@ -4,594 +4,594 @@
     "text": "Misuse of scientific publications—including fabrication, plagiarism, predatory publishing, or misleading dissemination—can damage research integrity, public trust, and the reliability of the scientific record. Consequences may include reputational harm, article retractions, funding loss, institutional sanctions, reduced collaboration opportunities, and negative impacts on evidence-based decision making.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happens to your published work if it ends up in the hands of predatory journals, publishers, or conferences?",
     "text": "When research is published through predatory journals, publishers, or conferences, it may receive inadequate peer review, poor indexing, limited visibility, and weak long-term preservation, reducing its scholarly impact and credibility. Authors may also face reputational damage, loss of control over intellectual property, difficulties with legitimate republication, and reduced recognition from institutions, funders, and academic peers.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What are the dangers of publishing in predatory journals?",
     "text": "Publishing in predatory journals can expose researchers to poor or nonexistent peer review, leading to the dissemination of unverified or low-quality science that undermines research credibility and scientific integrity. It can also result in financial loss, reduced visibility and citations, exclusion from reputable indexing systems, reputational damage, and negative consequences for career advancement, funding, and institutional evaluation.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How can you recover your work stolen by these journals?",
     "text": "Recovery typically starts with documenting the misuse (submission emails, contracts, publication URLs, payment records) and formally contacting the publisher to request withdrawal, correction, or retraction, though predatory outlets often do not comply. If the journal is unresponsive, authors can escalate by reporting to their institution, research integrity office, funder, or indexing bodies, and by publishing a corrected version elsewhere while clearly noting prior unauthorized or predatory publication.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Who can you report predatory publishers to?",
     "text": "Predatory publishers can be reported to your institution’s research integrity office, academic library, or ethics committee, as they can provide guidance and formal documentation support. You can also report to funders or grant agencies if the work is tied to financed research. Externally, concerns can be submitted to indexing services and scholarly databases (e.g., DOAJ, Scopus, Web of Science administrators), professional associations, and academic watchdog communities that track unethical publishing practices.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What are the gravest consequences of publishing in predatory journals?",
     "text": "The gravest consequences include long-term damage to academic credibility, loss of trust in the researcher’s work, and potential invalidation of outputs during hiring, promotion, or funding evaluations due to association with non-rigorous or deceptive publishing practices. Additional severe risks include permanent loss of research visibility (poor indexing or disappearance), inability to reliably republish the work in reputable venues, financial exploitation, and erosion of the integrity of the scientific record.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "If I make a loss after publishing a manuscript, what should I do?",
     "text": "First, verify what kind of “loss” occurred—financial (publication fees), academic (low-quality or predatory outlet), or procedural (failed peer review or withdrawal issues)—and document all communications, receipts, and submission records. This helps clarify your options and any potential misconduct. Next, take corrective steps: contact the journal for clarification or retraction if appropriate, inform your institution or research office if the outlet is questionable, and prioritize submitting a revised or improved version of the work to a reputable, peer-reviewed journal to restore academic value?",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Which combination of signals most strongly indicates a predatory journal?",
     "text": "No single sign is decisive on its own; research on scholarly communication consistently shows that predatory publishing is best identified through clusters of signals rather than isolated features. The strongest indicator is a combined pattern of weak or absent peer review + misleading claims (fake indexing, impact factors, or affiliations) + aggressive solicitation and unclear fee structures. When these occur together, they strongly suggest a systematically deceptive publishing model rather than simply a low-quality journal. Additional high-confidence warning combinations include unverifiable editorial boards + rapid acceptance promises + poor or plagiarized content + lack of archiving or indexing in recognized databases (e.g., Directory of Open Access Journals, Scopus, Web of Science). When multiple of these appear together, the probability of predatory behavior becomes significantly higher according to empirical studies in publishing ethics. In short: the more systemic and simultaneous the red flags are, the stronger the evidence of predatory publishing.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "If a journal claims indexing but cannot be found in Scopus, Web of Science, or DOAJ, what is the most likely explanation?",
     "text": "The most likely explanation is misrepresentation or false indexing claims, where the journal is either not actually included in recognized databases or is exaggerating its status to appear more credible than it is. Verified indexing requires direct presence in databases such as Scopus, Web of Science, or Directory of Open Access Journals. A secondary possibility is delayed or partial indexing confusion, but in practice, absence from these major databases—combined with marketing claims of inclusion—most often correlates with predatory or low-credibility publishing practices.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why do predatory journals frequently display fake impact factors rather than none at all?",
     "text": "Fake impact factors are used to simulate legitimacy because bibliometric metrics strongly influence academic perception, even though predatory journals are not indexed in recognized systems like Web of Science or Scopus. Providing fabricated metrics creates a cognitive shortcut for authors, exploiting the association between numerical indicators and journal quality to increase submissions and publication fee revenue.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How can a hijacked journal be identified through subtle changes in URL, payment method, or contact email?",
     "text": "URL anomalies: A hijacked journal often retains the original journal name but operates under a slightly altered domain (e.g., adding hyphens, extra words, or switching from a trusted domain like *.edu or a known publisher site to an unrelated *.com/.net domain). Subtle mismatches between the official publisher’s listed URL and the submission site are a key indicator. Payment and contact changes: Fraudulent versions frequently redirect payments to generic services (e.g., PayPal personal accounts or unrelated third-party processors instead of institutional systems) and replace official editorial emails with free domains (e.g., Gmail, Yahoo) or addresses that deviate slightly from the publisher’s domain (e.g., editor@journal-name.org → journalname.editor@gmail.com).",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why do bogus journals often reuse the same editorial board across multiple titles?",
     "text": "Cost reduction and scalability: Predatory publishers reuse the same editorial board (often without consent) to quickly launch many journals without recruiting qualified editors for each one, minimizing operational costs while maximizing output. Artificial credibility signaling: Repeating familiar names across multiple journal titles creates a false appearance of legitimacy and academic reach, making each journal seem established and well-connected even when the editorial oversight is nominal or entirely fake.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "If a journal promises rapid acceptance, has no verifiable editorial board, and requests payment via unsafe methods, what outcome should you logically predict?",
     "text": "High probability of predatory publication: The most likely outcome is not genuine peer-reviewed acceptance, but a sham review process or immediate acceptance with minimal or no scientific evaluation. Financial exploitation and low academic value: The payment request combined with lack of verifiable editorial oversight strongly predicts a fee-driven model where publication quality and academic recognition are negligible or non-existent.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "If your article disappears from the journal website six months after publication, what does that imply about archiving and legitimacy?",
     "text": "Absence of proper digital archiving: Legitimate journals ensure long-term preservation through systems like CLOCKSS, Portico, or institutional repositories. Disappearance suggests the journal lacks stable archiving infrastructure or formal preservation commitments. Low or questionable legitimacy: Removal of published content indicates poor editorial and publishing standards, and often points to a non-reputable or predatory outlet where content permanence is not guaranteed and scholarly record integrity is not maintained.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why do articles in unindexed journals result in few or no citations, even if the research quality is high?",
     "text": "Limited discoverability: If a journal is not indexed in major databases (e.g., Scopus, Web of Science, PubMed), its articles are not easily found through standard academic search tools, significantly reducing visibility regardless of quality. Weak academic integration: Unindexed journals are often excluded from systematic reviews, citation networks, and institutional reading lists, meaning their content is less likely to be read, built upon, or formally cited by other researchers.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does publishing once in a predatory journal increase the likelihood of future scam solicitations?",
     "text": "Data resale and email harvesting: Predatory journals often share or sell author contact information to third parties. Once an author publishes or even submits, their email becomes part of targeted marketing lists used by other dubious publishers and conference organizers. Algorithmic targeting and reputation profiling: Authors who publish in low-quality venues can be identified via open databases or scraped metadata, making them more visible to spam campaigns that assume willingness to pay for publication, increasing the volume of future scam solicitations.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happens if you skip the submission path?",
     "text": "Loss of formal peer review and editorial validation: Skipping the submission process bypasses independent review, so the work is not evaluated for methodological soundness, originality, or ethical compliance, undermining scientific credibility. Breakdown of scholarly record integrity: Without proper submission workflows (tracking, revisions, acceptance documentation), the publication may not be officially recorded, indexed, or citable in a reliable way, weakening both visibility and academic legitimacy.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What trap activates if the metric is fake?",
     "text": "Illusion of legitimacy trap: Fake metrics (e.g., fabricated impact factors or citation counts) create a misleading signal of quality, causing researchers to trust and submit to journals that have no real peer-review or indexing credibility. Feedback amplification trap: Once fake metrics are displayed, they can attract more submissions and citations (often self-citations or coercive citations), which artificially reinforces the illusion and makes the journal appear increasingly “reputable” despite lacking genuine scholarly impact.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What wall closes if the editors are fabricated?",
     "text": "Loss of accountability barrier: When editorial board members are fabricated, there is no real authority responsible for peer review decisions, ethical oversight, or correction of errors, meaning the journal operates without any enforceable scientific governance. Breakdown of trust and verification wall: Authentic academic communities rely on identifiable experts for validation; fake editors remove the possibility of external verification, effectively cutting off the journal from legitimate scholarly networks and making its decisions unverifiable and non-credible.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happens if you fall into unsafe payment systems?",
     "text": "Financial risk and irreversibility: Unsafe payment systems (e.g., personal accounts, untraceable transfers, or unverified processors) often prevent chargebacks or dispute resolution, increasing the likelihood of permanent financial loss without guaranteed publication. Exposure to fraud networks: Once payment is made through insecure channels, the transaction can confirm the target as “responsive,” leading to continued solicitation, repeated charges, or data being circulated among other fraudulent publishers.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Which skipped step most often leads to irreversible financial loss?",
     "text": "Skipping verification of publisher legitimacy (due diligence step): The most critical missed step is failing to independently verify the journal’s indexing status, publisher identity, and editorial board before submission or payment. This often leads directly to engaging with predatory operations. Skipping payment security checks: Not confirming whether payment goes through secure, institutional, or traceable systems removes the last protective barrier, making financial loss effectively irreversible because funds are transferred outside regulated academic publishing channels.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why does a short submission deadline act as a psychological trap?",
     "text": "Urgency-driven cognitive bias: Short deadlines exploit the scarcity and time-pressure effect, pushing authors to act quickly without properly evaluating the journal’s legitimacy, indexing status, or editorial board. Reduced critical scrutiny: Under time pressure, decision-making shifts from analytical evaluation to heuristic thinking, increasing the likelihood of overlooking warning signs such as unclear peer review processes or suspicious payment requests.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does urgency reduce critical thinking and increase risk?",
     "text": "Attentional narrowing under pressure: Urgency activates stress responses that reduce working memory capacity and shift attention toward immediate task completion, making it harder to systematically evaluate journal quality, policies, and red flags. Heuristic decision-making dominance: When time is limited, researchers rely more on shortcuts (e.g., “fast acceptance = good opportunity”), which increases susceptibility to predatory cues and reduces careful verification of legitimacy indicators.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why do legitimate journals not impose artificial time pressure?",
     "text": "Integrity of peer review process: Legitimate journals prioritize rigorous peer review, which requires adequate time for expert evaluation, revision cycles, and editorial checks. Artificial deadlines would compromise this quality control and increase the risk of publishing flawed or unverified research. Alignment with academic standards and transparency: Reputable publishers follow standardized workflows (submission, review, revision, acceptance) that are designed to be fair and reproducible. They avoid pressure tactics because legitimacy depends on voluntary, independent scholarly assessment rather than rushed decision-making.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "You receive an acceptance email 48 hours after submission.",
     "text": "You must respond immediately.\nExtremely short peer-review window is a major red flag: A credible journal cannot perform meaningful peer review, editorial assessment, and revisions within 48 hours. This strongly indicates either no real review occurred or it was purely procedural acceptance. “Immediate response required” is a psychological pressure tactic: Legitimate publishers do not require urgent acceptance decisions. This urgency is typically used to prevent verification of indexing, editorial board legitimacy, or payment security—consistent with predatory publishing behavior.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What key verification should you perform before paying?",
     "text": "Verify journal legitimacy through independent indexing and publisher checks: Confirm the journal is listed in recognized databases (e.g., Scopus, Web of Science, DOAJ where appropriate), and cross-check the publisher’s identity, website domain, and editorial board using independent sources—not only the journal’s own site. Verify payment transparency and security: Ensure fees are clearly published in official policies and processed through institutional, traceable systems (e.g., established publisher platforms or invoicing). Any request for personal accounts, unclear beneficiaries, or unusual transfer methods should be treated as a critical warning sign.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What is the cost of pressing “Pay Now” too quickly?",
     "text": "Irreversible financial and academic loss: Clicking “Pay Now” without verification can result in non-recoverable fees sent to fraudulent entities, with no guaranteed peer review, indexing, or legitimate publication outcome—effectively turning the payment into sunk cost. Long-term reputational damage: The article may end up in a predatory or non-indexed journal, which can reduce academic credibility, harm future publication prospects, and associate the researcher with low-quality or deceptive publishing venues.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why is speed a liability in academic publishing?",
     "text": "It bypasses necessary validation steps: Academic publishing relies on time-consuming processes—peer review, methodological scrutiny, editorial checks, and ethical evaluation. When speed is prioritized, these safeguards are often weakened or skipped, increasing the probability of flawed or unvetted research being accepted. It amplifies susceptibility to deceptive practices: Rapid timelines exploit cognitive shortcuts, leading researchers to accept offers without verifying indexing status, editorial legitimacy, or payment security—conditions frequently associated with predatory publishing models.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What is your immediate damage assessment?",
     "text": "Low-quality or non-validated publication risk: The combination of rapid acceptance, urgency, and payment pressure strongly suggests a high likelihood of predatory publishing, meaning the work may not have undergone meaningful peer review or be recognized in legitimate academic databases. Potential financial and reputational exposure: Immediate risk includes irreversible payment loss and long-term academic consequences if the article is indexed in non-reputable venues, which can affect credibility, citation potential, and future submissions to legitimate journals.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Which losses are recoverable—and which are permanent?",
     "text": "Potentially recoverable losses: Financial loss may be partially recoverable in rare cases (e.g., if payment was made via a protected credit card or regulated platform with dispute/chargeback options). Administrative steps like withdrawing a manuscript or clarifying authorship can sometimes mitigate further exposure. Permanent losses: Funds sent via untraceable or informal channels are typically unrecoverable. Academic consequences—such as publication in a predatory journal, loss of novelty due to public posting, and reputational impact on CVs or citation records—are generally irreversible once the paper is published and indexed (or misindexed).",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why is money recovery from predatory journals usually impossible?",
     "text": "Lack of regulated financial infrastructure: Predatory journals often operate through informal or opaque payment channels (personal accounts, offshore processors, or untraceable transfers), which are outside normal banking protections. This makes chargebacks, disputes, or legal recovery extremely difficult. Absence of enforceable accountability: These publishers typically lack verifiable legal entities, stable physical addresses, or compliance with publishing standards. Without a clear, regulated organization to hold responsible, there is often no practical authority to compel refunds or restitution.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "APC paid → journal provides minimal service",
     "text": "Severe mismatch between cost and scholarly service: When an Article Processing Charge (APC) is paid but only minimal or superficial services are delivered (e.g., rapid acceptance, no meaningful peer review, poor editing), it indicates the APC is not funding genuine editorial work but mainly functioning as a revenue extraction mechanism. Indicator of predatory publishing behavior: In legitimate open-access publishing, APCs correspond to transparent costs (peer review management, editorial oversight, indexing, archiving). A pattern of payment with minimal service strongly suggests a predatory model where publication is decoupled from quality control and academic standards.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why is the fee often non-refundable?",
     "text": "Service-based justification (legitimate or claimed): In legitimate publishing, article processing charges (APCs) are considered payment for services already rendered—such as manuscript handling, peer review coordination, editing, and hosting. Since these resources are consumed during submission and review, fees are typically non-refundable even if the paper is rejected. Risk transfer in low-quality or predatory models: In predatory contexts, non-refundable fees are often used to remove accountability: once payment is made, there is no incentive to ensure quality review or publication integrity. This shifts all financial risk to the author while the publisher retains revenue regardless of outcome.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does this affect future research budgets?",
     "text": "Reduced funding competitiveness: If a researcher’s publication record includes unindexed or predatory journals, funding bodies may assign lower credibility to their outputs. This weakens grant applications, as reviewers prioritize work published in rigorously peer-reviewed and well-indexed venues when allocating limited research budgets. Institutional funding prioritization shifts: Universities and research institutions often allocate internal funds based on perceived research impact (citations, indexed publications, journal quality). A weak publication profile can therefore lead to reduced access to institutional grants, lab funding, and collaborative project resources.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does a lack of indexing directly reduce academic impact?",
     "text": "Reduced discoverability in research workflows: Indexing in databases like Scopus, Web of Science, or PubMed determines whether a paper appears in the standard search and filtering tools used by researchers. Without indexing, the article is rarely found during literature reviews, so it is less likely to be read or cited even if it is high quality. Exclusion from citation and evaluation systems: Academic impact is often measured through citation metrics and database-driven analytics. Unindexed articles are not reliably tracked in these systems, meaning they are excluded from formal impact assessments, institutional rankings, and funding evaluations, which directly limits their recognized scientific influence.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happened to the article that was not indexed?",
     "text": "It remains outside formal academic discovery systems: An unindexed article is not integrated into major scholarly databases (e.g., Scopus, Web of Science, PubMed), so it is not easily discoverable through standard academic search tools, systematic reviews, or citation tracking systems. It becomes effectively “invisible” in academic evaluation: Because indexing is a key criterion for legitimacy and impact assessment, the article is typically excluded from citation metrics, institutional evaluations, and funding assessments, limiting its academic influence regardless of its content quality.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happens if you receive a few citations?",
     "text": "Citations may not indicate real scholarly impact: A small number of citations in or from low-quality or predatory journals often reflect limited visibility within the genuine academic community. They may come from self-citation loops, citation padding, or other non-standard scholarly practices rather than meaningful recognition. Limited effect on academic recognition: Even if citations exist, they typically carry little weight in evaluations (grants, hiring, tenure) if they originate from non-indexed or unreliable sources. As a result, they do not substantially improve the paper’s credibility or the author’s research impact profile.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why do stakeholders show little interest, and colleagues question journal quality?",
     "text": "Low discoverability and weak validation signals: Stakeholders (funders, institutions, researchers) rely on indexing services, citation networks, and reputable peer-review signals to assess relevance. If a journal is not indexed or is known for weak editorial standards, the work is less visible and carries fewer trust indicators, so it attracts little attention. Credibility spillover effects in academic evaluation: Colleagues often infer journal quality from known publishing standards (peer review rigor, editorial board transparency, publisher reputation). When these signals are absent or suspicious, they question the reliability of the review process and, by extension, the robustness of the research itself.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Institution flags publication?",
     "text": "Integrity and compliance review is triggered: Institutions may flag a publication when it appears in a predatory or non-indexed journal, is associated with questionable peer review, or raises concerns about research integrity (e.g., lack of DOI traceability, fake editorial boards, or inconsistent metadata). Potential administrative consequences follow: A flagged publication may be excluded from official CVs for evaluation purposes, reviewed by research integrity committees, or disregarded in promotion/grant assessments—especially if it cannot be verified through recognized indexing or publisher standards.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What funding reviewers lose confidence in?",
     "text": "Credibility of publication record: Funding reviewers lose confidence when an applicant’s publications appear in non-indexed, predatory, or low-quality journals, since these outlets do not demonstrate reliable peer review or methodological rigor. Reliability of research judgment: Repeated use of questionable venues signals poor evaluative judgment in selecting dissemination channels, which can lead reviewers to doubt the applicant’s ability to engage with rigorous scientific standards and responsible research practices.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why is reputational damage harder to repair than financial loss?",
     "text": "Reputation is cumulative and socially distributed: Academic reputation is built over time through publications, peer review credibility, and citations across a network of researchers and institutions. Once damaged (e.g., by association with predatory journals), it spreads through CVs, citation records, and informal academic perception, making it slow and difficult to correct. Financial loss is finite, but reputation has compounding effects: Money lost is a discrete amount that can sometimes be recovered or offset, whereas reputational damage can affect future opportunities (grants, hiring, collaborations). These downstream consequences accumulate over time, amplifying the long-term impact beyond the original incident.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What can the author do if the manuscript disappears?",
     "text": "Attempt formal documentation and recovery: The author should first verify whether the disappearance is due to technical issues or lack of archiving, then contact the editorial office (if it exists) and request a publication record, DOI status, or formal explanation. If possible, they should also document all submission and acceptance communications for evidence. Restore scholarly visibility through alternative channels: If the journal is non-responsive or illegitimate, the author can republish the work (if rights allow) in a reputable journal, institutional repository, or preprint server, ensuring the research is preserved in a stable, citable form and re-integrated into legitimate academic indexing systems.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does retraction work?",
     "text": "Formal editorial process with documented notice: In legitimate publishing, retraction is initiated by authors, editors, or institutions when serious issues are found (e.g., errors, plagiarism, or misconduct). The journal publishes a formal retraction notice that remains permanently linked to the original article, clearly stating the reason. Metadata correction across indexing systems: Once issued, the retraction is communicated to databases (e.g., Crossref, Scopus, Web of Science), which tag the article as “retracted” rather than deleting it. This ensures transparency while preserving the scholarly record and preventing the work from being treated as valid evidence.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happens if the article is removed?",
     "text": "Break in the scholarly record and traceability loss: If an article is simply removed (without formal retraction notice and metadata update), it disrupts the continuity of the academic record. Citations may still exist elsewhere, but the source becomes unverifiable, undermining transparency and reproducibility. No meaningful quality correction signal: Unlike a formal retraction in legitimate publishing systems, removal in predatory or unstable journals does not reliably communicate error, misconduct, or correction to the academic community. This leaves ambiguity—whether the work was flawed, disputed, or just abandoned—reducing its scientific value to essentially zero.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why is a “retraction” from a predatory journal often useless?",
     "text": "Lack of integration into trusted scholarly systems: Retraction only has impact when a journal is indexed in recognized databases (e.g., Crossref-linked records, Scopus, Web of Science). Predatory journals are often not properly indexed, so even if they “retract” an article, the original flawed or fake record may still exist elsewhere and continue circulating. Absence of enforceable correction mechanisms: Predatory publishers often lack transparent editorial control or standardized retraction policies. As a result, retraction notices may be ignored, inconsistently applied, or not propagated to external databases, meaning the paper can still be cited or accessed as if it were valid.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "In which case is retraction impossible?",
     "text": "When there is no legitimate editorial governance: Retraction is impossible if the journal lacks a real, accountable editorial board or publisher structure. In predatory or fake journals, there is often no functioning process to evaluate or approve retraction requests. When the publication record is not controlled or archived properly: If articles are hosted on unstable, non-indexed, or transient websites without formal archiving systems (e.g., Portico, Crossref updates), there may be no authoritative version of record to retract—meaning the content simply persists or disappears without formal correction.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why does negative research opinion return personal and career investment?",
     "text": "It protects against sunk-cost escalation: Treating a submission as “negative” (i.e., not worth pursuing) based on evidence helps avoid continuing to invest time, money, and reputation into a venue that does not provide valid peer review or academic recognition. In that sense, rejecting it early preserves resources rather than “recovering” them. It preserves long-term scholarly value: Redirecting work away from questionable outlets prevents irreversible damage—such as predatory publication records or citation pollution—allowing the research to be submitted instead to legitimate journals where it can generate real academic return (citations, recognition, and career advancement).",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "To what extent does publication in predatory journals add or subtract reputation points?",
     "text": "Publication in predatory journals generally subtracts from academic reputation because these outlets are associated with weak peer review, questionable editorial standards, and limited scholarly credibility. While isolated cases may be interpreted leniently—especially for inexperienced researchers—repeated publication in such venues can substantially reduce trust, professional standing, and institutional confidence in a researcher’s work.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happens when predatory publications accumulate?",
     "text": "The accumulation of publications in predatory journals may progressively damage a researcher’s academic reputation, credibility, and perceived research quality within the scholarly community. Over time, such patterns can negatively affect hiring, promotion, funding opportunities, collaborations, and institutional trust in the researcher’s publication record.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why do hiring committees discount or penalize such outputs?",
     "text": "Hiring committees may discount publications in predatory journals because these outlets often lack rigorous peer review, reducing confidence in the quality and reliability of the research. Such publications can also raise concerns about academic judgment, research ethics, and the candidate’s understanding of recognized scholarly publishing standards.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does publishing in a predatory journal block Future submissions?",
     "text": "Publishing in predatory journals may complicate future submissions because reputable publishers and reviewers can question the credibility, originality, or prior dissemination status of the research. Articles already published in deceptive outlets are often difficult to republish legitimately, even when peer review was inadequate, potentially limiting opportunities for proper scholarly recognition.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does publishing in a predatory journal block Grant applications?",
     "text": "Publications in predatory journals may weaken grant applications because funding agencies often evaluate the credibility, impact, and peer-review quality of an applicant’s publication record. Association with questionable journals can raise concerns about research rigor, academic judgment, and compliance with recognized scholarly and ethical standards.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does publishing in a predatory journal block Collaborations?",
     "text": "Publishing in predatory journals can discourage potential collaborators because such outlets may signal weak peer review, questionable research evaluation, or poor academic judgment. Researchers, institutions, and funding partners often prefer collaborations with scholars whose work appears in credible, well-recognized journals that maintain established scientific standards.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why is lost time often more damaging than lost money?",
     "text": "Lost time can be more damaging than lost money because delayed publication, failed dissemination, and prolonged association with predatory journals may negatively affect career progression, funding opportunities, and research impact. Time invested in unreliable publishing processes may also prevent researchers from submitting their work to legitimate journals, reducing the long-term visibility and credibility of their scientific contributions.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happens if you pay a predatory journal?",
     "text": "After paying a predatory journal, authors may receive little or no legitimate peer review, limited editorial support, and publication in a venue with low academic credibility and poor indexing. The payment is often difficult to recover, while the resulting publication may negatively affect professional reputation, citation impact, institutional evaluation, and long-term accessibility of the research.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What are your realistic next steps?",
     "text": "Realistic next steps include documenting all communications, verifying the journal’s legitimacy, contacting the publisher formally, and seeking guidance from institutional research integrity offices or academic librarians. Authors may also request withdrawal or retraction, warn collaborators and funders if necessary, preserve evidence of transactions and submissions, and prioritize future publication in verified, reputable journals.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Who should you inform (institution, library, funder)?",
     "text": "Researchers encountering predatory or counterfeit publishing issues should inform relevant stakeholders such as their institution, research integrity office, academic library, supervisor, and funding agency when appropriate. Reporting these concerns helps protect institutional reputation, supports publication oversight, and may prevent other researchers from being exposed to deceptive publishing practices.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why is silence often worse than disclosure?",
     "text": "Silence regarding errors, conflicts, or unethical publishing practices can allow misinformation to persist unchallenged, increasing harm to the scientific record and reducing accountability. Transparent disclosure enables correction, peer scrutiny, and institutional oversight, which are essential components of research integrity and the self-correcting nature of science.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How can you request a retraction?",
     "text": "Authors can request a retraction by formally contacting the journal editor or publisher, clearly explaining the reason for the request and providing supporting evidence or documentation. Legitimate journals usually follow established retraction procedures based on publication ethics guidelines, whereas predatory journals may ignore requests or lack transparent correction mechanisms.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What can the author do if the journal does not respond?",
     "text": "If a journal does not respond, authors may contact the publisher formally, document all communications, notify their institution, and seek guidance from research integrity offices or scholarly organizations. In cases involving predatory or counterfeit journals, authors may also request withdrawal publicly, warn other researchers, report the journal to indexing services or watchdog groups, and preserve evidence of submission and payment records.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What does this reveal about editorial accountability?",
     "text": "The presence of predatory or counterfeit publishing practices reveals failures in editorial accountability, including inadequate peer review, poor transparency, and weak ethical oversight. Responsible editorial systems are expected to ensure author verification, research integrity, correction procedures, and clear governance structures that protect the reliability of the scholarly record.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why does this harm scientific correction mechanisms?",
     "text": "Predatory and counterfeit publishing weaken scientific correction mechanisms because unreliable editorial oversight limits effective peer review, retractions, corrections, and post-publication scrutiny. As flawed or fraudulent studies remain uncorrected and continue circulating, the integrity, reproducibility, and self-correcting nature of scientific knowledge are undermined.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "The journal title is legitimate, but the website is fake.",
     "text": "Some counterfeit publishers create fake websites that imitate legitimate journal titles in order to deceive authors into submitting manuscripts and paying publication fees. These fraudulent sites often copy journal names, ISSNs, logos, and editorial information, making independent verification through official publisher domains and trusted indexing databases essential.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Your article is published on the counterfeit site.",
     "text": "If an article is published on a counterfeit journal site, authors may lose control over their work while the research becomes associated with fraudulent or unauthorized publishing activity. Counterfeit publication can damage academic credibility, create copyright complications, reduce trust in the research, and make legitimate dissemination or republication difficult.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happens to Citations?",
     "text": "Articles published in predatory journals generally receive fewer credible citations because they have limited visibility, weak indexing, and low trust within the academic community. Citations from questionable journals may also carry reduced scholarly value and, in some cases, contribute to concerns about citation manipulation or unreliable academic impact.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happens to Indexing?",
     "text": "Articles published in predatory journals are often excluded from recognized indexing databases, limiting their discoverability, citation potential, and academic visibility. Even when temporary indexing claims are made, deceptive journals may later be removed from databases because of ethical violations, poor quality control, or failure to meet scholarly standards.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What does science say about red flags for recognizing predatory publishers?",
     "text": "Research on predatory publishing identifies a consistent set of warning signs that distinguish deceptive publishers from merely low-quality journals. Studies in scholarly communication, research ethics, and bibliometrics show that predatory publishers typically imitate legitimate academic publishing while avoiding the standards that ensure scientific credibility.\nKey scientific red flags include: Lack of genuine peer review\nPredatory journals often promise unrealistically rapid acceptance and publication, sometimes within days. Empirical investigations have shown that many accepted papers receive little or no substantive reviewer feedback, indicating the absence of rigorous scientific evaluation. Misleading indexing and fake metrics\nThese journals frequently claim inclusion in prestigious databases or advertise fabricated impact factors and counterfeit citation metrics. Verification through recognized indexing services such as Scopus, Web of Science, or Directory of Open Access Journals is therefore essential. Aggressive solicitation practices\nResearchers commonly receive mass email invitations containing exaggerated praise, broad disciplinary scopes, or urgent requests for manuscript submission. Studies describe these campaigns as a major operational feature of predatory publishing ecosystems. False or unverifiable editorial boards\nScientific analyses have documented journals listing scholars without permission, inventing editors, or using misleading affiliations. Legitimate editorial boards are normally verifiable through institutional websites and publication histories. Poor transparency regarding fees and policies\nPredatory publishers frequently conceal article processing charges until late in the publication process or provide vague copyright, retraction, and ethics policies. Transparent governance is considered a core criterion of reputable publishing. Low editorial and linguistic quality\nPublished articles may contain plagiarism, fabricated references, grammatical incoherence, or content unrelated to the journal’s stated scope. Such patterns suggest inadequate editorial screening and weak quality control mechanisms. Fake conferences and interconnected ecosystems\nResearch has shown that some predatory publishers operate linked conferences, journals, and publishing platforms designed primarily to generate fees rather than disseminate reliable scholarship. These ecosystems often recycle conference papers into affiliated journals with minimal review. Lack of digital preservation and archiving\nMany deceptive journals are absent from recognized archiving systems, increasing the risk that articles disappear permanently if websites close. This threatens the long-term integrity of the scientific record. Institutional and reputational consequences\nStudies indicate that publications in predatory journals may reduce academic credibility, affect promotion or funding evaluations, and undermine trust in otherwise valid research findings. Universities and funding agencies are therefore increasingly auditing publication venues. Pattern-based assessment is most reliable\nScientific literature emphasizes that no single feature definitively proves predatory behavior. Instead, the strongest evaluations come from identifying multiple overlapping indicators—such as fake metrics, absent peer review, deceptive communication, and unverifiable editorial practices—that collectively demonstrate systematic misconduct rather than simple poor quality.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Is submitting articles to multiple journals improper behavior?",
     "text": "Simultaneous submission of the same manuscript to multiple journals is generally considered unethical because it can waste editorial and peer-review resources and create risks of duplicate publication.\nMost reputable journals require exclusive submission during the review process and expect authors to disclose any related or overlapping submissions transparently.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What happens to Ownership of your work?",
     "text": "In predatory publishing, authors may unknowingly lose control over copyright, reuse rights, or withdrawal options because ownership terms are often unclear or misleading. Some deceptive publishers retain excessive rights over published material without providing proper dissemination, archiving, or legal transparency, placing authors’ intellectual property at risk.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why does publishing in predatory journals undermine academic integrity, even if the research is honest?",
     "text": "Publishing in predatory journals undermines academic integrity because the absence of rigorous peer review and editorial standards weakens the credibility and validation of otherwise honest research. Honest studies published in deceptive outlets may lose credibility, visibility, and institutional recognition due to their association with unethical publishing practices and unreliable scholarly standards. Even scientifically sound work may become associated with deceptive publishing practices, reducing trust, discoverability, and confidence in the reliability of the scholarly record.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does association with fake journals affect institutional reputation?",
     "text": "Association with fake or predatory journals can damage institutional reputation by raising concerns about research quality, academic oversight, and scholarly integrity.\nRepeated publication in questionable venues may reduce external trust among funders, collaborators, accreditation bodies, and the broader academic community.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why are universities increasingly auditing publication venues?",
     "text": "Universities increasingly audit publication venues to ensure research is disseminated through credible journals that meet recognized standards of peer review, ethics, and academic integrity. These audits help prevent institutional association with predatory publishing, protect research quality assessments, and maintain the credibility of promotion, funding, and accreditation processes.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does plagiarism become more likely in predatory publishing ecosystems?",
     "text": "Predatory publishing environments often lack rigorous peer review and plagiarism detection systems, increasing the likelihood that copied or improperly attributed material will be published. Pressure to maximize publication volume and revenue can reduce editorial scrutiny, allowing unethical practices such as text recycling, duplicate publication, and data plagiarism to proliferate.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why do predatory journals often recycle or steal content?",
     "text": "Predatory journals may recycle or plagiarize content to rapidly increase publication volume and create a false appearance of legitimacy with minimal editorial effort. Weak ethical oversight, absence of rigorous peer review, and profit-driven motives contribute to higher risks of unauthorized reproduction and intellectual property misuse.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why is work published in predatory journals often effectively lost?",
     "text": "Research published in predatory journals is often poorly indexed, inadequately archived, and rarely cited, limiting its accessibility and long-term scholarly visibility. If the publisher ceases operation or removes content, the absence of recognized preservation systems can cause articles to disappear permanently from the academic record.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How can ghost websites erase years of research?",
     "text": "Ghost or disappearing journal websites can make published articles permanently inaccessible, resulting in loss of research visibility, citations, and scholarly records. Because many predatory publishers lack reliable digital archiving and preservation systems, years of academic work may effectively vanish from the scientific record when websites shut down.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why do stakeholders distrust work from bogus journals?",
     "text": "Stakeholders often distrust work from bogus journals because weak or absent peer review raises concerns about the validity, reliability, and integrity of the published research. Associations with deceptive publishing practices, misleading metrics, and inadequate editorial oversight can undermine confidence in the work's credibility and scholarly value.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How does predatory publishing contribute to online academic fraud?",
     "text": "Predatory publishing facilitates academic fraud by disseminating minimally reviewed or deceptive research, enabling false scholarly credentials, fabricated findings, and citation manipulation. These practices undermine trust in scientific communication by exploiting digital publishing systems, mimicking legitimate journals, and profiting from misinformation and weak academic oversight.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Why is it nearly impossible to recover money once paid?",
     "text": "Many predatory publishers operate with limited financial transparency, unclear refund policies, or jurisdictions that make legal enforcement and dispute resolution difficult. Publication fees are often collected before meaningful editorial services are delivered, and authors may have little contractual protection once payment has been processed.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Would you list this publication on your CV in five years?",
     "text": "The long-term value of listing a publication on a CV depends on the journal’s credibility, indexing status, peer-review integrity, and recognition within the academic community. Publications in questionable or predatory journals may become liabilities over time, potentially undermining professional reputation, promotion prospects, and scholarly trustworthiness.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "How would this journal appear during a tenure or grant review?",
     "text": "During tenure or grant evaluations, journals with weak credibility, questionable indexing, or predatory characteristics may be viewed as lacking scholarly rigor and academic value. Publications in reputable, peer-reviewed, and institutionally recognized journals are generally weighted more positively because they demonstrate research quality, visibility, and compliance with academic standards.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Does this publisher protect or exploit researchers?",
     "text": "Ethical publishers protect researchers through transparent peer review, clear policies, editorial accountability, and responsible management of publication fees and author rights. Exploitative publishers typically prioritize revenue generation over research integrity, often using misleading practices, weak editorial standards, and inadequate author support.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "Is short-term convenience worth long-term damage?",
     "text": "Short-term publication convenience may provide immediate academic output, but association with low-credibility or predatory outlets can produce lasting reputational and professional consequences. Long-term academic impact is generally strengthened by publishing in reputable venues that ensure rigorous peer review, visibility, citation value, and institutional recognition.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What is the actual cost of “easy publication”?",
     "text": "The apparent benefit of “easy publication” often comes at the cost of weak peer review, reduced research credibility, limited visibility, and potential long-term damage to academic reputation and career advancement. (PMC). Predatory publishing practices may also lead to financial exploitation, low citation impact, article disappearance, exclusion from institutional evaluation systems, and erosion of trust in scientific communication. (openscience.unimi.it.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   },
   {
     "sourceTitle": "What can an author do if he loses his publication in predatory journals?",
     "text": "If an author realizes their work has been published (or lost/handled) in a predatory journal, the goal shifts from “fixing that journal” (usually impossible) to recovering the research’s integrity and academic usability. Secure and document everything\nCollect submission emails, acceptance messages, payment receipts, and the published version (if it exists). This documentation is important for institutions, ethics committees, or future clarification of the publication history. Re-establish the work in a legitimate venue\nIf copyright allows, the author can: Submit a revised version to a reputable peer-reviewed journal. Or deposit it as a preprint or institutional repository version (to preserve visibility and priority). Many legitimate journals accept significantly revised versions if the predatory publication is treated as non-valid or non-indexed.\nClarify the record if needed\nIf the paper is publicly visible, authors can:\nAdd a note in CVs explaining it is from a non-indexed or predatory outlet (transparency matters in evaluations). Request the predatory journal remove or correct the record (rarely effective, but worth attempting formally). Prevent recurrence (system-level correction)\nThe most important step is future protection: verify indexing (Scopus, Web of Science, DOAJ where relevant), check editorial board authenticity, and avoid APC payment before confirming journal legitimacy. In practice, the “loss” is not the research itself but the publication channel—what can be recovered is the work’s scientific legitimacy through re-publication in a credible venue.",
     "level": 2,
     "type": "QUESTION",
-    "realm": "HELL"
+    "realm": "WATCHLIST"
   }
 ]

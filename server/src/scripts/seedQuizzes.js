@@ -60,7 +60,7 @@ async function seed() {
     // const res = await generateCrossword({ level: 0 });
     // const res = await generateSummarizedInfo({
     //     level: 2,
-    //     realm: REALM_TYPE.HEAVEN,
+    //     realm: REALM_TYPE.SAVELIST,
     // });
     // console.log(res);
 

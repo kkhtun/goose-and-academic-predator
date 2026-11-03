@@ -467,8 +467,8 @@ async function seedBatchQuizzes({ countPerRealmLevel: count = 2 }) {
 
     all.push(await seedMcq({ level: 0, realm: REALM_TYPE.BOTH, count }));
     all.push(await seedMcq({ level: 1, realm: REALM_TYPE.BOTH, count }));
-    all.push(await seedMcq({ level: 2, realm: REALM_TYPE.HEAVEN, count }));
-    all.push(await seedMcq({ level: 2, realm: REALM_TYPE.HELL, count }));
+    all.push(await seedMcq({ level: 2, realm: REALM_TYPE.SAVELIST, count }));
+    all.push(await seedMcq({ level: 2, realm: REALM_TYPE.WATCHLIST, count }));
 
     // all.push(await seedCrossword({ level: 0, count }));
     all.push(await seedCrossword({ level: 1, count }));
@@ -477,9 +477,9 @@ async function seedBatchQuizzes({ countPerRealmLevel: count = 2 }) {
     all.push(await seedTrueFalse({ level: 0, realm: REALM_TYPE.BOTH, count }));
     all.push(await seedTrueFalse({ level: 1, realm: REALM_TYPE.BOTH, count }));
     all.push(
-        await seedTrueFalse({ level: 2, realm: REALM_TYPE.HEAVEN, count })
+        await seedTrueFalse({ level: 2, realm: REALM_TYPE.SAVELIST, count })
     );
-    all.push(await seedTrueFalse({ level: 2, realm: REALM_TYPE.HELL, count }));
+    all.push(await seedTrueFalse({ level: 2, realm: REALM_TYPE.WATCHLIST, count }));
 
     // Level 2 Fake Email challenges
     const fakeEmails = [
@@ -544,8 +544,8 @@ async function addBatchInfo({ countPerRealmLevel: count = 2 }) {
 
     all.push(await seedInfo({ level: 0, realm: REALM_TYPE.BOTH, count }));
     all.push(await seedInfo({ level: 1, realm: REALM_TYPE.BOTH, count }));
-    all.push(await seedInfo({ level: 2, realm: REALM_TYPE.HEAVEN, count }));
-    all.push(await seedInfo({ level: 2, realm: REALM_TYPE.HELL, count }));
+    all.push(await seedInfo({ level: 2, realm: REALM_TYPE.SAVELIST, count }));
+    all.push(await seedInfo({ level: 2, realm: REALM_TYPE.WATCHLIST, count }));
 
     const flattened = all.flat();
     await InfoModel.insertMany(flattened);

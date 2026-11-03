@@ -132,7 +132,7 @@ const LEVEL_1_ANCHORS = [
         text: "Editorial misconduct, plagiarism, and poor publication oversight can lead to unreliable research outputs and retractions. Understanding how misconduct affects the scholarly record helps researchers recognize why publication ethics and journal quality control matter.",
     },
 ];
-const LEVEL_2_HEAVEN_ANCHORS = [
+const LEVEL_2_SAVELIST_ANCHORS = [
     {
         id: "responsible_journal_selection",
         label: "Responsible journal selection",
@@ -164,7 +164,7 @@ const LEVEL_2_HEAVEN_ANCHORS = [
         text: "A researcher's reputation can be affected by where and how they publish. Publishing in questionable or deceptive venues may harm credibility, while responsible journal selection and ethical publication practices support long-term scholarly trust.",
     },
 ];
-const LEVEL_2_HELL_ANCHORS = [
+const LEVEL_2_WATCHLIST_ANCHORS = [
     {
         id: "consequences_of_predatory_publishing",
         label: "Consequences of publishing in predatory journals",
@@ -200,8 +200,8 @@ const LEVEL_2_HELL_ANCHORS = [
 const POSITIVE_ANCHORS = [
     ...LEVEL_0_ANCHORS,
     ...LEVEL_1_ANCHORS,
-    ...LEVEL_2_HEAVEN_ANCHORS,
-    ...LEVEL_2_HELL_ANCHORS,
+    ...LEVEL_2_SAVELIST_ANCHORS,
+    ...LEVEL_2_WATCHLIST_ANCHORS,
 ];
 
 function getAnchor(level, realm) {
@@ -212,9 +212,9 @@ function getAnchor(level, realm) {
         anchors = LEVEL_1_ANCHORS;
     } else if (level === 2) {
         anchors =
-            realm === REALM_TYPE.HEAVEN
-                ? LEVEL_2_HEAVEN_ANCHORS
-                : LEVEL_2_HELL_ANCHORS;
+            realm === REALM_TYPE.SAVELIST
+                ? LEVEL_2_SAVELIST_ANCHORS
+                : LEVEL_2_WATCHLIST_ANCHORS;
     }
     return anchors[Math.floor(Math.random() * anchors.length)];
 }

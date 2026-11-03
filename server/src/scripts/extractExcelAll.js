@@ -69,11 +69,11 @@ function createJsonFromExcel(fileName) {
         },
         {
             level: 2,
-            realm: "HEAVEN",
+            realm: "SAVELIST",
         },
         {
             level: 2,
-            realm: "HELL",
+            realm: "WATCHLIST",
         },
     ];
 

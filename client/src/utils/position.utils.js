@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { LEVEL_MARKER, REALM_TYPE, SCORE_FOR_HEAVEN } from "../constants";
+import { LEVEL_MARKER, REALM_TYPE, SCORE_FOR_SAVELIST } from "../constants";
 import { DogIcon } from "../components/piece/DogIcon";
 import { DogGradIcon } from "../components/piece/DogGradIcon";
 import { CatIcon } from "../components/piece/CatIcon";
@@ -85,9 +85,9 @@ export const getRealm = (playerPos, playerScore) => {
     let realm;
     if (level >= 2) {
         realm =
-            playerScore >= SCORE_FOR_HEAVEN
-                ? REALM_TYPE.HEAVEN
-                : REALM_TYPE.HELL;
+            playerScore >= SCORE_FOR_SAVELIST
+                ? REALM_TYPE.SAVELIST
+                : REALM_TYPE.WATCHLIST;
     } else {
         realm = REALM_TYPE.BOTH; // Realm only applies in Level 2
     }

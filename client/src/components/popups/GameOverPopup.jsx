@@ -129,7 +129,7 @@ export default function GameOverPopup({ open, onClose, gameState }) {
                             </span>
 
                             <span style={{ display: "block" }}>
-                                {realm === REALM_TYPE.HEAVEN
+                                {realm === REALM_TYPE.SAVELIST
                                     ? "Your awareness is remarkable."
                                     : "Improve your awareness by playing more."}
                             </span>

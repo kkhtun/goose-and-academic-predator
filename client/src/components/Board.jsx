@@ -2,7 +2,7 @@ import Square from "./Square";
 import PlayerPiece from "./PlayerPiece";
 import {
     BOARD_SIZE,
-    SCORE_FOR_HEAVEN,
+    SCORE_FOR_SAVELIST,
     LEVEL_MARKER,
     REALM_TYPE,
 } from "../constants";
@@ -19,12 +19,12 @@ export default function Board({ onPieceArrive, gameState, setGameState }) {
 
     const clientPlayer = findPlayer(gameInfo, playerUniqueId);
     const clientPlayerPos = clientPlayer.playerPos;
-    // If client player pos is after LEVEL 1 and still not enough score, change to HELL
-    const heavenOrHell =
+    // If client player pos is after LEVEL 1 and still not enough score, change to WATCHLIST
+    const savelistOrWatchlist =
         clientPlayerPos > LEVEL_MARKER.LEVEL_1_END &&
-        clientPlayer.score < SCORE_FOR_HEAVEN
-            ? REALM_TYPE.HELL
-            : REALM_TYPE.HEAVEN;
+        clientPlayer.score < SCORE_FOR_SAVELIST
+            ? REALM_TYPE.WATCHLIST
+            : REALM_TYPE.SAVELIST;
 
     const squares = getOrderedSquares(BOARD_SIZE);
 
@@ -32,7 +32,7 @@ export default function Board({ onPieceArrive, gameState, setGameState }) {
         <div style={styles.wrapper}>
             <div style={styles.board}>
                 {squares.map((num, i) => (
-                    <Square key={i} number={num} heavenOrHell={heavenOrHell} />
+                    <Square key={i} number={num} savelistOrWatchlist={savelistOrWatchlist} />
                 ))}{" "}
                 {players.map(
                     ({

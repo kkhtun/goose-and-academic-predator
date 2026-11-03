@@ -5,7 +5,7 @@ import SecondaryButton from "./buttons/SecondaryButton";
 import CallToActionButton from "./buttons/CallToActionButton";
 import ConfirmPopup from "./popups/ConfirmPopup";
 import { getLevel, getRealm } from "../utils/position.utils";
-import { REALM_COLOR, REALM_TYPE, SCORE_FOR_HEAVEN } from "../constants";
+import { REALM_COLOR, REALM_TYPE, SCORE_FOR_SAVELIST } from "../constants";
 
 export default function GameControls({
     lastRoll,
@@ -106,12 +106,12 @@ export default function GameControls({
                                 p.playerPos,
                                 p.score,
                             );
-                            // realm = REALM_TYPE.HELL;
+                            // realm = REALM_TYPE.WATCHLIST;
 
                             const realmHeading =
-                                p.score < SCORE_FOR_HEAVEN
-                                    ? REALM_TYPE.HELL
-                                    : REALM_TYPE.HEAVEN;
+                                p.score < SCORE_FOR_SAVELIST
+                                    ? REALM_TYPE.WATCHLIST
+                                    : REALM_TYPE.SAVELIST;
 
                             return (
                                 <div

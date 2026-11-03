@@ -135,11 +135,11 @@ const BOARD_POSITIONS = {
 };
 
 // These constants need to be in sync with frontend
-const SCORE_FOR_HEAVEN = 12;
+const SCORE_FOR_SAVELIST = 12;
 
 const REALM_TYPE = {
-    HEAVEN: "HEAVEN",
-    HELL: "HELL",
+    SAVELIST: "SAVELIST",
+    WATCHLIST: "WATCHLIST",
     BOTH: "BOTH",
 };
 
@@ -234,9 +234,9 @@ function getRealm(playerPos, playerScore) {
     let realm;
     if (level >= 2) {
         realm =
-            playerScore >= SCORE_FOR_HEAVEN
-                ? REALM_TYPE.HEAVEN
-                : REALM_TYPE.HELL;
+            playerScore >= SCORE_FOR_SAVELIST
+                ? REALM_TYPE.SAVELIST
+                : REALM_TYPE.WATCHLIST;
     } else {
         realm = REALM_TYPE.BOTH; // Realm only applies in Level 2
     }
@@ -272,7 +272,7 @@ module.exports = {
     BOARD_POSITIONS,
     POSITION_DESCRIPTIONS,
     REALM_TYPE,
-    SCORE_FOR_HEAVEN,
+    SCORE_FOR_SAVELIST,
     adjustPosition,
     throwDie,
     formatGameInfoForClientStore,

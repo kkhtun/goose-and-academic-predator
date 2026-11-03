@@ -169,26 +169,26 @@ export const LEVEL_MARKER = {
 };
 
 export const REALM_TYPE = {
-    HEAVEN: "HEAVEN",
-    HELL: "HELL",
+    SAVELIST: "SAVELIST",
+    WATCHLIST: "WATCHLIST",
     BOTH: "BOTH",
 };
 
 // Keep the realm values stable for saved games and the API while presenting
 // clearer, user-facing outcome names throughout the game.
 export const REALM_LABEL = {
-    [REALM_TYPE.HEAVEN]: "Savelist",
-    [REALM_TYPE.HELL]: "Watchlist",
+    [REALM_TYPE.SAVELIST]: "Savelist",
+    [REALM_TYPE.WATCHLIST]: "Watchlist",
 };
 
-export const SCORE_FOR_HEAVEN = 12;
+export const SCORE_FOR_SAVELIST = 12;
 
-// export const HELL_COLOR = "rgb(196, 106, 100)";
-// export const HEAVEN_COLOR = "rgb(86, 164, 216)";
+// export const WATCHLIST_COLOR = "rgb(196, 106, 100)";
+// export const SAVELIST_COLOR = "rgb(86, 164, 216)";
 
 export const REALM_COLOR = {
-    [REALM_TYPE.HEAVEN]: "rgb(86, 164, 216)",
-    [REALM_TYPE.HELL]: "rgb(196, 106, 100)",
+    [REALM_TYPE.SAVELIST]: "rgb(86, 164, 216)",
+    [REALM_TYPE.WATCHLIST]: "rgb(196, 106, 100)",
 };
 
 export const BOARD_SIZE = Object.keys(BOARD_POSITIONS).length;

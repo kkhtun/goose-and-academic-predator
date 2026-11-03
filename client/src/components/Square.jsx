@@ -8,7 +8,7 @@ import {
 import { getLevel, SQUARE_SIZE } from "../utils/position.utils";
 import { BoxIcon } from "./icons/BoxIcon";
 
-export default function Square({ number, heavenOrHell }) {
+export default function Square({ number, savelistOrWatchlist }) {
     const [hovered, setHovered] = useState(false);
 
     // Some UI logic to change board colors
@@ -19,11 +19,11 @@ export default function Square({ number, heavenOrHell }) {
         // dynamicStyles.background = "rgba(142, 68, 173, 1)";
         dynamicStyles.color = "#ecf0f1";
     } else if (level === 2 || number === null) {
-        // Further determine heaven or hell
-        if (heavenOrHell === REALM_TYPE.HELL) {
-            dynamicStyles.background = REALM_COLOR[REALM_TYPE.HELL];
+        // Further determine savelist or watchlist
+        if (savelistOrWatchlist === REALM_TYPE.WATCHLIST) {
+            dynamicStyles.background = REALM_COLOR[REALM_TYPE.WATCHLIST];
         } else {
-            dynamicStyles.background = REALM_COLOR[REALM_TYPE.HEAVEN];
+            dynamicStyles.background = REALM_COLOR[REALM_TYPE.SAVELIST];
         }
         dynamicStyles.color = "#ecf0f1";
     }

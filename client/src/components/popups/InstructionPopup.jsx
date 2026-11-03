@@ -1,5 +1,5 @@
 import {
-    SCORE_FOR_HEAVEN,
+    SCORE_FOR_SAVELIST,
     POSITION_INSTRUCTIONS,
     REALM_COLOR,
     REALM_LABEL,
@@ -91,22 +91,22 @@ export default function InstructionPopup({ open, onClose }) {
                         reveal your destiny. Will you reach{" "}
                         <span
                             style={{
-                                color: REALM_COLOR[REALM_TYPE.HEAVEN],
+                                color: REALM_COLOR[REALM_TYPE.SAVELIST],
                                 textShadow: "0 2px 3px rgba(0, 0, 0, 0.5)",
                                 fontWeight: 500,
                             }}
                         >
-                            {REALM_LABEL[REALM_TYPE.HEAVEN]}
+                            {REALM_LABEL[REALM_TYPE.SAVELIST]}
                         </span>{" "}
                         with a flawless record, or find yourself in{" "}
                         <span
                             style={{
-                                color: REALM_COLOR[REALM_TYPE.HELL],
+                                color: REALM_COLOR[REALM_TYPE.WATCHLIST],
                                 textShadow: "0 2px 3px rgba(0, 0, 0, 0.5)",
                                 fontWeight: 500,
                             }}
                         >
-                            {REALM_LABEL[REALM_TYPE.HELL]}
+                            {REALM_LABEL[REALM_TYPE.WATCHLIST]}
                         </span>{" "}
                         needing more practice to avoid the industry's most
                         dangerous traps?
@@ -128,8 +128,8 @@ export default function InstructionPopup({ open, onClose }) {
                             correctly.
                         </li>
                         <li>
-                            Earn more than {SCORE_FOR_HEAVEN} points to reach
-                            the {REALM_LABEL[REALM_TYPE.HEAVEN]}.
+                            Earn more than {SCORE_FOR_SAVELIST} points to reach
+                            the {REALM_LABEL[REALM_TYPE.SAVELIST]}.
                         </li>
                         <li>
                             Before starting, share your <b>Game ID</b> so
