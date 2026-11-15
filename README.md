@@ -73,3 +73,9 @@ Additional package resolution or configuration may be required. Please refer to 
 
 The source code is licensed under the MIT License.
 See [LICENSE](LICENSE) for details.
+
+### Citation
+
+The source code for Goose and Academic Predator is archived on Zenodo.
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24257394.svg)](https://doi.org/10.5281/zenodo.24257394)
