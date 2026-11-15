@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { WORDING } from "../constants";
 
 export default function TransitionOverlay({ type }) {
     if (!type) return null;
@@ -15,13 +16,13 @@ export default function TransitionOverlay({ type }) {
         icon = "🏢";
     } else if (type === "HEAVEN") {
         bg = "#00a8ff";
-        text = "Heaven";
-        subtext = "Congratulations! You earned your spot in Heaven!";
+        text = WORDING.HEAVEN;
+        subtext = `Congratulations! You earned your spot in ${WORDING.HEAVEN}!`;
         icon = "👼";
     } else if (type === "HELL") {
         bg = "#c23616";
-        text = "Hell";
-        subtext = "Not enough points... Welcome to Hell!";
+        text = WORDING.HELL;
+        subtext = `Not enough points... Welcome to ${WORDING.HELL}!`;
         icon = "🔥";
     }
 

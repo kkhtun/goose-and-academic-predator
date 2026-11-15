@@ -5,7 +5,12 @@ import SecondaryButton from "./buttons/SecondaryButton";
 import CallToActionButton from "./buttons/CallToActionButton";
 import ConfirmPopup from "./popups/ConfirmPopup";
 import { getLevel, getRealm } from "../utils/position.utils";
-import { REALM_COLOR, REALM_TYPE, SCORE_FOR_HEAVEN } from "../constants";
+import {
+    REALM_COLOR,
+    REALM_TYPE,
+    SCORE_FOR_HEAVEN,
+    WORDING,
+} from "../constants";
 
 export default function GameControls({
     lastRoll,
@@ -136,7 +141,7 @@ export default function GameControls({
                                         >
                                             {realm === REALM_TYPE.BOTH
                                                 ? ""
-                                                : realm}
+                                                : WORDING[realm]}
                                         </span>
                                     </div>
 
@@ -150,7 +155,7 @@ export default function GameControls({
                                                 fontWeight: "bold",
                                             }}
                                         >
-                                            {realmHeading}
+                                            {WORDING[realmHeading]}
                                         </span>
                                     </div>
                                 </div>

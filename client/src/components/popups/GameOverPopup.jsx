@@ -7,7 +7,7 @@ import {
     getRealm,
 } from "../../utils/position.utils";
 import CancelButton from "../buttons/CancelButton";
-import { REALM_COLOR, REALM_TYPE } from "../../constants";
+import { REALM_COLOR, REALM_TYPE, WORDING } from "../../constants";
 
 export default function GameOverPopup({ open, onClose, gameState }) {
     if (!open) return null;
@@ -120,8 +120,8 @@ export default function GameOverPopup({ open, onClose, gameState }) {
                                 You have reached the{" "}
                                 <span style={{ color: REALM_COLOR[realm] }}>
                                     {realm === REALM_TYPE.HEAVEN
-                                        ? "Heaven"
-                                        : "Hell"}
+                                        ? WORDING.HEAVEN
+                                        : WORDING.HELL}
                                 </span>{" "}
                                 level.
                             </span>
@@ -186,7 +186,7 @@ export default function GameOverPopup({ open, onClose, gameState }) {
                         style={{
                             marginTop: 20,
                             textAlign: "center",
-                            fontSize: 16,
+                            fontSize: 14,
                         }}
                     >
                         <a
@@ -198,7 +198,7 @@ export default function GameOverPopup({ open, onClose, gameState }) {
                                 cursor: "pointer",
                             }}
                         >
-                            Click here to download the watchlist.
+                            Click here to download an example watchlist.
                         </a>
                     </div>
                 </div>

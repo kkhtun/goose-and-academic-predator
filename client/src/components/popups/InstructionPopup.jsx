@@ -3,6 +3,7 @@ import {
     POSITION_INSTRUCTIONS,
     REALM_COLOR,
     REALM_TYPE,
+    WORDING,
 } from "../../constants";
 import CancelButton from "../buttons/CancelButton";
 import { BoxIcon } from "../icons/BoxIcon";
@@ -95,7 +96,7 @@ export default function InstructionPopup({ open, onClose }) {
                                 fontWeight: 500,
                             }}
                         >
-                            Publishing Heaven
+                            Publishing {WORDING.HEAVEN}
                         </span>{" "}
                         with a flawless record, or find yourself in{" "}
                         <span
@@ -105,7 +106,7 @@ export default function InstructionPopup({ open, onClose }) {
                                 fontWeight: 500,
                             }}
                         >
-                            Publishing Hell
+                            Publishing {WORDING.HELL}
                         </span>{" "}
                         needing more practice to avoid the industry's most
                         dangerous traps?
