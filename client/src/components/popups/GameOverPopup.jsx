@@ -181,6 +181,26 @@ export default function GameOverPopup({ open, onClose, gameState }) {
                             })}
                         </div>
                     </div>
+
+                    <div
+                        style={{
+                            marginTop: 20,
+                            textAlign: "center",
+                            fontSize: 16,
+                        }}
+                    >
+                        <a
+                            href={`${import.meta.env.BASE_URL}the_green_wave.pdf`}
+                            download="the_green_wave_watchlist.pdf"
+                            style={{
+                                color: "#2563eb",
+                                textDecoration: "underline",
+                                cursor: "pointer",
+                            }}
+                        >
+                            Click here to download the watchlist.
+                        </a>
+                    </div>
                 </div>
                 <div
                     style={{
