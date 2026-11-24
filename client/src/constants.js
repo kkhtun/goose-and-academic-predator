@@ -188,6 +188,6 @@ export const REALM_COLOR = {
 export const BOARD_SIZE = Object.keys(BOARD_POSITIONS).length;
 
 export const WORDING = {
-    HEAVEN: "Savelist",
+    HEAVEN: "Safelist",
     HELL: "Watchlist",
 };
